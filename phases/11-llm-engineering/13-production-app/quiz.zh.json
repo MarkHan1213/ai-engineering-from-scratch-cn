@@ -1,0 +1,37 @@
+[
+  {
+    "question": "LLM demo 和 production LLM application 之间最大的差距是什么？",
+    "options": ["模型质量", "基础设施：error handling、streaming、cost tracking、rate limiting、fallbacks、observability，以及负载下的 graceful degradation", "Prompt 质量", "API provider 的选择"],
+    "correct": 1,
+    "explanation": "Demo 调一个 API 并打印响应。Production 必须处理 timeouts、provider outages、并发用户、成本预算、streaming delivery、logging 和 graceful degradation。模型反而是容易的部分。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 streaming token delivery 对生产 LLM applications 很重要？",
+    "options": ["它降低成本", "即使总生成时间相同，用户也会觉得首 token 快速到达更快，把感知延迟从几秒降到毫秒级", "它使用更少内存", "它提高模型准确率"],
+    "correct": 1,
+    "explanation": "没有 streaming 时，用户要等 3-10 秒且什么都看不到，直到完整响应出现。有 streaming 时，第一个 token 大约 200ms 到达，文本持续流出，体验会显得更快。",
+    "stage": "pre"
+  },
+  {
+    "question": "当你的 LLM API provider 发生 outage 时，应用应该怎么做？",
+    "options": ["给用户显示 error page", "应用应自动 fallback 到替代 provider，或返回 graceful degraded response", "无限重试直到 provider 恢复", "切换到本地模型"],
+    "correct": 1,
+    "explanation": "生产系统需要 fallback strategies：Provider A 失败就尝试 Provider B，为常见 query 提供 cached responses，或返回有帮助的“暂时不可用”消息。不要让 provider outage 崩掉整个应用。",
+    "stage": "post"
+  },
+  {
+    "question": "Production LLM application 应该跟踪哪些 observability metrics？",
+    "options": ["只跟踪 error counts", "Request latency（P50/P95/P99）、cost per request、error rates、token usage、cache hit rates，以及 automated evals 的 quality scores", "只跟踪 model accuracy", "只跟踪 monthly cost"],
+    "correct": 1,
+    "explanation": "完整 observability 包括：latency percentiles（SLA）、cost tracking（预算）、error rates（可靠性）、token usage（优化）和 quality metrics（regression detection）。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么要在 LLM application 中实现 rate limiting？",
+    "options": ["让应用显得更高级", "防止单个用户耗尽 API 预算，防止滥用，并在高流量下保证公平访问", "降低模型准确率", "Rate limiting 只对免费 tier 必要"],
+    "correct": 1,
+    "explanation": "没有 rate limiting 时，单个用户或 bot 几分钟内就能耗尽你的每日 API 预算。Rate limiting 保护成本、防止滥用，并确保高峰期所有用户都有合理响应时间。",
+    "stage": "post"
+  }
+]

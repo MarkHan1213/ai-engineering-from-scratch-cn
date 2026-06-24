@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 diffusion training 可以直接选择任意 timestep t，而不必一步步模拟 forward Markov chain？",
+      "options": [
+        "这是忽略中间步骤的近似",
+        "因为多个 Gaussian additions 的复合仍然是 Gaussian，从而得到 closed-form q(x_t|x_0) = N(sqrt(alpha_bar_t) x_0, (1 - alpha_bar_t) I)，可以一步采样",
+        "因为 x_t 与 x_0 独立",
+        "这是 PyTorch autograd 要求的"
+      ],
+      "correct": 1,
+      "explanation": "重复加入 Gaussian noise 可以解析闭合。累计乘积 alpha_bar_t 编码“t 步后还剩多少 signal”，因此你可以直接采样 x_t，而无需运行整条链。这就是 diffusion training 每步是 O(1)，而不是 O(T) 的原因。"
+    },
+    {
+      "stage": "pre",
+      "question": "DDPM 的 neural network 实际预测什么？",
+      "options": [
+        "直接预测下一张图像 x_{t-1}",
+        "预测 step t 中加入的 noise epsilon，然后用解析式推导 x_{t-1} 的 mean",
+        "输入的 class label",
+        "signal-to-noise ratio"
+      ],
+      "correct": 1,
+      "explanation": "DDPM 将模型参数化为预测 epsilon。给定 noise prediction 和 noise schedule，x_{t-1} 的 Gaussian mean 和 variance 都有 closed-form。预测 epsilon 而不是 x_0 或 x_{t-1}，会把 loss 简化为普通 MSE，并给出数值上更好的 gradients。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 DDIM 能用约少 20 倍的 steps 达到与 DDPM 相近的 sample quality？",
+      "options": [
+        "DDIM 改变了 training objective",
+        "DDIM 把 sampling 重写为 deterministic ODE，其 trajectory 可以用少得多的 steps 离散化，并到达几乎相同的终点；不需要 retraining",
+        "DDIM 使用更快的 model architecture",
+        "DDIM 生成更小的图像"
+      ],
+      "correct": 1,
+      "explanation": "DDIM 的关键观察是，reverse process 被 deterministic 方式重新参数化后，会变成一个少量 steps 就能很好近似的 ODE。模型的 weights 和 loss 与 DDPM 不变，只有 sampler 不同。同一个 DDPM checkpoint 可以和 DDIM、DPM-Solver 或 Euler sampler 互换使用。"
+    },
+    {
+      "stage": "post",
+      "question": "你画出 T=1000 的 linear beta schedule 的 `alpha_bar_t`，发现它在 t=600 时已接近零。为什么这重要？",
+      "options": [
+        "这不重要",
+        "最后 40% timesteps 几乎不再添加信号；训练这些 timesteps 等于教网络去噪已经近似 N(0, I) 的噪声，浪费容量。Cosine 或 sigmoid schedules 会更均匀地分布 noise injection",
+        "alpha_bar_t 末尾必须为零",
+        "PyTorch 要求 linear schedule"
+      ],
+      "correct": 1,
+      "explanation": "Linear beta schedules 会让 diffusion process 太早结束。到 t=600 时 signal 已经被摧毁，继续训练和采样 t=600-1000 几乎没有收益。Cosine schedules（Nichol & Dhariwal）会让 signal 保留更久，这就是现代模型尤其在低分辨率下使用它们的原因。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 time conditioning 通过 sinusoidal embedding 加到 U-Net 中，而不是使用 one-hot timestep？",
+      "options": [
+        "One-hot vectors 太大",
+        "sinusoidal embedding 在 t 上是平滑的，让网络能在未精确见过的 timesteps 之间插值，并编码架构可在多个深度加性使用的尺度信息",
+        "BatchNorm 要求使用 sinusoidal",
+        "one-hot 会违反 chain rule"
+      ],
+      "correct": 1,
+      "explanation": "Sinusoidal embeddings 用多种频率为网络提供 t 的连续表示。任意 timestep 都是 embedding space 中的唯一点，邻近 timesteps 的 embeddings 也相近。这让模型能用远少于 learned per-timestep embedding 的参数，在所有 T 值上泛化。它与 transformer positional encoding 是同一个思想。"
+    }
+  ]
+}

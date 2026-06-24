@@ -1,0 +1,90 @@
+{
+  "lesson": "09-code-migration-agent",
+  "title": "Capstone 09：Code Migration Agent（Repo-Level Language / Runtime Upgrade）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 pipeline 要组合 deterministic substrate 和 agent layer，而不是只使用其中一种？",
+      "options": [
+        "OpenRewrite 或 libcst 可以安全、低成本地处理 70-80% 的机械改写，把模糊长尾留给 Agent",
+        "Agent 单独使用比 recipe 更快",
+        "deterministic recipe 比 LLM 更慢",
+        "只有 build system 需要确定性"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "pipeline 用什么信号作为成功迁移的 ground truth？",
+      "options": [
+        "Agent 按 rubric 自评",
+        "reviewer 批准 PR",
+        "diff size 低于硬限制",
+        "sandbox 中 CI 变绿，且 coverage regression 不超过小阈值"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Agent loop 对每个 repo 强制执行哪些 budget cap？",
+      "options": [
+        "时间和成本无上限，只在错误时 abort",
+        "无 turn limit，$100 ceiling",
+        "1 小时 wall-clock 和 100 turns",
+        "30 分钟 wall-clock、$8 cost 和 20 agent turns"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "迁移后 coverage 下降超过约 2% 时会触发哪个 gate？",
+      "options": [
+        "绕过 reviewer",
+        "该 repo 被归入 coverage_regression failure class，而不是打开 clean PR",
+        "deterministic substrate 重放它的 recipe",
+        "Agent 自动 force-push 修复"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 failure taxonomy 被视为交付物，而不是附带产物？",
+      "options": [
+        "它替代 test suite",
+        "它按类别聚合失败 repo，让未来 recipe author 可以优先处理最大的失败模式",
+        "GitHub branch protection 要求它",
+        "它满足合规 checklist"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "这个 capstone 面向哪个 public benchmark 做 Java 8 到 17 migration？",
+      "options": [
+        "Amazon 的 MigrationBench",
+        "SWE-bench Pro",
+        "MMLU-Pro",
+        "ViDoRe v3"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "agent integration rubric 衡量 fix distribution 的什么内容？",
+      "options": [
+        "source file 的 tokenization speed",
+        "每个 repo 的 force-push 数量",
+        "被 pin 的 dependency 数量",
+        "由 OpenRewrite 处理的修复与由 agent layer 编写的修复所占比例"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

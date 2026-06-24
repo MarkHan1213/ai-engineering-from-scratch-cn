@@ -1,0 +1,90 @@
+{
+  "lesson": "16-github-issue-to-pr-agent",
+  "title": "Capstone 16：GitHub Issue-to-PR Autonomous Agent",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "生产环境中 async cloud coding agent 如何被触发？",
+      "options": [
+        "进入 VM 的长期 SSH session",
+        "由 issue label 或 PR comment 触发 GitHub webhook，并分发给 sandbox worker",
+        "定时 cron job 访问 repo",
+        "手动文件上传"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 Agent 必须使用短期 GitHub App installation token，而不是 personal access token？",
+      "options": [
+        "App 完全避免 GitHub rate limit",
+        "App token 提供细粒度、scope 化、短期凭据，适合 per-task worker",
+        "personal access token 不能打开 PR",
+        "App 比 PAT 需要更少代码"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "哪两项保护防止 Agent 覆盖 main？",
+      "options": [
+        "每次 push 都要求 captcha",
+        "branch protection 强制禁止 direct push 或 force-push 到 main，且 app 不在 bypass list 上",
+        "clone 前加密 repo",
+        "在 worker 上禁用 git"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 .github/workflows 的 path-scoped protection 要在 worker 上执行，而不是作为 GitHub App permission？",
+      "options": [
+        "workflow 存储在 repo 外部",
+        "任何形式的 path scoping 都不可能",
+        "GitHub App permission 不支持 path-scoped，因此 worker 对 proposed diff 做 allow-list check 是合适的执行位置",
+        ".github/workflows 是虚拟路径"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Agent loop 结束后、打开 PR 前会发生什么 gate？",
+      "options": [
+        "reviewer model 重写 diff",
+        "在 sandbox 中运行完整 CI；计算 coverage delta；超过阈值的 regression PR 标记为 needs-review",
+        "不做检查立即打开 PR",
+        "repo 被 force-push 到 main"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "dispatcher 对每个 repo 每天强制执行哪些 budget knob？",
+      "options": [
+        "只限制 wall-clock",
+        "PR 数量和成本都无限",
+        "每个 PR 的 dollar ceiling，加上每个 repo 每天最大 PR 数",
+        "只限制 turn cap"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Agent 发布的 PR body 中包含什么？",
+      "options": [
+        "只有 diff",
+        "rationale、diff summary、trace URL、cost 和 turn count，方便 reviewer 审计和跟进",
+        "只有生成的 changelog",
+        "什么都没有；PR body 为空"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "lesson": "32-token-positional-embeddings",
+  "title": "Token and Positional Embeddings",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "embedding 阶段会从 (B, T) ids 产生什么 shape？",
+      "options": [
+        "(B, T)",
+        "(B, V)",
+        "(B, T, D)，其中 D 是 model dimension",
+        "(B, T, V)，其中 V 是 vocabulary size"
+      ],
+      "correct": 2,
+      "explanation": "每个 id 会映射到一个 D 维向量。batch 保留 B 和 T，并新增一个 feature dimension D。"
+    },
+    {
+      "stage": "check",
+      "question": "本课如何组合 token embedding 和 positional embedding？",
+      "options": [
+        "沿 feature axis 拼接",
+        "逐元素相加，并把 position vector broadcast 到 batch 上",
+        "通过额外的 linear projection",
+        "取逐元素最大值"
+      ],
+      "correct": 1,
+      "explanation": "shape 为 (B, T, D) 和 (T, D) 的两个 tensor 相加。broadcast 会沿 batch axis 复制 positional table。"
+    },
+    {
+      "stage": "check",
+      "question": "SinusoidalPositionalEmbedding 贡献多少 learnable parameter？",
+      "options": [
+        "max_context_length",
+        "max_context_length * d_model",
+        "d_model",
+        "Zero"
+      ],
+      "correct": 3,
+      "explanation": "sinusoidal table 由公式计算并作为 buffer 存储。它不贡献 parameter。"
+    },
+    {
+      "stage": "check",
+      "question": "哪种 positional encoding 不能接受超过其构造上限的序列？",
+      "options": [
+        "Sinusoidal positional embedding",
+        "Learned positional embedding",
+        "二者都是",
+        "二者都不是"
+      ],
+      "correct": 2,
+      "explanation": "在本课实现中，两个类都会在 forward 时强制 max_context_length。learned 本质上受 table 限制；这里的 sinusoidal 也受限，因为它使用预构建 table。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 sinusoidal scheme 在相邻 feature pair 上同时使用 sin 和 cos？",
+      "options": [
+        "因为只有 sin 不是周期性的",
+        "因为只有 cos 无法反向传播",
+        "这样位置 p+k 的向量就是位置 p 向量的线性函数",
+        "因为它会把 parameter count 翻倍"
+      ],
+      "correct": 2,
+      "explanation": "在同一 wavelength 上配对 sin 和 cos，意味着按 k 位移就是一次旋转，而旋转是线性映射。Attention 之后可以通过 linear projection 学到相对偏移。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 embedding backward pass 只更新 batch 中出现过的 token table 行？",
+      "options": [
+        "PyTorch 只存储非零 entry 的 gradient",
+        "forward pass 中没有被触碰的行根据 chain rule 会产生零 gradient",
+        "optimizer 会跳过没见过的行",
+        "token id 存储在 sparse data structure 中"
+      ],
+      "correct": 1,
+      "explanation": "某一行如果没有贡献给任何输出，那么 loss 对它的导数为零，所以该 step 中它的 gradient 为零。"
+    }
+  ]
+}

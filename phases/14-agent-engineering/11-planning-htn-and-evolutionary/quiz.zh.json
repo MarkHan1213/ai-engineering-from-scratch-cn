@@ -1,0 +1,90 @@
+{
+  "lesson": "11-planning-htn-and-evolutionary",
+  "title": "使用 HTN 与演化搜索进行规划",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "相比自由形式的 LLM 计划，HTN 增加了什么？",
+      "options": [
+        "在强制执行 operator preconditions 和 effects 时可证明的正确性",
+        "更便宜的推理",
+        "更短的 prompt",
+        "更好的 embeddings"
+      ],
+      "correct": 0,
+      "explanation": "HTN 的符号 operator 带有 preconditions 和 effects，可以通过构造保证 soundness。"
+    },
+    {
+      "stage": "pre",
+      "question": "AlphaEvolve 面向哪类问题？",
+      "options": [
+        "自由形式散文生成",
+        "拥有机器可检查、确定性 fitness function 的优化问题",
+        "多轮聊天记忆",
+        "vector search 排序"
+      ],
+      "correct": 1,
+      "explanation": "演化搜索需要确定性 evaluator；AlphaEvolve 针对存在这种 evaluator 的领域。"
+    },
+    {
+      "stage": "check",
+      "question": "ChatHTN 使用 LLM 时如何保持计划 soundness？",
+      "options": [
+        "它并不能保证；soundness 只是 best-effort",
+        "LLM 建议只作为候选分解进入，并会按 operator schema 验证；符号层负责正确性",
+        "它用 HTN trace 微调 LLM",
+        "它使用 vector database"
+      ],
+      "correct": 1,
+      "explanation": "LLM 可以扩展 method library，但不能绕过 operator 的 preconditions 和 effects。"
+    },
+    {
+      "stage": "check",
+      "question": "课程引用了 AlphaEvolve 的哪项结果？",
+      "options": [
+        "56 年来首次改进 Strassen 的 4x4 复数矩阵乘法",
+        "让 Gemini 推理提速 10 倍",
+        "在 HumanEval 上超过 GPT-4",
+        "首次证明 P=NP"
+      ],
+      "correct": 0,
+      "explanation": "AlphaEvolve 为 4x4 复数矩阵乘法找到 48 次标量乘法，这是 56 年来首次改进 Strassen。"
+    },
+    {
+      "stage": "check",
+      "question": "HTN 中哪个元素是带有 preconditions 和 effects、可直接执行的原子动作？",
+      "options": [
+        "Task",
+        "Method",
+        "Operator",
+        "State"
+      ],
+      "correct": 2,
+      "explanation": "Operators 是原语；methods 分解 compound tasks；state 是事实集合。"
+    },
+    {
+      "stage": "post",
+      "question": "课程对没有真实 evaluator 的 AlphaEvolve 给出了什么警告？",
+      "options": [
+        "它很慢",
+        "询问 LLM 代码是否更好并不是 fitness function；evaluator 必须确定且快速",
+        "它违反 Apache 2.0",
+        "它不能在 GPU 上运行"
+      ],
+      "correct": 1,
+      "explanation": "没有确定性 evaluator，搜索就没有可以收敛的信号。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候应选择 ReAct 或 ReWOO，而不是 HTN 或 AlphaEvolve？",
+      "options": [
+        "永远不该选；HTN 严格更好",
+        "当你不需要形式化 soundness 或机器可检查的 fitness 时；大多数 Agent 任务属于这里",
+        "当你有 GPU 集群时",
+        "当延迟低于 100 ms 时"
+      ],
+      "correct": 1,
+      "explanation": "课程明确提醒不要过度工程：大多数任务不需要形式化规划或演化搜索。"
+    }
+  ]
+}

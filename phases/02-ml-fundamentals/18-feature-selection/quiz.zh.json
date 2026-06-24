@@ -1,0 +1,67 @@
+[
+  {
+    "id": "featsel-pre-1",
+    "stage": "pre",
+    "question": "为什么加入更多特征反而可能让模型表现更差？",
+    "options": [
+      "更多特征总是提升模型 accuracy",
+      "无关特征会加入噪声、增加 overfitting 风险，并稀释有用特征的信号",
+      "模型能接受的特征数量有硬性上限",
+      "更多特征会让模型内存耗尽"
+    ],
+    "correct": 1,
+    "explanation": "无关特征会给模型提供在训练噪声上 overfit 的机会。它们增加维度，使数据更稀疏，并让距离更不可靠，也就是维度灾难。"
+  },
+  {
+    "id": "featsel-pre-2",
+    "stage": "pre",
+    "question": "filter 和 wrapper feature selection methods 的关键区别是什么？",
+    "options": [
+      "Filter methods 用模型评估特征；wrapper methods 用统计量",
+      "Filter methods 不训练模型，而用统计量给特征打分；wrapper methods 训练模型来评估特征子集",
+      "Filter methods 总是比 wrapper methods 更准确",
+      "Wrapper methods 一次只能选择一个特征"
+    ],
+    "correct": 1,
+    "explanation": "Filter methods（variance threshold、mutual information、correlation）用统计度量给特征打分。Wrapper methods（RFE、forward selection）会反复训练模型来评估不同特征子集。"
+  },
+  {
+    "id": "featsel-post-1",
+    "stage": "post",
+    "question": "Mutual information 能检测 Pearson correlation 检测不到的哪类关系？",
+    "options": [
+      "连续特征之间的线性关系",
+      "非线性关系，例如二次或周期依赖",
+      "仅限类别特征之间的关系",
+      "需要超过 1000 个数据点才能发现的关系"
+    ],
+    "correct": 1,
+    "explanation": "Pearson correlation 只衡量线性关联。二次关系（y = x^2）可能 correlation 为零，但 mutual information 很高。MI 能捕捉变量之间任何统计依赖。"
+  },
+  {
+    "id": "featsel-post-2",
+    "stage": "post",
+    "question": "L1（Lasso）regularization 会在训练中完成 feature selection。它是怎么做到的？",
+    "options": [
+      "它在训练开始前移除低方差特征",
+      "它把无关特征的权重推到精确为零，从而有效地从模型中消除它们",
+      "它按与 target 的 correlation 给特征排序",
+      "它为每个特征训练单独模型"
+    ],
+    "correct": 1,
+    "explanation": "L1 regularization 会在 loss 中加入 |w| penalty。L1 约束的几何形状（菱形）会让某些权重解正好落在零上，产生稀疏模型并自动选择特征。"
+  },
+  {
+    "id": "featsel-post-3",
+    "stage": "post",
+    "question": "RFE 会移除最不重要的特征并重新训练。为什么这比一次性移除所有低重要性特征更好？",
+    "options": [
+      "它并不更好，一次性移除总是更优",
+      "随着特征被移除，feature importances 会变化，因此迭代移除能考虑特征之间的交互",
+      "RFE 使用不同于单步移除的重要性指标",
+      "一次移除一个只对神经网络有必要"
+    ],
+    "correct": 1,
+    "explanation": "Feature importances 是相对的。当一个相关特征被移除时，它的对应特征重要性可能上升。迭代移除让模型在每一步重新评估重要性，从而捕捉这些交互。"
+  }
+]

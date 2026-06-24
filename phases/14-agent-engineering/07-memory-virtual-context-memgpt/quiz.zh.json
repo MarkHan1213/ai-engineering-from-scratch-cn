@@ -1,0 +1,90 @@
+{
+  "lesson": "07-memory-virtual-context-memgpt",
+  "title": "记忆：虚拟上下文与 MemGPT",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MemGPT 建立在哪个操作系统类比之上？",
+      "options": [
+        "进程和线程",
+        "虚拟内存：主上下文像 RAM，外部存储像磁盘，记忆工具负责 page in 和 page out",
+        "网络 socket",
+        "文件描述符"
+      ],
+      "correct": 1,
+      "explanation": "MemGPT 将 prompt 映射为 RAM，将外部存储映射为磁盘，并将记忆工具映射为类似 page fault 的数据转移。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么更大的上下文窗口不能完全解决记忆问题？",
+      "options": [
+        "provider 将它们限制在 4k token",
+        "即使有 128k 窗口，溢出、注意力稀释和跨 session 持久性缺失仍然会产生影响",
+        "长上下文没有成本",
+        "模型会拒绝长输入"
+      ],
+      "correct": 1,
+      "explanation": "Mem0 测到 128k 窗口 baseline 仍会漏掉外部记忆 4k Agent 能捕捉到的事实；溢出、稀释和持久性仍然存在。"
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是 MemGPT 的经典 memory tool？",
+      "options": [
+        "core_memory_append",
+        "archival_memory_search",
+        "conversation_search",
+        "gradient_memory_update"
+      ],
+      "correct": 3,
+      "explanation": "MemGPT 没有 gradient memory tool；工具表面是 core、archival 和 conversation 操作。"
+    },
+    {
+      "stage": "check",
+      "question": "MemGPT 中的 interrupt pattern 做了什么？",
+      "options": [
+        "任何错误都会停止整个 Agent 运行",
+        "对话中途 Agent 调用 memory tool，runtime 执行它，结果拼接进下一轮",
+        "它完全绕过上下文窗口",
+        "它触发一次模型重训"
+      ],
+      "correct": 1,
+      "explanation": "memory-as-interrupt：调用 memory tool，runtime 获取数据，结果作为新的 observation 在下一轮返回，类似 Unix read()。"
+    },
+    {
+      "stage": "check",
+      "question": "MemGPT 在 2024 年演进成了哪个生产系统？",
+      "options": [
+        "Mem0",
+        "Letta",
+        "Zep",
+        "Pinecone"
+      ],
+      "correct": 1,
+      "explanation": "MemGPT 在 2024 年 9 月变成 Letta；研究仓库 cpacker/MemGPT 仍然作为源头存在。"
+    },
+    {
+      "stage": "post",
+      "question": "这个语境下的 memory poisoning 是什么？",
+      "options": [
+        "破坏 vector index 的 bug",
+        "攻击者内容被存成记忆笔记，并在未来 recall 时再次进入上下文",
+        "明明 RAM 可用却从磁盘读取",
+        "embedding model 版本漂移"
+      ],
+      "correct": 1,
+      "explanation": "外部记忆本质是被检索出来的文本；如果攻击者可触达的内容进入记忆笔记，Agent 会在下次 session 中重新摄入它。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么课程说生产记忆系统都是 MemGPT 的变体？",
+      "options": [
+        "它们使用同一个 vector DB",
+        "Letta、Mem0、Assistants threads 和 Claude Agent SDK 都运行双层（或多层）paged-memory 模式；差异是运营形态",
+        "MemGPT 拥有商标",
+        "它们共享权重"
+      ],
+      "correct": 1,
+      "explanation": "选择时应看运营形态，而不是底层模式；它们都共享 MemGPT 的 page in/out 骨架。"
+    }
+  ]
+}

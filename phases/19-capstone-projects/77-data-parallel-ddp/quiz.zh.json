@@ -1,0 +1,78 @@
+{
+  "lesson": "77-data-parallel-ddp",
+  "title": "从零实现 Data Parallel DDP",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 DDP 在构造时 broadcast parameters，而不是依赖各 rank 使用相同 seed？",
+      "options": [
+        "broadcast 比 seeding 更快",
+        "same-seed init 会在 ranks 间因 float epsilon 产生漂移；broadcast 保证训练开始前 weights byte-equal",
+        "PyTorch 禁止 same-seed init",
+        "broadcast 节省内存"
+      ],
+      "correct": 1,
+      "explanation": "不同硬件上的 float ops（甚至不同进程顺序）可能在 bit level 上不同。来自 rank 0 的 broadcast 是让所有位置获得 byte-equal weights 的唯一方式。"
+    },
+    {
+      "stage": "pre",
+      "question": "DDP 在 backward 之后、optimizer.step 之前做什么？",
+      "options": [
+        "什么也不做",
+        "保存 checkpoint",
+        "对每个 parameter 的 gradient 做 allreduce-SUM，并除以 world_size 得到 mean gradient",
+        "broadcast logits"
+      ],
+      "correct": 2,
+      "explanation": "mean gradient 对 world_size 不敏感，因此在单 rank 上调好的 learning rate 可以用于 N 个 ranks。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 allreduce-SUM 后除以 world_size，而不是使用 allreduce-MEAN？",
+      "options": [
+        "gloo 中不存在 allreduce-MEAN",
+        "每个 rank 上除以 world_size 是本地操作；allreduce-MEAN 底层也会以同样方式实现",
+        "除法会产生 NaN",
+        "world_size 未知"
+      ],
+      "correct": 1,
+      "explanation": "两种方式得到相同算术结果。NCCL 从 2.10 起提供 allreduce-AVG；gloo 没有，所以 SUM 后本地除法。"
+    },
+    {
+      "stage": "check",
+      "question": "生产级 DDP 中的 gradient bucketing 实现了什么？",
+      "options": [
+        "把 gradients 量化成 int8",
+        "把许多小 allreduces 合并成一次大 allreduce，摊薄每次调用的 latency floor",
+        "释放 gradient memory",
+        "跳过 backward"
+      ],
+      "correct": 1,
+      "explanation": "一个 1B-parameter model 有成千上万个 grad tensors；每个 tensor 一次 allreduce 会支付成千上万次 gloo 或 NCCL latency。"
+    },
+    {
+      "stage": "check",
+      "question": "PyTorch DDP 为什么有 no_sync()？",
+      "options": [
+        "关闭 DDP",
+        "对 K 个 microbatches 做 gradient accumulation 时，需要跳过其中 K-1 个的 post-backward allreduce；no_sync 包住这个暂停",
+        "切换 backend",
+        "用于 debug"
+      ],
+      "correct": 1,
+      "explanation": "没有 no_sync 时，allreduce 会在每个 accumulated step 中触发 K 次，吞吐会降到底。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么本课 reference implementation 在一个进程中顺序走完每个 rank 的 micro-batch？",
+      "options": [
+        "single-process 更快",
+        "它提供 byte-equal baseline：sequential mean gradient 必须在每一步都等于 DDP 的 allreduced mean gradient",
+        "这是使用 gloo 的唯一方式",
+        "它节省内存"
+      ],
+      "correct": 1,
+      "explanation": "与 reference loop 等价是承重正确性测试；没有它，gradient sync bugs 会一直藏到 step 10000。"
+    }
+  ]
+}

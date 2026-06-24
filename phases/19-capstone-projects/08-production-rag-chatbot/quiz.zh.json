@@ -1,0 +1,90 @@
+{
+  "lesson": "08-production-rag-chatbot",
+  "title": "Capstone 08：面向监管行业的生产级 RAG Chatbot",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 prompt caching 对 regulated-domain RAG chatbot 特别重要？",
+      "options": [
+        "它移除了对 vector database 的需求",
+        "在 60-80% hit rate 下，它通过折扣稳定 prefix token 把每次查询成本降低 3-5x",
+        "它消除 hallucination",
+        "它提升 rerank 阶段的 recall"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "每个请求中，cache header 和 uncached suffix 分别包含什么？",
+      "options": [
+        "为了达到 cache size 添加的随机文本 padding",
+        "只有检索到的文档",
+        "用户问题放最前，system prompt 放最后",
+        "system prompt 和静态 policy 放在 cache header 中，reranked context 作为 cache extension，用户问题作为 uncached suffix"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "retrieval layer 如何尊重 GDPR 或 HIPAA 这样的 jurisdiction tag？",
+      "options": [
+        "每个国家运行一个单独 index",
+        "只在生成后阻断响应",
+        "按地区重写用户问题",
+        "role 和 jurisdiction filter 在 hybrid search merge 之前应用，因此用户 scope 外的 chunk 永远不会进入 rerank"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "synthesis 阶段会让输出通过哪组 layered guardrail？",
+      "options": [
+        "只在输入上使用 Llama Guard 4",
+        "Llama Guard 4、NeMo Guardrails policy rails、Presidio PII scrub，再加 citation enforcement",
+        "只用一个 output PII regex",
+        "单个 LLM-judge faithfulness check"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "drift dashboard 会对什么发出告警？",
+      "options": [
+        "底层 LLM provider 变化",
+        "延迟超过 200ms",
+        "retrieval quality 下降，例如 nDCG 或 citation score 周环比下降 5%",
+        "index 中新增任何文档"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "用于 gate 交付物 correctness rubric 的 golden set 有多大？",
+      "options": [
+        "5 个 demo query",
+        "200 对带 citation 的专家标注 question/answer",
+        "20 个问题",
+        "2000 个合成问题"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "每轮在线跟踪哪些 RAGAS score？",
+      "options": [
+        "Throughput、GPU utilization 和 queue depth",
+        "BLEU、ROUGE 和 METEOR",
+        "Faithfulness、answer relevance 和 context precision",
+        "Token count 和 dollar cost"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "lesson": "02-rag-over-codebase",
+  "title": "Capstone 02：代码库 RAG（跨仓库语义搜索）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么直接对原始 chunk 做朴素 cosine search 不足以完成跨仓库代码检索？",
+      "options": [
+        "生成代码、monorepo 重复内容和很少被 import 的符号会污染结果",
+        "cosine similarity 在 code embedding 上没有定义",
+        "vector index 不能存储大于 1KB 的 payload",
+        "embedding model 不会把代码看作 token"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "ingestion pipeline 中的 AST-aware chunking 是什么意思？",
+      "options": [
+        "存储前用 gzip 压缩 chunk",
+        "embedding 前丢弃注释和空白",
+        "在 tree-sitter node 边界处切分，例如函数和类的 span",
+        "把代码切成固定 256-token window"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在这条 pipeline 中，每个 chunk 有哪三种可检索模态？",
+      "options": [
+        "Token ID、syntax tree 和 call graph",
+        "AST、IR 和 bytecode",
+        "Raw text、gzip 和 hash",
+        "Dense embedding、BM25 term 和自然语言摘要"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "hybrid retrieval 之后，cross-encoder reranker 的作用是什么？",
+      "options": [
+        "重写 chunk 以移除生成代码",
+        "用不同模型重新 embedding 查询",
+        "在发送给 synthesizer 前压缩 chunk",
+        "把每个 query-candidate pair 放在一起打分，比单独 cosine 更准确"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 synthesizer 会拒绝没有 (repo/path:start-end) anchor 的答案？",
+      "options": [
+        "citation faithfulness 会约束答案，让用户能验证每个 claim",
+        "anchor 会降低 synthesis call 的 token 成本",
+        "anchor 是下游 BM25 reranking 所需",
+        "anchor 是 vector database schema 要求的"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为了在一次 50-file push 上把耗时控制在 60 秒内，incremental re-index 需要什么？",
+      "options": [
+        "只重新 embedding 文本发生变化的 chunk，并重新计算受影响的 symbol edge",
+        "每次 commit 都重新 embedding 完整 2M-LOC corpus",
+        "完全丢弃 symbol graph",
+        "丢弃 BM25 index 并从头重建"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪个指标衡量检索到的 claim 是否能在源代码中验证？",
+      "options": [
+        "MRR@10",
+        "Citation faithfulness",
+        "nDCG@10",
+        "p95 query latency"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

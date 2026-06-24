@@ -1,0 +1,102 @@
+{
+  "lesson": "12-text-summarization",
+  "title": "文本摘要",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Extractive summarization 和 abstractive summarization 的关键行为差异是什么？",
+      "options": [
+        "Extractive 使用 TF-IDF；abstractive 使用 Word2Vec",
+        "Extractive 从原文中逐字抽取句子；abstractive 生成新文本，可能产生幻觉",
+        "Extractive 只能多语言使用",
+        "Extractive 比 abstractive 更慢"
+      ],
+      "correct": 1,
+      "explanation": "Extractive 直接抽取原句；abstractive 会改写，因此有 hallucination 风险。"
+    },
+    {
+      "stage": "pre",
+      "question": "ROUGE 衡量什么？",
+      "options": [
+        "Embedding similarity",
+        "系统摘要与参考摘要之间的 N-gram 和 longest-common-subsequence 重叠",
+        "阅读时间",
+        "Token-level perplexity"
+      ],
+      "correct": 1,
+      "explanation": "ROUGE-1/2/L 分别衡量 unigram、bigram 和 LCS 与 reference 的重叠。"
+    },
+    {
+      "stage": "check",
+      "question": "TextRank 在 extractive summarization 中如何给句子打分？",
+      "options": [
+        "按原始词数",
+        "与 reference summary 比较",
+        "在句子相似度边构成的图上运行 PageRank 风格迭代",
+        "按与问题的 embedding cosine"
+      ],
+      "correct": 2,
+      "explanation": "TextRank 在 sentence-similarity graph 上使用 PageRank；连接度高的句子得分最高。"
+    },
+    {
+      "stage": "check",
+      "question": "计算 ROUGE 时为什么要启用 stemming？",
+      "options": [
+        "否则 'running' 和 'run' 会被当作不同 token，ROUGE 会低估真实重叠",
+        "为了加速 ROUGE",
+        "Stemming 会统一大小写",
+        "rouge-score 包要求必须 stemming"
+      ],
+      "correct": 0,
+      "explanation": "Stemming 会合并形态变体，让 ROUGE 给语义等价形式计分。"
+    },
+    {
+      "stage": "check",
+      "question": "哪种 2026 年指标专门用 NLI entailment 检测摘要幻觉？",
+      "options": [
+        "BLEU",
+        "ROUGE-L",
+        "使用 source 与 summary claims 之间 NLI 的 faithfulness checks（例如 FactCC 或 RAGAS faithfulness）",
+        "chrF"
+      ],
+      "correct": 2,
+      "explanation": "基于 NLI 的 faithfulness scoring 会标记那些不能被原文蕴含的摘要声明。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么合规相邻内容更偏好 extractive summarization？",
+      "options": [
+        "输出逐字来自原文，可以消除 abstractive hallucination 这一类问题",
+        "它更快",
+        "Extractive 支持更长输出",
+        "ROUGE 分数更高"
+      ],
+      "correct": 0,
+      "explanation": "逐字抽取不会发明内容，这对受监管的事实性场景很重要。"
+    },
+    {
+      "stage": "post",
+      "question": "下面哪项是需要监控的 abstractive hallucination 类型？",
+      "options": [
+        "标点漂移",
+        "Stopword removal",
+        "长句",
+        "实体替换（如把 'John Smith' 写成 'John Brown'）、数字漂移、极性翻转或事实编造"
+      ],
+      "correct": 3,
+      "explanation": "实体替换、数字漂移、极性翻转和编造事实，是 abstractive 摘要的典型失败模式。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候会选择 Pegasus checkpoint 而不是 BART-large-CNN？",
+      "options": [
+        "评估 BLEU 时",
+        "输入很短时",
+        "需要 extractive output 时",
+        "在科学摘要等领域，Pegasus 的 gap-sentence pretraining objective 更贴近任务时"
+      ],
+      "correct": 3,
+      "explanation": "Pegasus 的 gap-sentence objective 擅长长篇领域摘要，例如 pubmed。"
+    }
+  ]
+}

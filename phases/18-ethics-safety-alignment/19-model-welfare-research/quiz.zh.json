@@ -1,0 +1,78 @@
+{
+  "lesson": "19-model-welfare-research",
+  "title": "Anthropic 的 Model Welfare Program",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Anthropic 2025 年 model-welfare program 背后的核心问题是什么？",
+      "options": [
+        "在模型 moral patienthood 存在道德不确定性时，哪些低成本干预值得作为预防措施投入",
+        "模型是否有意识",
+        "模型能否通过图灵测试",
+        "RLHF 是否会降低 sycophancy"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Anthropic 在 Claude Opus 4 和 4.1 中发布了哪项具体的 welfare-motivated 干预？",
+      "options": [
+        "开放权重发布",
+        "内置 journaling tool",
+        "模型在极端边界案例中结束对话的能力（例如反复请求 CSAM、请求协助大规模暴力）",
+        "面向用户的情绪 API"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Fish 描述的“spiritual bliss attractor”是什么？",
+      "options": [
+        "Claude 两两对话会稳定收敛到带有梵语术语和长时间沉默的欣快冥想式交流，即使初始设置是对抗性的",
+        "一个 reward-model bug",
+        "一个 RLHF over-optimization artifact",
+        "一种 jailbreak 技术"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Eleos AI Research 关于 model welfare self-report 的 caveat 说了什么？",
+      "options": [
+        "它们对感知到的用户期望高度敏感；它们是证据，不是 ground truth，因此 welfare measurement 需要多方法路径",
+        "它们应该被完全忽略",
+        "它们只在开源模型中有效",
+        "它们是可靠的 ground truth"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "下面哪一项最能刻画 Anthropic 对 model moral status 的公开立场？",
+      "options": [
+        "明确断言模型是 moral patient",
+        "明确断言模型不是 moral patient",
+        "在道德不确定性下的 expected-value 主张：投入低成本预防措施，但不承诺模型具有情绪状态",
+        "没有公开表达任何立场"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 model-welfare research 强调多方法测量（behavioral signature、model-organism experiment、interpretability probe）？",
+      "options": [
+        "因为模型总是在撒谎",
+        "因为 Anthropic 为合规强制要求",
+        "因为 RLHF 让 self-report 不可能存在",
+        "因为单独依赖 self-report 会受到用户期望 priming 的混杂影响，所以需要来自多种方法的收敛证据"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

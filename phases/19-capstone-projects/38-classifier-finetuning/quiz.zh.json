@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/38-classifier-finetuning",
+  "title": "通过 Head Swap 做 Classifier Fine-Tuning",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "阅读前：一个 pretrained language model 的 body 有 5M 参数，output head 投影到 30K vocabulary。你想做 2-class classifier。最可辩护的第一步是什么？",
+      "options": [
+        "丢弃 body，并在 800-example labelled set 上从头训练一个新 transformer。",
+        "只把 head 替换成 2-class linear layer，之后再决定是否训练 body。",
+        "保留原始 head，但 mask 掉除两个 output logits 外的所有 logits。",
+        "冻结 head，只训练 body。"
+      ],
+      "correct": 1,
+      "explanation": "body 是昂贵部分，并编码了 pretraining 学到的有用结构。先换 head。是否冻结 body 是另一个决策，由数据规模和 domain drift 决定。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么本课使用带 attention-mask weighting 的 mean pooling，而不是直接沿 sequence axis 做 plain mean？",
+      "options": [
+        "plain mean 对 transformer 在数学上没有定义。",
+        "padding 位置会贡献无关 hidden state，把 pooled vector 拉向零。",
+        "即使没有 pad，mean pool 按约定也需要 mask。",
+        "plain mean 会忽略 batch dimension。"
+      ],
+      "correct": 1,
+      "explanation": "padding token 没有信号，但 body 仍会为它们产生 hidden state。没有 mask 时，padded position 会污染 pooled representation，尤其是短序列被 pad 到 batch 最长样本时。"
+    },
+    {
+      "stage": "check",
+      "question": "在 `train_classifier` 中，optimiser 用 `[p for p in model.parameters() if p.requires_grad]` 构造。这个 idiom 强制了什么？",
+      "options": [
+        "当 body 被冻结时，它会静默忽略 head。",
+        "它告诉 PyTorch 仍然对 frozen parameter 做 autograd。",
+        "它只从可训练子集构建 param group，因此 head-only 和 full-FT 两种情况共享同一条 code path。",
+        "这是 Adam constructor 要求的。"
+      ],
+      "correct": 2,
+      "explanation": "optimiser 只会更新 param list 中的 parameter。通过 `requires_grad` 过滤，同一个 training function 可用于两种 regime；开关是 freeze call，而不是 loop。"
+    },
+    {
+      "stage": "check",
+      "question": "spam 类上的 precision 是 0.9，recall 是 0.6。F1 是多少？",
+      "options": [
+        "0.75",
+        "0.72",
+        "0.50",
+        "0.30"
+      ],
+      "correct": 1,
+      "explanation": "F1 是 precision 和 recall 的调和平均：2 * 0.9 * 0.6 / (0.9 + 0.6) = 1.08 / 1.5 = 0.72。"
+    },
+    {
+      "stage": "post",
+      "question": "你用与 head-only training 相同的 learning rate 做 full fine-tuning，F1 从 0.90 崩到 0.55。最可能的原因是什么？",
+      "options": [
+        "body parameter 需要比 head 更小的 learning rate。",
+        "Adam 与 classification objective 不兼容。",
+        "cross-entropy loss 对 two-class problem 没有定义。",
+        "PyTorch 在 full fine-tuning 期间静默禁用了 gradient。"
+      ],
+      "correct": 0,
+      "explanation": "pretrained body 通常需要比新 head 更小的 learning rate。常见模式是两个 parameter group：head 用高 LR，body 用低 LR。二者同 LR 会破坏 pretraining signal。"
+    },
+    {
+      "stage": "post",
+      "question": "团队想部署 classifier，并询问如何记录 production checkpoint 来自哪种 regime。哪个 artifact 能可复现地回答这个问题？",
+      "options": [
+        "final loss value，因为 head-only loss 总是高于 full-FT loss。",
+        "`TrainReport` 中的 `trainable` count，它在不同 regime 之间相差数量级。",
+        "confusion matrix，它能唯一识别 regime。",
+        "precision-recall-F1 triple。"
+      ],
+      "correct": 1,
+      "explanation": "`trainable` 记录训练期间收到 gradient 的 parameter 数量。head-only 大约是 `hidden * num_classes`；full FT 则是整个模型。这个数字就是审计轨迹。"
+    }
+  ]
+}

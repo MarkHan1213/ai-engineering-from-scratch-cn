@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在信息论中，entropy 衡量什么？",
+      "options": [
+        "物理系统的能量",
+        "概率分布中的平均惊讶程度或不确定性",
+        "二进制消息中的 bit 数量",
+        "通信信道的错误率"
+      ],
+      "correct": 1,
+      "explanation": "Entropy H(P) = -sum(p(x) * log(p(x))) 衡量所有结果的平均惊讶程度。高熵表示高不确定性（如均匀分布），低熵表示结果更可预测。"
+    },
+    {
+      "stage": "pre",
+      "question": "神经网络中常用的 cross-entropy loss 主要用于什么？",
+      "options": [
+        "连续输出的回归任务",
+        "分类任务，用来衡量预测概率与真实标签的差距",
+        "生成新的数据样本",
+        "正则化模型权重以防止过拟合"
+      ],
+      "correct": 1,
+      "explanation": "Cross-entropy loss H(P,Q) = -sum(p(x)*log(q(x))) 衡量真实分布（标签）与模型预测分布之间的差异。它是分类任务的标准损失。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么训练时最小化 cross-entropy 等价于最小化 KL divergence？",
+      "options": [
+        "因为 KL divergence 在训练中总是为零",
+        "因为 cross-entropy = entropy + KL divergence，而真实标签的 entropy 是常数，所以最小化 cross-entropy 就是在最小化 KL divergence",
+        "因为 cross-entropy 和 KL divergence 是同一个公式",
+        "因为模型的 entropy 在收敛时等于零"
+      ],
+      "correct": 1,
+      "explanation": "H(P,Q) = H(P) + D_KL(P||Q)。训练期间真实分布 P 不变，所以 H(P) 是常数。最小化 H(P,Q) 就等价于最小化 D_KL(P||Q)，也就是把模型推向真实分布。"
+    },
+    {
+      "stage": "post",
+      "question": "一个语言模型在测试集上的 perplexity 是 50。这意味着什么？",
+      "options": [
+        "模型每个句子犯 50 个错误",
+        "平均来看，模型在每一步就像从 50 个可能的下一个 token 中均匀随机选择一样不确定",
+        "模型有 50 层",
+        "模型训练了 50 个 epoch"
+      ],
+      "correct": 1,
+      "explanation": "Perplexity = e^(cross-entropy)。perplexity 为 50 表示模型在每个 token 处的不确定性，相当于从 50 个等概率选项中随机选择。perplexity 越低，预测越好。"
+    },
+    {
+      "stage": "post",
+      "question": "用于特征选择时，mutual information 和 Pearson correlation 有什么不同？",
+      "options": [
+        "mutual information 计算更快",
+        "mutual information 能检测任何统计依赖（线性或非线性），而 correlation 只能检测线性关系",
+        "Pearson correlation 适用于任何数据类型，而 mutual information 只适用于连续数据",
+        "它们总是给出相同的特征排序"
+      ],
+      "correct": 1,
+      "explanation": "Mutual information I(X;Y) 捕捉变量之间的所有统计依赖，包括非线性和非单调关系。Pearson correlation 只衡量线性关联，会漏掉很多重要关系。"
+    }
+  ]
+}

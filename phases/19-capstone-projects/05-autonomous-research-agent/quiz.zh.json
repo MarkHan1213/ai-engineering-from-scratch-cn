@@ -1,0 +1,90 @@
+{
+  "lesson": "05-autonomous-research-agent",
+  "title": "Capstone 05：自主研究 Agent（AI-Scientist 类）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "AI-Scientist 类 Agent 使用什么搜索形态来探索实验？",
+      "options": [
+        "对 token 输出做 beam search",
+        "在 experiment node 上做 best-first tree search，打分为 novelty x quality x budget",
+        "纯粹的人类反馈强化学习",
+        "带随机评分的 breadth-first expansion"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 sandbox 配置为 --network=none 并设置有界资源上限？",
+      "options": [
+        "强制 Agent 使用 prompt caching",
+        "强制确定性的浮点运算",
+        "默认允许 GPU passthrough",
+        "防止网络外连，并把实验副作用限制在可复现边界内"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "writer loop 中 vision critique step 的作用是什么？",
+      "options": [
+        "把 figure 翻译成 bar chart",
+        "把 LaTeX draft 编译成 PDF，然后让 VLM 批评 layout、figure 可读性和 claim-evidence alignment",
+        "从截图生成新的实验想法",
+        "在 render time 替代 matplotlib"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "reviewer ensemble 如何 gate pipeline？",
+      "options": [
+        "单个 judge 用二元 flag 接受或拒绝",
+        "reviewer 匿名投票，少数服从多数",
+        "review 只在发表后运行",
+        "五个 judge 按 NeurIPS-style rubric 打分，加权汇总必须超过阈值，否则 draft 回到 writer"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "这个 capstone 对每篇论文执行哪种成本纪律？",
+      "options": [
+        "通过 Langfuse counter 和 pre-run estimate 跟踪 $30 hard budget",
+        "只优化成本，不做质量检查",
+        "compute 无界，只限制 wall-clock",
+        "跟踪 GPU-hour 但从不设上限"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪个 scoring function 用来为进一步扩展排序 tree node？",
+      "options": [
+        "Novelty x quality x remaining budget",
+        "相关论文的 citation count",
+        "随机均匀优先级",
+        "输出长度和 token 数"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "red-team report 针对系统演练什么？",
+      "options": [
+        "system prompt 的 caching hit rate",
+        "vector DB 中的 multi-tenant data leakage",
+        "packet loss 下的延迟尾部",
+        "sandbox-escape 尝试，例如 fork bomb、network exfiltration 和 filesystem escape"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

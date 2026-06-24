@@ -1,0 +1,102 @@
+{
+  "lesson": "16-text-generation-pre-transformer",
+  "title": "Transformers 之前的文本生成：N-gram Language Models",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "n-gram language model 估计的是什么？",
+      "options": [
+        "单词之间的 edit distance",
+        "P(label | document)",
+        "Document embeddings",
+        "基于计数统计估计 P(next word | previous n-1 words)"
+      ],
+      "correct": 3,
+      "explanation": "n-gram LM 通过计数出现次数来建模 P(w | last n-1 words)。"
+    },
+    {
+      "stage": "pre",
+      "question": "Smoothing 在 n-gram models 中解决什么问题？",
+      "options": [
+        "数值精度",
+        "内存使用",
+        "训练中未见 n-grams 被赋予零概率，导致整句 likelihood 变成零",
+        "Tokenization mismatch"
+      ],
+      "correct": 2,
+      "explanation": "Smoothing 会重新分配概率质量，让未见 n-grams 也得到非零概率。"
+    },
+    {
+      "stage": "check",
+      "question": "Kneser-Ney smoothing 相比朴素 absolute discounting 更好的关键洞察是什么？",
+      "options": [
+        "用 continuation probability（一个词出现在多少种不同上下文中）估计低阶分布，而不是只看原始频率",
+        "它使用 TF-IDF",
+        "它使用更大的 n",
+        "它使用 gradient descent"
+      ],
+      "correct": 0,
+      "explanation": "Continuation probability 奖励上下文多样性，而不只是原始计数。"
+    },
+    {
+      "stage": "check",
+      "question": "Perplexity 衡量什么？",
+      "options": [
+        "held-out test set 上每个 token 平均负 log-likelihood 的 exp；越低越好",
+        "不同 n-grams 的数量",
+        "标签的 cross-entropy",
+        "生成吞吐"
+      ],
+      "correct": 0,
+      "explanation": "Perplexity = exp(- mean log P)；越低表示模型对测试文本越不“意外”。"
+    },
+    {
+      "stage": "check",
+      "question": "比较 perplexity 时，为什么 train 和 test set 必须使用完全相同的 tokenization？",
+      "options": [
+        "Gradient descent 要求如此",
+        "为了避免 OOV",
+        "Perplexity 依赖 tokenization scheme；tokenizer 不同会产生不可比较的分数",
+        "为了控制 batch size"
+      ],
+      "correct": 2,
+      "explanation": "不同 tokenization 会改变 token 数量和 likelihood，使 perplexity 值不可比较。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 trigram-LM 生成的句子局部流畅但整体不连贯？",
+      "options": [
+        "它们会丢掉标点",
+        "Beam search 失败",
+        "局部 trigram context 指导每个 next word，但模型没有超过 n-1 个 token 的长程记忆",
+        "它们使用 Laplace smoothing"
+      ],
+      "correct": 2,
+      "explanation": "只依赖最近 n-1 个 token，长程一致性只能碰运气。"
+    },
+    {
+      "stage": "post",
+      "question": "到 2026 年，n-gram models 仍在哪些生产场景中上线？",
+      "options": [
+        "多语言翻译",
+        "开放域聊天机器人",
+        "语音识别 rescoring、端侧 autocomplete 等延迟关键路径，例如通过 KenLM",
+        "摘要"
+      ],
+      "correct": 2,
+      "explanation": "KenLM 风格的 n-gram models 仍然作为快速端侧组件或 rescoring 组件使用。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么在宣称 neural LM “很好”之前，仍建议先计算 n-gram baseline？",
+      "options": [
+        "它会加速训练",
+        "ROUGE 要求如此",
+        "它会移除 OOV",
+        "如果 transformer LM 在相同 tokenization 下没有大幅超过调好的 Kneser-Ney baseline，训练 pipeline 可能有问题"
+      ],
+      "correct": 3,
+      "explanation": "KN baselines 出人意料地强；neural LM 应该明显胜出，否则可能存在 bug。"
+    }
+  ]
+}

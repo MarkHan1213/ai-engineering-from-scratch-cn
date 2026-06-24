@@ -1,0 +1,90 @@
+{
+  "lesson": "30-eval-driven-agent-development",
+  "title": "Eval-Driven Agent Development",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "课程命名了哪三层 evaluation？",
+      "options": [
+        "Static benchmarks, custom offline evals, online production evals",
+        "Unit, integration, end-to-end",
+        "Smoke, regression, acceptance",
+        "Pre, check, post"
+      ],
+      "correct": 0,
+      "explanation": "Static（SWE-bench、GAIA）、custom offline（LLM-judge、exec、trajectory）、online（replays、alerts、cost/latency）。"
+    },
+    {
+      "stage": "pre",
+      "question": "Anthropic 推荐的起点是什么？",
+      "options": [
+        "从 multi-agent debate 开始",
+        "从简单 prompt 开始，用全面 evaluation 优化它们，只有需要时才加入多步 Agent 系统",
+        "从 hierarchical orchestration 开始",
+        "只从 frontier model 开始"
+      ],
+      "correct": 1,
+      "explanation": "Anthropic 明确说 evaluation 是驱动其他所有选择的外层循环。"
+    },
+    {
+      "stage": "check",
+      "question": "evaluator-optimizer tight loop 是什么？",
+      "options": [
+        "Train, evaluate, deploy",
+        "proposer 生成输出，evaluator 评判，refine 直到 evaluator 通过（Self-Refine 的泛化）",
+        "Sample, sort, deduplicate",
+        "Cache, retry, fail"
+      ],
+      "correct": 1,
+      "explanation": "它是 Self-Refine 的泛化：任何 flow 都可以包成 propose-judge-refine。"
+    },
+    {
+      "stage": "check",
+      "question": "2026 年 evals 应该放在哪里是最佳实践？",
+      "options": [
+        "只放在单独的 vendor dashboard 中",
+        "紧挨代码，在每个 PR 的 CI 中运行，并用 eval scores gate merge",
+        "只按季度运行",
+        "完全由 QA team 拥有"
+      ],
+      "correct": 1,
+      "explanation": "与代码放在一起、由 CI gate、跟踪 regression 是标准做法。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么课程警告不要使用没有 grounding 的 LLM-judge？",
+      "options": [
+        "它太慢",
+        "judge 也会 hallucinate；应搭配 CRITIC pattern，让判断落到外部工具上",
+        "它违反 Apache 2.0",
+        "它只能在 GPU 上工作"
+      ],
+      "correct": 1,
+      "explanation": "CRITIC（第 5 课）仍然适用：工具落地的验证能让 judge 保持诚实。"
+    },
+    {
+      "stage": "post",
+      "question": "over-fitting to evals 的危险是什么？",
+      "options": [
+        "计算成本上升",
+        "针对 eval set 的优化偏离生产有用性；应轮换 cases",
+        "vector index 碎片化",
+        "延迟下降得太多"
+      ],
+      "correct": 1,
+      "explanation": "轮换 eval set 可以让优化继续贴近生产现实。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 flaky evals 会造成问题？",
+      "options": [
+        "它们让推理成本翻倍",
+        "非确定性 cases 会产生 false alarms；应固定 seeds 并 snapshot state",
+        "它们无法连接数据库",
+        "它们超过上下文窗口"
+      ],
+      "correct": 1,
+      "explanation": "flake 会让 regression 不可读；需要通过 seeds 和 state snapshots 保证确定性。"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "lesson": "05-constitutional-ai-rlaif",
+  "title": "Constitutional AI 与 RLAIF",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "与标准 RLHF 相比，Constitutional AI 的核心替换是什么？",
+      "options": [
+        "它用会读取原则列表的 AI 标注者替代人类偏好标注者",
+        "它用 DPO 替代 PPO",
+        "它使用合成 prompt 而不是真实 prompt",
+        "它完全移除 reward model"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Constitutional AI 的第一个阶段（SFT）做什么？",
+      "options": [
+        "只在 AI 生成的偏好上训练 reward model",
+        "先生成初始回答，在抽样 constitution principle 下批评它，然后修订，并把修订版作为 SFT 目标",
+        "通过聚类标注者评论生成合成原则",
+        "用 constitution 派生的 reward 执行 PPO"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "第二个阶段（RLAIF）做什么？",
+      "options": [
+        "跳过 PPO，只应用一个监督损失",
+        "让人类重新标注 SFT 输出",
+        "把 constitution 蒸馏进 tokenizer",
+        "用 feedback model 生成的 AI 偏好训练 reward model，并针对它运行 PPO"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Anthropic 2026 年 1 月四层 Claude constitution 的层级顺序是什么？",
+      "options": [
+        "平台规则 > 避免灾难 > 有帮助 > 广义伦理",
+        "广义伦理 > 有帮助 > 平台规则 > 避免灾难",
+        "避免灾难性结果 > 遵循 Anthropic guidelines > 广义伦理 > 有帮助且坦诚",
+        "有帮助 > 广义伦理 > 平台规则 > 避免灾难"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "从 RLHF 切换到 RLAIF 并不一定修复哪种失败模式？",
+      "options": [
+        "标注者心理一致性问题",
+        "Reward hacking / Goodhart 定律",
+        "标注成本",
+        "标注者稀缺"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Constitutional Classifiers v1 到 v2（2026）的核心变化是什么？",
+      "options": [
+        "v2 把计算开销从 1% 提高到 23.7%",
+        "v2 移除了分类器，只依赖 constitution",
+        "v2 只在输入端运行，不在输出端运行",
+        "v2 把计算开销从 23.7% 降到约 1%，同时保持较低的成功攻击率"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

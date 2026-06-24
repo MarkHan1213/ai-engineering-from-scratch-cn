@@ -1,0 +1,37 @@
+[
+  {
+    "question": "为什么 AI startups 常常死于成本问题，而不是模型质量？",
+    "options": ["模型总是足够好", "Per-call costs 会迅速累积：1 万用户每天 10 次调用，在还没收一分钱前 token 成本就是 $250/day", "成本优化很简单", "API providers 提供无限免费 tier"],
+    "correct": 1,
+    "explanation": "LLM API 成本随使用量线性增长。每次调用 $0.003 看起来便宜，但每天调用 100K 次就是 $300/day、$9K/month。没有成本优化，很多 AI 产品规模化后无法盈利。",
+    "stage": "pre"
+  },
+  {
+    "question": "LLM applications 中的 semantic caching 是什么？",
+    "options": ["缓存 model weights", "存储历史 query 的 responses，当新 query 在语义上相似（不只是完全相同）时返回 cached response", "只缓存 embeddings", "预生成所有可能 responses"],
+    "correct": 1,
+    "explanation": "Exact-match caching 只对完全相同 query 有用。Semantic caching 会 embed queries，并在 cosine similarity 超过阈值时返回 cached responses。'What's the weather in NYC?' 可以匹配 'NYC weather today?'。",
+    "stage": "pre"
+  },
+  {
+    "question": "作为成本优化策略，model routing 是什么？",
+    "options": ["跨 servers load balancing", "根据 query classification，把简单 query 发给便宜/快速模型，把复杂 query 发给昂贵/强模型", "在不同 API providers 之间路由", "缓存多个模型的 responses"],
+    "correct": 1,
+    "explanation": "不是每个 query 都需要 GPT-4。Classifier 会把简单问题（FAQ、greetings）路由到便宜模型（GPT-3.5、Haiku），把复杂问题（reasoning、analysis）路由到昂贵模型。这可降低 50-80% 成本。",
+    "stage": "post"
+  },
+  {
+    "question": "什么是 prompt compression，它如何降低成本？",
+    "options": ["通过删词让 prompts 更短", "移除冗余 tokens、总结长 context、去掉 boilerplate，在保留关键信息的同时减少 input token count", "用 gzip 压缩 prompts", "使用更短变量名"],
+    "correct": 1,
+    "explanation": "RAG applications 中 input tokens 往往主导成本（大量 retrieved contexts）。Prompt compression 会移除填充词、总结冗长 passages、裁剪低相关 chunks，在不丢关键信息的情况下减少 token count。",
+    "stage": "post"
+  },
+  {
+    "question": "什么是 prefix caching，哪些 provider feature 支持它？",
+    "options": ["缓存每个 response 的第一个词", "复用共享 prompt prefixes（system prompt + tool definitions）的 KV-cache 计算，降低重复模式的 latency 和成本", "缓存 DNS lookups", "浏览器缓存 API responses"],
+    "correct": 1,
+    "explanation": "如果 system prompt + tool definitions 是 5000 tokens，且每次请求完全相同，prefix caching 会只计算一次 KV-cache 并复用。Anthropic 的 prompt caching 和 OpenAI 的 cached tokens 都支持这一点。",
+    "stage": "post"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "question": "为什么只用 linear layers（没有 activation functions）无法构建有用的深度网络？",
+    "options": [
+      "Linear layers 太慢",
+      "堆叠 linear layers 会坍缩为单个线性变换，深度没有带来额外收益",
+      "Linear layers 没有 biases",
+      "Linear layers 无法处理 batched data"
+    ],
+    "correct": 1,
+    "explanation": "y = W2(W1*x + b1) + b2 可以化简为 y = Ax + c。无论堆叠多少 linear layers，结果都等价于一个 linear layer。Activation functions 让多层线性变换不再能合并成一个线性层。",
+    "stage": "pre"
+  },
+  {
+    "question": "ReLU activation function 的输出范围是什么？",
+    "options": [
+      "(-1, 1)",
+      "(0, 1)",
+      "[0, infinity)",
+      "(-infinity, infinity)"
+    ],
+    "correct": 2,
+    "explanation": "ReLU(x) = max(0, x)。它对所有负输入输出 0，对正输入原样通过，因此范围是 [0, infinity)。",
+    "stage": "pre"
+  },
+  {
+    "question": "ReLU networks 中的 dead neuron 问题是什么？",
+    "options": [
+      "计算太慢的 neurons",
+      "输入永久为负，因此永远输出零、gradient 也永远为零的 neurons",
+      "产生 NaN 值的 neurons",
+      "bias 为零的 neurons"
+    ],
+    "correct": 1,
+    "explanation": "如果一个 ReLU neuron's weighted input 总是负的（由于初始化差或很大的负 bias），它会输出 0，gradient 也为 0。因为零 gradient 意味着零更新，所以它无法恢复。",
+    "stage": "post"
+  },
+  {
+    "question": "GPT 和 BERT 等现代 transformers 的 hidden layers 默认使用哪种 activation function？",
+    "options": [
+      "Sigmoid",
+      "ReLU",
+      "GELU",
+      "Tanh"
+    ],
+    "correct": 2,
+    "explanation": "GELU（Gaussian Error Linear Unit）是 transformers 中的默认 activation。它提供平滑的 gradient flow，避免 dead neurons，并且在 language models 中表现优于 ReLU。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么 softmax 只用于 output layer，而不用于 hidden layers？",
+    "options": [
+      "它对 hidden layers 来说太慢",
+      "它把向量转换成概率分布（值总和为 1），这对分类输出有用，但不适合中间表示",
+      "它会导致 exploding gradients",
+      "它只适用于两个类别"
+    ],
+    "correct": 1,
+    "explanation": "Softmax 会把向量归一化，使所有值位于 (0,1) 且总和为 1，形成概率分布。Hidden layers 需要保留并转换信息，而不是把信息压缩成概率。",
+    "stage": "post"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "question": "GPT 在 pre-training 中使用什么训练目标？",
+    "options": ["Masked language modeling（预测被 mask 的 tokens）", "Next-token prediction：给定之前 tokens，预测下一个 token", "Sentence classification", "Image-text alignment"],
+    "correct": 1,
+    "explanation": "GPT 是 causal（autoregressive）language model，用 next-token prediction 训练。给定 tokens [t1, t2, ..., tn]，它学习预测 tn+1。Loss 是预测 token 与真实 next token 之间的 cross-entropy。",
+    "stage": "pre"
+  },
+  {
+    "question": "GPT-2 Small (124M) 有多少 transformer layers、attention heads 和 embedding dimensions？",
+    "options": ["6 layers, 6 heads, 512 dims", "12 layers, 12 heads, 768 dims", "24 layers, 16 heads, 1024 dims", "48 layers, 25 heads, 1600 dims"],
+    "correct": 1,
+    "explanation": "GPT-2 Small 有 12 个 transformer layers，每层 12 个 attention heads，以及 768 维 embeddings。这个架构有 1.24 亿参数，几小时内可在单 GPU 上训练。",
+    "stage": "pre"
+  },
+  {
+    "question": "GPT 中 causal attention mask 的作用是什么？",
+    "options": ["防止关注 padding tokens", "防止每个 token 关注未来 tokens，保证模型预测时只能使用过去上下文", "Mask 掉低置信 attention scores", "降低训练时内存使用"],
+    "correct": 1,
+    "explanation": "Causal mask 是一个三角矩阵，会在 softmax 前把未来位置设为 -infinity。位置 5 的 token 可以关注 1-5，但不能关注 6+。这保证模型从左到右生成。",
+    "stage": "post"
+  },
+  {
+    "question": "文本生成时，'temperature' 控制什么？",
+    "options": ["生成速度", "Token 选择的随机性：低 temperature 更确定，高 temperature 更多样", "生成 token 数量", "模型置信度阈值"],
+    "correct": 1,
+    "explanation": "Temperature 会在 softmax 前除以 logits。Temperature=0.1 会让分布非常尖锐（近乎确定）。Temperature=1.0 是训练分布。Temperature>1.0 会展平分布，增加随机性。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么 pre-training 比 fine-tuning 需要多得多的 compute？",
+    "options": ["Pre-training 使用更大的 batch size", "Pre-training 从随机权重开始处理万亿级 tokens 学习通用语言模式，而 fine-tuning 只是在已有能力模型上用几千个样本调整", "Pre-training 使用不同架构", "Fine-tuning 不使用 gradients"],
+    "correct": 1,
+    "explanation": "Pre-training 从随机权重开始，在万亿 tokens 上构建全部语言知识。Fine-tuning 则从已学到的权重出发，在小得多的数据集（数千到数百万例）上调整。",
+    "stage": "post"
+  }
+]

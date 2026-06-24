@@ -1,0 +1,102 @@
+{
+  "lesson": "10-attention-mechanism",
+  "title": "Attention Mechanism：关键突破",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Bahdanau attention 解决了 seq2seq 中的什么问题？",
+      "options": [
+        "Tokenization mismatch",
+        "固定大小 context-vector 瓶颈：decoder 只能看到 encoder 的最终状态",
+        "Encoder 中的梯度消失",
+        "Beam search latency"
+      ],
+      "correct": 1,
+      "explanation": "Attention 让 decoder 可以查看每一个 encoder state，而不只是最后一个。"
+    },
+    {
+      "stage": "pre",
+      "question": "decoder step t 的 attention context vector 是什么？",
+      "options": [
+        "Decoder 的输入 embedding",
+        "Encoder hidden states 的加权平均，权重来自 query-key score",
+        "Encoder 的最终 hidden state",
+        "随机投影"
+      ],
+      "correct": 1,
+      "explanation": "Context = sum of alpha_i * h_i，是一个随 step 变化的 encoder states 加权平均。"
+    },
+    {
+      "stage": "check",
+      "question": "在 Bahdanau（additive）attention 中，向量 v_a 起什么作用？",
+      "options": [
+        "控制 dropout",
+        "把 attention-dim 的 hidden combination 投影成每个 encoder 位置的标量 score",
+        "编码位置",
+        "给 softmax 加 bias"
+      ],
+      "correct": 1,
+      "explanation": "v_a 会与 tanh(W_a s + U_a h) 做点积，把 d_attn 向量压成标量 score。"
+    },
+    {
+      "stage": "check",
+      "question": "在 Luong 的 'dot' attention 变体中，必须满足什么约束？",
+      "options": [
+        "Decoder state 和 encoder state 必须维度相同（d_s == d_h）",
+        "Encoder 必须是 bidirectional",
+        "Softmax 必须在 log-space 中计算",
+        "必须使用 beam search"
+      ],
+      "correct": 0,
+      "explanation": "dot 直接使用 s^T h，不做 projection，因此两个向量维度必须完全一致。"
+    },
+    {
+      "stage": "check",
+      "question": "哪种 Q/K/V 映射描述了经典（Bahdanau/Luong）attention？",
+      "options": [
+        "Q、K、V 是 source 的三个独立 learned projections",
+        "Q 是随机的，K 和 V 是 learned",
+        "Q 来自 encoder，K 和 V 来自 decoder",
+        "Q = decoder state；K 和 V = encoder states（同一个 tensor）"
+      ],
+      "correct": 3,
+      "explanation": "经典 attention 中，keys 和 values 都是 encoder states；transformer 则通过 learned projections 分离 K 和 V。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么把原始 attention weights 当作“解释”是不稳妥的？",
+      "options": [
+        "Attention weights 会泄漏标签",
+        "它们太小，无法绘图",
+        "研究（如 Jain and Wallace, 2019）表明，在某些任务上 attention distributions 可以被置换而不改变预测",
+        "Attention weights 不可微"
+      ],
+      "correct": 2,
+      "explanation": "Attention weights 与预测相关，但如果没有 ablation 或 counterfactual 检查，并不等同于忠实解释。"
+    },
+    {
+      "stage": "post",
+      "question": "从 Bahdanau attention 走向 transformer self-attention 的关键一步是什么？",
+      "options": [
+        "去掉 beam search",
+        "增加更多 RNN layers",
+        "用 sigmoid 替换 softmax",
+        "让序列查询自身，使用分别学习的 Q、K、V projections，并在多个 head 上并行运行"
+      ],
+      "correct": 3,
+      "explanation": "Self-attention 查询同一个序列，并拆分 K/V projection，在多个 head 上并行化。"
+    },
+    {
+      "stage": "post",
+      "question": "Attention 中 masking 的一个实际用途是什么？",
+      "options": [
+        "替代 dropout",
+        "把 padding tokens 的 attention weight 置零，使它们不参与 context vector",
+        "编码位置",
+        "减小模型大小"
+      ],
+      "correct": 1,
+      "explanation": "Masking padding（或 decoder 中的未来 token）可以防止 softmax 把权重分配给无效位置。"
+    }
+  ]
+}

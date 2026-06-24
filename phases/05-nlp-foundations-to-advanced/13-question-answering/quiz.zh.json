@@ -1,0 +1,102 @@
+{
+  "lesson": "13-question-answering",
+  "title": "问答系统",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Extractive QA 预测的是什么？",
+      "options": [
+        "生成式自然语言答案",
+        "只有置信度分数",
+        "给定 passage 中答案 span 的 start 和 end token indices",
+        "检索到的 passage ID"
+      ],
+      "correct": 2,
+      "explanation": "Extractive QA 输出 passage 中包含答案的文本 span。"
+    },
+    {
+      "stage": "pre",
+      "question": "一个基础 RAG pipeline 由哪两个组件定义？",
+      "options": [
+        "联合训练的 encoder 和 decoder",
+        "Reranker 和 translator",
+        "Tokenizer 和 POS tagger",
+        "Retriever（找到相关 passages）和 reader（抽取或生成答案）"
+      ],
+      "correct": 3,
+      "explanation": "RAG = retriever（找到相关上下文）+ reader（基于上下文回答）。"
+    },
+    {
+      "stage": "check",
+      "question": "在 SQuAD 上，Exact Match (EM) 衡量什么？",
+      "options": [
+        "Edit distance",
+        "逐词重叠",
+        "预测是否在规范化后（小写、去标点、去冠词）与参考答案完全一致",
+        "Token-level F1"
+      ],
+      "correct": 2,
+      "explanation": "EM 是定义好 normalization 后的严格相等；部分匹配得 0 分。"
+    },
+    {
+      "stage": "check",
+      "question": "相比 SQuAD 1.1 模型，deepset/roberta-base-squad2 增加了什么能力？",
+      "options": [
+        "多语言支持",
+        "在不可回答问题上训练，因此模型可以预测 null answer",
+        "更大的 context window",
+        "跨语言检索"
+      ],
+      "correct": 1,
+      "explanation": "SQuAD 2.0 包含不可回答样本；在其上训练的模型可以预测 'no answer'。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个 RAGAS 维度专门针对 hallucination？",
+      "options": [
+        "Answer relevance",
+        "Context recall",
+        "Faithfulness，通过答案声明和检索上下文之间的 NLI entailment 衡量",
+        "Context precision"
+      ],
+      "correct": 2,
+      "explanation": "Faithfulness 会用 NLI entailment 检查每个答案声明是否被检索上下文支持。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么在评估 reader accuracy 前要先测 retrieval recall？",
+      "options": [
+        "transformers 强制要求",
+        "Recall 决定 ROUGE",
+        "Reader latency 依赖它",
+        "如果正确 passage 不在 top-k 中，不管 reader 多强都无法成功"
+      ],
+      "correct": 3,
+      "explanation": "正确 passage 缺失时 reader 无法回答；retrieval recall 决定了 reader performance 上限。"
+    },
+    {
+      "stage": "post",
+      "question": "哪种 prompt pattern 可以减少 RAG generation 中的 hallucination？",
+      "options": [
+        "要求模型只根据提供的 context 回答，并在 context 不足时回复 'I don't know'",
+        "加入更多 passages",
+        "要求模型更有创造力",
+        "删除问题"
+      ],
+      "correct": 0,
+      "explanation": "Grounding 加上明确拒答指令，可以显著降低 hallucination 率。"
+    },
+    {
+      "stage": "post",
+      "question": "到 2026 年，什么时候仍然偏好 extractive QA 而不是 generative RAG？",
+      "options": [
+        "Conversational QA",
+        "受监管领域（法律、医疗、审计），需要从权威来源逐字引用时",
+        "多语言支持",
+        "开放域 trivia"
+      ],
+      "correct": 1,
+      "explanation": "Extractive QA 给出权威语料中的逐字引用，这是合规场景所需要的。"
+    }
+  ]
+}

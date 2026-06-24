@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 U-Net 需要 encoder 和 decoder 之间的 skip connections？",
+      "options": [
+        "为了加快训练",
+        "encoder 压缩空间细节以获得上下文；decoder 如果无法访问 encoder 的高分辨率 feature maps，就无法重建清晰边界，而 skips 正好提供这些信息",
+        "因为 transposed convolutions 需要额外输入",
+        "为了匹配 PyTorch shape conventions"
+      ],
+      "correct": 1,
+      "explanation": "没有 skips 时，U-Net 的 decoder 要从很低分辨率 bottleneck 生成 H x W 预测，无法恢复清晰边缘。Skip connections 会把 encoder 的高分辨率、低语义 features 拼接到 decoder 的低分辨率、高语义 features 中，使每个输出阶段同时拥有上下文和细节。"
+    },
+    {
+      "stage": "pre",
+      "question": "一个 segmentation task 有 99% background pixels 和 1% tumour pixels。你用普通 cross-entropy 训练并达到 99% pixel accuracy。发生了什么？",
+      "options": [
+        "模型收敛了",
+        "模型学会了对每个像素预测 background；pixel accuracy 被 majority class 主导，忽略了真正关心的类别",
+        "loss function 实现错误",
+        "optimizer 失败了"
+      ],
+      "correct": 1,
+      "explanation": "imbalanced dataset 上的 pixel accuracy 是无用指标。网络通过始终预测 background 拿到容易的 99%，并输出空 tumour masks。修复方法是组合 cross-entropy 与 Dice loss（基于重叠、与尺度无关），并报告 foreground class 的 IoU/Dice。"
+    },
+    {
+      "stage": "post",
+      "question": "哪种任务类型会把同一类别的不同汽车实例彼此分开？",
+      "options": [
+        "Semantic segmentation",
+        "Instance segmentation",
+        "两者产生相同输出",
+        "都不会，这需要 detection model"
+      ],
+      "correct": 1,
+      "explanation": "Semantic segmentation 会给每个像素标注类别，但会把同一类别相互接触的 instances 合并成一个 blob。Instance segmentation 保留 instance IDs，因此每辆车、每个人、每个苹果都是单独的 predicted mask。Panoptic segmentation 则统一两者：stuff 用 semantic labels，things 用 instance IDs。"
+    },
+    {
+      "stage": "post",
+      "question": "你把 U-Net 的 bilinear upsample + 3x3 conv 换成 kernel_size=2、stride=2 的 ConvTranspose2d，输出中出现 checkerboard artifacts。为什么？",
+      "options": [
+        "PyTorch 中的 transposed conv 是坏的",
+        "当 kernel_size 不能被 stride 整除时，output pixels 从 input pixels 接收的贡献不均匀，会产生类似棋盘格的周期性 pattern",
+        "learning rate 太低",
+        "batch norm 必须加在 transposed conv 前"
+      ],
+      "correct": 1,
+      "explanation": "checkerboard artifacts 来自 transposed convolution 的 receptive field 在 output positions 上重叠不均。使用 kernel_size = stride * n（如 kernel 4、stride 2），或用 bilinear upsample + conv 替代 transposed conv，都能消除 artifacts。现代默认通常是 bilinear + conv。"
+    },
+    {
+      "stage": "post",
+      "question": "你在 10 类 segmentation task 上报告 mIoU = 0.78。为什么还应该发布 per-class IoU？",
+      "options": [
+        "PyTorch 要求 per-class IoU",
+        "Mean IoU 会隐藏单个类别失败；mIoU 0.78 可能来自 8 个类别 0.9、2 个类别 0.3，这与所有类别都接近 0.78 的部署含义完全不同",
+        "Per-class IoU 总是高于 mIoU",
+        "它只在医学影像中需要"
+      ],
+      "correct": 1,
+      "explanation": "aggregate mean 会压缩 per-class scores 的分布，而这个分布正是判断模型能否上线所需的信息。一个强模型中有两个弱类，可能让系统对目标任务不可用；平坦分布则说明模型需要整体数据升级。始终把 per-class metrics 和 mean 一起发布。"
+    }
+  ]
+}

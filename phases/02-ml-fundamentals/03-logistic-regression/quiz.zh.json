@@ -1,0 +1,67 @@
+[
+  {
+    "id": "logreg-pre-1",
+    "stage": "pre",
+    "question": "sigmoid function 的输出范围是什么？",
+    "options": [
+      "负无穷到正无穷",
+      "0 到 1（不含端点）",
+      "-1 到 1",
+      "0 到正无穷"
+    ],
+    "correct": 1,
+    "explanation": "sigmoid function 1/(1+e^(-z)) 的输出严格位于 0 和 1 之间，因此可以解释为概率。"
+  },
+  {
+    "id": "logreg-pre-2",
+    "stage": "pre",
+    "question": "logistic regression 用于分类，为什么名字里还有 regression？",
+    "options": [
+      "它预测连续值，然后再四舍五入",
+      "这个名字来自它使用的 logistic（sigmoid）函数，而不是 regression analysis",
+      "它最初为回归设计，后来才适配分类",
+      "它像 linear regression 一样最小化 mean squared error"
+    ],
+    "correct": 1,
+    "explanation": "这个名字来自 logistic function（sigmoid）。尽管名字里有 regression，logistic regression 实际上是输出类别概率的分类算法。"
+  },
+  {
+    "id": "logreg-post-1",
+    "stage": "post",
+    "question": "为什么 logistic regression 使用 binary cross-entropy，而不是 MSE？",
+    "options": [
+      "Cross-entropy 计算更快",
+      "sigmoid 与 MSE 组合会产生带局部最小值的非凸 cost surface，而 cross-entropy 是凸的",
+      "MSE 只能用于线性模型",
+      "Cross-entropy 只在数据集平衡时有效"
+    ],
+    "correct": 1,
+    "explanation": "MSE 与 sigmoid activation 组合会形成有许多局部最小值的非凸 cost surface。sigmoid 配合 binary cross-entropy 是凸的，保证只有一个全局最小值。"
+  },
+  {
+    "id": "logreg-post-2",
+    "stage": "post",
+    "question": "一个垃圾邮件过滤器 precision = 0.95，recall = 0.60。实际含义是什么？",
+    "options": [
+      "95% 的所有邮件被正确分类，60% 的垃圾邮件被拦截",
+      "当它把邮件标为垃圾邮件时，95% 的情况下是正确的，但它只抓住了 60% 的真实垃圾邮件",
+      "被标记邮件中 60% 是垃圾邮件，95% 的所有垃圾邮件被抓住",
+      "模型在测试集上准确率 95%，在训练集上 60%"
+    ],
+    "correct": 1,
+    "explanation": "Precision = 0.95 表示预测为垃圾邮件的邮件中，95% 确实是垃圾邮件（误报少）。Recall = 0.60 表示真实垃圾邮件中只有 60% 被抓住，还有 40% 漏掉。"
+  },
+  {
+    "id": "logreg-post-3",
+    "stage": "post",
+    "question": "在 4 个类别的 softmax regression 中，输出概率满足什么性质？",
+    "options": [
+      "每个类别都有一个独立的 0 到 1 概率",
+      "四个输出概率之和为 1，概率最高的类别就是预测结果",
+      "只有 top-2 类别会得到非零概率",
+      "输出是 raw scores，不是概率"
+    ],
+    "correct": 1,
+    "explanation": "Softmax 会把一组 raw scores 转换为总和为 1 的概率。预测类别就是概率最高的那个类别。"
+  }
+]

@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/39-instruction-tuning-sft",
+  "title": "通过 Supervised Fine-Tuning 做 Instruction Tuning",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "阅读前：你给 vanilla base model 一个 prompt：“What is the capital of France?”。它输出“And what about Italy and Spain too?”。下面哪项最准确地诊断了差距？",
+      "options": [
+        "模型缺少关于 Paris 的事实。",
+        "模型有 language model 行为，但没有 instruction-following format contract。",
+        "模型需要更大的 vocabulary。",
+        "base model 必须 reset 并重新 pretrain。"
+      ],
+      "correct": 1,
+      "explanation": "base model 能续写文本，但从未被展示过 instruction 期待对应 response。SFT 教的是 format contract：看到 instruction，就输出 response。"
+    },
+    {
+      "stage": "check",
+      "question": "collate function 在 instruction 位置和 padding 位置设置 labels[i] = -100。为什么 PyTorch cross-entropy 会正确处理这些位置？",
+      "options": [
+        "cross-entropy 会静默丢掉任何负 target。",
+        "F.cross_entropy 会遵守 ignore_index=-100：这些位置贡献零 loss 和零 gradient。",
+        "这些位置上的模型输出会自动设为 NaN。",
+        "PyTorch 会按 sequence length 归一化，所以 masked position 会抵消。"
+      ],
+      "correct": 1,
+      "explanation": "ignore_index 是 F.cross_entropy 的文档化参数。等于它的 target 对 loss 和 gradient 都贡献零。-100 是约定俗成的默认值。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 `shifted_loss` 切 `logits[:, :-1, :]` 和 `labels[:, 1:]`，而不是使用相同位置？",
+      "options": [
+        "为了让 collate step 之后的 tensor 大小相同。",
+        "因为在 causal next-token objective 下，位置 i 的模型预测位置 i+1 的 token。",
+        "为了自动排除最后的 padding 位置。",
+        "这只是可选优化；same-position labels 也能工作。"
+      ],
+      "correct": 1,
+      "explanation": "Causal LM 训练位置 i 去预测 token i+1。这个 slice 把位置 i 的预测和位置 i+1 的 gold label 对齐，这就是标准 next-token objective。"
+    },
+    {
+      "stage": "check",
+      "question": "你不使用 mask 训练：labels 等于 input_ids，没有 -100。模型能训练，但 response 的 exact-match 比使用 mask 更差。最可能原因是什么？",
+      "options": [
+        "optimiser 过拟合 response token。",
+        "大部分 gradient signal 都花在预测 instruction 上（最大的 masked region 原本是在阻止这一点）。",
+        "loss 包含 special 时 cross-entropy 不稳定。",
+        "没有 mask 时模型学不会 boundary token。"
+      ],
+      "correct": 1,
+      "explanation": "当 instruction 位置计入 loss 时，它们会主导 gradient，因为它们通常比 response token 更多。你真正关心的部分（response）的有效 learning rate 下降，模型会花容量重构用户总会提供的输入。"
+    },
+    {
+      "stage": "post",
+      "question": "held-out set 上 exact-match 是 0.85。reviewer 说模型会 paraphrase 正确答案，而 exact-match 会漏掉这些。你应该添加哪个指标来捕捉这一点？",
+      "options": [
+        "held-out set 上的 loss。",
+        "相对于 reference 的 token-level F1，它会在表面字符不完全相同时仍然给重叠部分计分。",
+        "平均 sequence length。",
+        "模型下 reference 的 cross-entropy。"
+      ],
+      "correct": 1,
+      "explanation": "token-level F1（normalisation 后在 predicted 和 reference token 之间计数）会在表面形式不同但答案大体正确时给模型 credit。这是第 41 课的任务。"
+    },
+    {
+      "stage": "post",
+      "question": "你想把 SFT model 用在支持 multi-turn dialogue 的 chatbot 中。对数据和 mask 的最小改动是什么？",
+      "options": [
+        "无需改动：SFT model 天然支持 multi-turn。",
+        "每轮添加 USER 和 ASSISTANT marker，串接各轮，并 mask 掉除当前训练的 assistant turn 之外的所有内容。",
+        "把 loss 切换为 mean-squared error。",
+        "增大 vocabulary。"
+      ],
+      "correct": 1,
+      "explanation": "multi-turn SFT 是 single-turn template 的泛化。每轮都有 role marker。mask 是所有非 assistant 位置加 padding 的并集。训练目标不变。"
+    }
+  ]
+}

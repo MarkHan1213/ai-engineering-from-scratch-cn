@@ -1,0 +1,67 @@
+[
+  {
+    "id": "nb-pre-1",
+    "stage": "pre",
+    "question": "Naive Bayes 中 naive 的假设是什么？",
+    "options": [
+      "每个类别的 prior probability 相等",
+      "给定类别标签后，所有特征条件独立",
+      "数据服从正态分布",
+      "模型没有需要学习的参数"
+    ],
+    "correct": 1,
+    "explanation": "Naive Bayes 假设在给定类别的条件下，每个特征都与其他特征独立。这在数学上通常不成立，例如 machine 和 learning 会共同出现，但实践中效果很好。"
+  },
+  {
+    "id": "nb-pre-2",
+    "stage": "pre",
+    "question": "Laplace smoothing 在 Naive Bayes 中防止什么问题？",
+    "options": [
+      "对大数据集 overfitting",
+      "训练时某个类别从未见过的词得到零概率",
+      "高维数据上训练太慢",
+      "数据集 class imbalance"
+    ],
+    "correct": 1,
+    "explanation": "如果没有 smoothing，一个从未出现在 spam 训练邮件中的词会得到 P(word|spam) = 0，使整个乘积为零，即使其他证据非常强。Laplace smoothing 会给每个计数加 1。"
+  },
+  {
+    "id": "nb-post-1",
+    "stage": "post",
+    "question": "文本中的 naive independence assumption 明显不对。为什么 Naive Bayes 仍然能很好分类？",
+    "options": [
+      "它只适用于独立性成立的小词表",
+      "分类只需要正确的类别排序，而不是正确的概率估计；这个假设引入的稳定误差会以类似方式影响所有类别",
+      "现代实现会暗中移除独立性假设",
+      "它只在特征真正独立时有效"
+    ],
+    "correct": 1,
+    "explanation": "NB 需要把类别排对，而不是估计精确概率。独立性假设带来高 bias 但低 variance，使它在有限数据下很稳定。相关特征会重复计入证据，但对正确类别也同样如此。"
+  },
+  {
+    "id": "nb-post-2",
+    "stage": "post",
+    "question": "什么时候使用 Multinomial NB，什么时候使用 Gaussian NB？",
+    "options": [
+      "Multinomial 用于回归，Gaussian 用于分类",
+      "Multinomial 用于词计数/频率特征，Gaussian 用于连续实值特征",
+      "Multinomial 用于二元数据，Gaussian 用于多分类问题",
+      "它们可以互换，始终用更快的那个"
+    ],
+    "correct": 1,
+    "explanation": "Multinomial NB 建模特征计数，例如文本中的词频。Gaussian NB 假设特征服从正态分布，适合测量值或传感器读数等连续特征。"
+  },
+  {
+    "id": "nb-post-3",
+    "stage": "post",
+    "question": "一封邮件包含 free 两次、money 一次。在使用 log probabilities 的 Multinomial NB 中，spam score 如何计算？",
+    "options": [
+      "log P(spam) + log P(free|spam) + log P(money|spam)",
+      "log P(spam) + 2 * log P(free|spam) + 1 * log P(money|spam)",
+      "P(spam) * P(free|spam) * P(money|spam)",
+      "log P(spam) * 2 * log P(free|spam)"
+    ],
+    "correct": 1,
+    "explanation": "Multinomial NB 会把每个词的 likelihood 按词频次方相乘。在 log space 中就是：log P(spam) + 2*log P(free|spam) + 1*log P(money|spam)。词频起到指数的作用。"
+  }
+]

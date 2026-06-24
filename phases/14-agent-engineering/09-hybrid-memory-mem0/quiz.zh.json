@@ -1,0 +1,90 @@
+{
+  "lesson": "09-hybrid-memory-mem0",
+  "title": "混合记忆：Vector + Graph + KV（Mem0）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "KV store 最适合处理哪类查询？",
+      "options": [
+        "长对话上的语义相似度",
+        "基于 (user, type, entity) key 的直接事实查找",
+        "跨共享 billing entity 的客户可达性",
+        "valid-at-time 这类时间查询"
+      ],
+      "correct": 1,
+      "explanation": "KV 对精确 key 是 O(1)；vector 用于相似度，graph 用于关系。"
+    },
+    {
+      "stage": "pre",
+      "question": "Mem0 每次 add() 会并行写入哪三类 store？",
+      "options": [
+        "Vector, KV, graph",
+        "Cache, queue, log",
+        "Postgres, Redis, ClickHouse",
+        "Embedding, attention, FFN"
+      ],
+      "correct": 0,
+      "explanation": "Mem0 会将每次写入扇出到 vector、KV 和 graph store。"
+    },
+    {
+      "stage": "check",
+      "question": "Mem0 的 fusion score 由哪三个维度组成？",
+      "options": [
+        "Relevance, importance, recency",
+        "Precision, recall, F1",
+        "Latency, throughput, cost",
+        "Confidence, perplexity, BLEU"
+      ],
+      "correct": 0,
+      "explanation": "score 是 relevance、importance 和 recency 的加权和；权重按产品调节。"
+    },
+    {
+      "stage": "check",
+      "question": "当 incoming fact 与已有 edge 矛盾时，Mem0g 会怎么做？",
+      "options": [
+        "删除该 edge",
+        "将已有 edge 标记为 invalid 但不删除，因此 temporal query 仍可遍历",
+        "抛出异常",
+        "重写 user_id"
+      ],
+      "correct": 1,
+      "explanation": "软失效会保留历史，供 temporal（valid-at-time）查询使用。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么课程建议按产品调节 fusion weights？",
+      "options": [
+        "provider 要求这样做",
+        "聊天 Agent 更偏 recency，合规 Agent 更偏 importance，检索 Agent 更偏 relevance",
+        "vector library 拒绝相等权重",
+        "Apache 2.0 要求这样做"
+      ],
+      "correct": 1,
+      "explanation": "不同产品对 relevance、importance、recency 的偏置不同；一套权重无法适配所有场景。"
+    },
+    {
+      "stage": "post",
+      "question": "Mem0 使用的 scope taxonomy 是什么？",
+      "options": [
+        "Public, private, secret",
+        "User, session, agent",
+        "Local, regional, global",
+        "Read, write, admin"
+      ],
+      "correct": 1,
+      "explanation": "scope 包括 user（跨 session）、session（单线程）、agent（每个实例的状态）。"
+    },
+    {
+      "stage": "post",
+      "question": "这个模式中的 embedding drift 是什么，课程建议如何缓解？",
+      "options": [
+        "vector 被加密；轮换密钥",
+        "随着 corpus 增长，vector 检索质量下降；定期重新 embedding 使用最多的 top-N 记录",
+        "embedding 整数溢出；改用 float64",
+        "embedding API 更换 URL；固定域名"
+      ],
+      "correct": 1,
+      "explanation": "定期对热门记录重新 embedding，可以在 corpus 增长时维持检索质量。"
+    }
+  ]
+}

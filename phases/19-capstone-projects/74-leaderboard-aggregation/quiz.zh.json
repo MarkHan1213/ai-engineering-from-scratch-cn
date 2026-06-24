@@ -1,0 +1,78 @@
+{
+  "lesson": "74-leaderboard-aggregation",
+  "title": "Leaderboard Aggregation",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 aggregator 要求每个 input score 都在 [0, 1] 内？",
+      "options": [
+        "这是 ECE 的 bin range",
+        "如果没有共同尺度，单个 0-100 范围的 metric 会主导 per-model mean",
+        "numpy 要求这样",
+        "Markdown rendering 期望两位小数"
+      ],
+      "correct": 1,
+      "explanation": "如果 pass-rate 在 [0,1]，而 BLEU 在 [0,100]，后者会淹没平均值。normalisation 应该发生在 metric layer，并在这里检查。"
+    },
+    {
+      "stage": "pre",
+      "question": "mean score 会隐藏什么信息，而 win-rate 能暴露出来？",
+      "options": [
+        "模型是否校准良好",
+        "per-task wins 能抵抗 outliers 和 scale shifts；mean 对两者都敏感",
+        "完成的 task 数量",
+        "bootstrap interval"
+      ],
+      "correct": 1,
+      "explanation": "win-rate 逐 task 计算胜负。一个模型可能靠一个简单 task 得到很高 mean，但在多数 pairwise comparisons 中输掉。"
+    },
+    {
+      "stage": "check",
+      "question": "bootstrap_mean_ci 如何估计 confidence interval？",
+      "options": [
+        "假设 mean 服从 normal distribution",
+        "对 task scores 做有放回 resampling，在每个 sample 上计算 mean，然后取 alpha/2 和 1 - alpha/2 percentiles",
+        "解析地计算 standard deviation",
+        "调用 scipy.stats.bootstrap"
+      ],
+      "correct": 1,
+      "explanation": "这是对 per-task scores 的非参数 percentile bootstrap；不做分布假设，也不依赖 scipy。"
+    },
+    {
+      "stage": "check",
+      "question": "pairwise diff CI 什么时候报告 `significant`？",
+      "options": [
+        "当 CI 不包含 zero 时",
+        "当 mean difference 大于 0.1 时",
+        "当两个模型都有三十个以上 tasks 时",
+        "当 win-rates 不相等时"
+      ],
+      "correct": 0,
+      "explanation": "严格排除 zero 的 CI 表示在选定水平下，差异不太可能为 zero；这就是本课使用的操作性定义。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 pairwise bootstrap 是 paired，而不是 independent？",
+      "options": [
+        "independent bootstrap 在 Python 中非法",
+        "paired bootstrap 尊重同一个 task 同时喂给两个模型这一事实；差异先逐 task 计算，再做 resampling",
+        "paired bootstrap 运行更快",
+        "paired bootstrap 是 numpy 唯一支持的方式"
+      ],
+      "correct": 1,
+      "explanation": "paired bootstrap 会降低噪声：我们是在 tasks 上采样，而不是在 models 上采样，所以每次迭代都在同一组 task 上比较。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 aggregator 除了 headline number，还返回 per-category means？",
+      "options": [
+        "JSON Schema 要求这样",
+        "headline mean 可能掩盖 category-level weakness（整体不错，但 code 很差）；per-category 会暴露这一点",
+        "per-category means 比 overall mean 更快",
+        "Markdown rendering 要求这样"
+      ],
+      "correct": 1,
+      "explanation": "模型可以靠每类都还行赢得 aggregate，也可以靠主导某个 category 获胜。per-category breakdown 让使用者看清是哪一种。"
+    }
+  ]
+}

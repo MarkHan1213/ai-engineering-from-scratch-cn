@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/26-sandbox-runner-denylist",
+  "title": "带 Denylist 和 Path Jail 的 Sandbox Runner",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "阅读本课前：sandbox 为什么要检查 python3 -c 这类解释器调用的 argv shape？",
+      "options": [
+        "解释器很慢，会浪费 Agent 预算。",
+        "带 -c 的解释器本质上是换了名字的 shell call，会绕过 executable denylist。",
+        "解释器完全无法安全 sandbox。",
+        "没有它们模型会写出更好的代码。"
+      ],
+      "correct": 1,
+      "explanation": "python3 -c、bash -c、node -e 以及类似形式，在功能上等同于把 shell 交给模型。只阻断 executable name 还不够。"
+    },
+    {
+      "stage": "check",
+      "question": "sandbox 配置为 project_root=/work。收到一个 path argument：./src/main.py。jail check 如何执行？",
+      "options": [
+        "对 /work 做字面字符串前缀匹配。",
+        "检查拼接后的绝对路径的 os.path.realpath 是否带有 /work 前缀。",
+        "sandbox 拒绝所有相对路径。",
+        "sandbox 先启动 subprocess，再事后检查 working directory。"
+      ],
+      "correct": 1,
+      "explanation": "realpath 会解析 symlink。项目根目录内指向外部的 symlink 可以绕过字面前缀检查。realpath 加 prefix-or-equal 才是安全检查。"
+    },
+    {
+      "stage": "check",
+      "question": "一个 SandboxResult 返回 denied=True、timed_out=False、exit_code=-100。标准解释是什么？",
+      "options": [
+        "subprocess 已启动并被 SIGKILL 杀掉。",
+        "sandbox 从未启动 subprocess；call 在 exec 前被拒绝。",
+        "subprocess 显式返回了 -100。",
+        "wall-clock timeout 触发了。"
+      ],
+      "correct": 1,
+      "explanation": "sentinel exit_code -100 与 denied=True 配对，表示 sandbox 在调用 subprocess.run 前就短路了。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 sandbox 默认偏好 shell=False，并拒绝 shell metacharacter？",
+      "options": [
+        "shell=True 在 CPython 中更慢。",
+        "shell parsing 会把整个 shell DSL 暴露给模型，而 sandbox 正是要缩小这个攻击面。",
+        "subprocess 在 macOS 上不接受 shell=True。",
+        "它让 test suite 更简单。"
+      ],
+      "correct": 1,
+      "explanation": "shell=True 会把 argv 变成由 shell 解释的字符串。pipe、redirect、command substitution 和 globbing 都会变得可用。一旦 shell parsing 运行，sandbox 就很难有意义地拒绝 payload。"
+    },
+    {
+      "stage": "post",
+      "question": "你想给 sandbox 添加 per-process memory limit。本课的 sandbox 没有实现它。正确的下一步是什么？",
+      "options": [
+        "在传给 subprocess.run 的 preexec_fn 中使用 os.setrlimit(RLIMIT_AS)。",
+        "把限制作为字符串加入 denylist。",
+        "提高 wall-clock timeout 来补偿。",
+        "跳过它：denylist 足以防止 memory bomb。"
+      ],
+      "correct": 0,
+      "explanation": "subprocess.run 接受 preexec_fn（POSIX）或类似机制。setrlimit(RLIMIT_AS) 会限制 child 的 address space。本课 sandbox 不交付这个能力；第 29 课的端到端 demo 会讨论如何在上层叠加 container-level limit。"
+    },
+    {
+      "stage": "post",
+      "question": "模型用 argv=['cat', 'src/../src/main.py'] 调用 sandbox。文件位于 project_root 下。这个调用应该通过 path jail 吗？",
+      "options": [
+        "不应该，path 中任何 .. 都自动拒绝。",
+        "应该：realpath 会把 src/../src 折叠为 src，解析后的路径在 project_root 内。",
+        "不应该：argv 在 sandbox 看到前就被 regex gate 拒绝。",
+        "取决于用户是否是 root。"
+      ],
+      "correct": 1,
+      "explanation": "realpath 会规范化路径。sandbox 不会 blanket-refuse .. token；它检查解析后的目标。这是有意设计的：合法路径有时也会合理经过 ..。"
+    }
+  ]
+}

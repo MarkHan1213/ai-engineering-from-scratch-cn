@@ -1,0 +1,90 @@
+{
+  "lesson": "29-production-runtimes",
+  "title": "Production Runtimes：Queue、Event、Cron",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "课程列出的六种 runtime shapes 是什么？",
+      "options": [
+        "Request-response, streaming, durable execution, queue-based, event-driven, scheduled",
+        "Read, write, exec, fork, exit, wait",
+        "REST, gRPC, GraphQL, WebSocket, SSE, MQTT",
+        "Map, filter, reduce, fold, scan, group"
+      ],
+      "correct": 0,
+      "explanation": "这就是六种 runtime shapes；先选择形态，再选择框架。"
+    },
+    {
+      "stage": "pre",
+      "question": "什么时候 request-response 不适合？",
+      "options": [
+        "1 秒分类任务",
+        "任务超过约 30 秒，用户会断开而 worker 会堆积时",
+        "REST APIs",
+        "内部服务"
+      ],
+      "correct": 1,
+      "explanation": "同步 HTTP 只适合短任务；长任务需要 queue、durable 或 event 形态。"
+    },
+    {
+      "stage": "check",
+      "question": "durable execution 的核心属性是什么？",
+      "options": [
+        "更快推理",
+        "每一步后 checkpoint state，因此失败时 runtime 可从最后成功步骤恢复",
+        "更低 token 成本",
+        "原生语音支持"
+      ],
+      "correct": 1,
+      "explanation": "checkpoint-and-resume 是差异点；LangGraph 是本课的参考实现。"
+    },
+    {
+      "stage": "check",
+      "question": "Anthropic 的哪项观察说明长程 Agent 需要 queue-based runtimes？",
+      "options": [
+        "任务总是在 5 秒内完成",
+        "computer use 公告：每个任务几十到几百步是常态",
+        "任务必须同步运行",
+        "cron 能解决一切"
+      ],
+      "correct": 1,
+      "explanation": "Anthropic 指出每个任务几十到几百步是常态；这种 workload 需要 queues 或 durable runtimes。"
+    },
+    {
+      "stage": "check",
+      "question": "课程说“observability is load-bearing”是什么意思？",
+      "options": [
+        "日志很漂亮",
+        "没有 OTel GenAI spans 和 Langfuse/Phoenix/Opik backend，你无法调试第 40 步失败的多步 Agent",
+        "磁盘会写满",
+        "provider 要求它用于计费"
+      ],
+      "correct": 1,
+      "explanation": "对多步 Agent 而言，可观测性不是可选项；它决定你能调试，还是只能从头 replay。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 queue worker 必须有 dead-letter queue（DLQ）？",
+      "options": [
+        "没有 DLQ，失败 job 会静默消失",
+        "AWS 强制要求 DLQ",
+        "DLQ 让 job 更快",
+        "DLQ 是加密的"
+      ],
+      "correct": 0,
+      "explanation": "没有 DLQ 的失败 job 会消失；DLQ 是失败 job 的停车场。"
+    },
+    {
+      "stage": "post",
+      "question": "课程建议 cron-shaped agents 搭配什么？",
+      "options": [
+        "GPU autoscalers",
+        "durable execution，这样失败的 nightly run 可以在下一次 tick 恢复",
+        "Streaming SSE",
+        "WebRTC"
+      ],
+      "correct": 1,
+      "explanation": "Cron + durable execution 能从失败的 scheduled runs 中干净恢复。"
+    }
+  ]
+}

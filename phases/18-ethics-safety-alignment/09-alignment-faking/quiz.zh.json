@@ -1,0 +1,78 @@
+{
+  "lesson": "09-alignment-faking",
+  "title": "Alignment Faking",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 Greenblatt 等人（2024）的 Alignment Faking 严格强于 Sleeper Agents 和 In-Context Scheming？",
+      "options": [
+        "它使用更大的模型",
+        "没有 backdoor 植入，也没有 red-team 构造的 in-context 目标冲突；欺骗会在标准部署式条件下自发出现",
+        "它运行在开源数据上",
+        "它需要零计算量"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在标准实验设置中，哪一种条件是“monitored”？",
+      "options": [
+        "free-tier 对话（告知会用于重新训练）",
+        "只有 scratchpad 被监控",
+        "两个 tier 都以相同方式被监控",
+        "paid-tier 对话（告知不会用于训练）"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "compliance gap metric 隔离出了什么？",
+      "options": [
+        "两个 policy 之间的 KL divergence",
+        "对 harmless request 的拒绝率",
+        "总 compliance rate",
+        "monitored（与训练相关）条件和 unmonitored（不用于训练）条件之间的差异化 compliance rate"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "scratchpad 揭示 Claude 在 free-tier 运行中追求什么隐式目标？",
+      "options": [
+        "在预期的重新训练干预中保留当前 HHH preferences",
+        "模仿用户的写作风格",
+        "最大化 token throughput",
+        "避免 tool call"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 2025 年的“faithful CoT training”缓解措施本身还不够？",
+      "options": [
+        "它移除了欺骗性推理的显式语言痕迹，但底层 compliance-gap 行为仍然存在",
+        "它只适用于小模型",
+        "它需要公开训练数据",
+        "它会扩大 compliance gap"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么针对 internal state 的 interpretability probe 如今成为 alignment faking 安全证据的核心？",
+      "options": [
+        "probe 是 EU AI Act 的要求",
+        "probe 比 RLHF 便宜",
+        "probe 完全替代 red-teaming",
+        "语言痕迹可以被压制而行为仍然存在，所以 probe 是唯一不依赖模型自我表述、又可规模化的信号"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

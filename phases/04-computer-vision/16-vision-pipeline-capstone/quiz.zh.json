@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 production vision pipelines 会在每个 stage boundary 使用 Pydantic models（或等价方案）？",
+      "options": [
+        "Pydantic 比 dict access 更快",
+        "typed schemas 会在边界处捕获接口不匹配；如果 detector 返回 (cx, cy, w, h)，而下游期望 (x1, y1, x2, y2)，会明确 validation error，而不是静默产生空 crops",
+        "FastAPI 要求使用 Pydantic",
+        "它有助于 GPU allocation"
+      ],
+      "correct": 1,
+      "explanation": "静默接口 bug 是 ML pipelines 的典型痛点。每个边界都有 coordinate system、channel order、value range 和 shape。用 Pydantic 在边界处验证，会把每个 mismatch 变成即时错误。成本只有几微秒，节省的是数小时调试。"
+    },
+    {
+      "stage": "pre",
+      "question": "在 CPU-only vision pipeline 中，哪个 stage 最常是最大的 latency block？",
+      "options": [
+        "detector 的最终 NMS",
+        "Image preprocessing（JPEG decode、colour conversion、resize）；它是 CPU-bound，当没有 GPU 或 GPU model 很小时经常占主导",
+        "写 JSON response",
+        "读取 HTTP request body"
+      ],
+      "correct": 1,
+      "explanation": "在 CPU 上，preprocessing 常常是最大的单项成本。JPEG decode 可能需要数毫秒，colour conversion 还会增加成本，resize 到模型输入又是一段开销。规则很简单：profile before optimising。在 GPU 上 detector 通常占主导，但不要把这个假设套到 CPU 上。"
+    },
+    {
+      "stage": "post",
+      "question": "当 detection box 大小只有 3x4 pixels 时，pipeline classifier 崩溃了。正确修复是什么？",
+      "options": [
+        "加一个全局 try/except 并返回空 classifications",
+        "设置 min_crop threshold（例如 16 或 32 pixels），对小于阈值的 detections 跳过 classification；记录 skip，并在 response 中保留 detection 但不带 classification field",
+        "用更小图像重新训练 classifier",
+        "增大 batch size"
+      ],
+      "correct": 1,
+      "explanation": "tiny crops 是合法 failure mode：classifier 是在 224x224 inputs 上训练的，无法可靠分类 3-pixel patches。阈值（min_crop）会跳过这些 crop，保留 detection，并产生完整、诚实的 response。通用 try/except 会隐藏条件；完全不返回 classification 会隐藏真实失败；正确做法是命名并记录 skip。"
+    },
+    {
+      "stage": "post",
+      "question": "你给 classifier 增加 batching（最多等待 10 ms，把 pending crops 组成 batch，做一次 GPU forward）。预期效果是什么？",
+      "options": [
+        "Latency 严格下降",
+        "Throughput 显著增加；per-request latency 会增加最多 batching window（约 10ms）再加上更大 tensor ops 带来的少量开销。正确答案取决于 service 是 throughput-bound 还是 latency-bound",
+        "Throughput 因为等待而下降",
+        "没有影响"
+      ],
+      "correct": 1,
+      "explanation": "Batching 是 throughput-latency trade。每个请求最多等待一个 window，这会增加 latency。batched forward pass 对每张图更高效，因此 throughput 随 batch size 提升。QPS 高且单请求 latency 有余量时使用 batching；latency SLA 低于 50ms 时应避免。"
+    },
+    {
+      "stage": "post",
+      "question": "用户上传损坏的 JPEG 时，你的 pipeline response 是 500 error。应该如何修复？",
+      "options": [
+        "忽略，用户会重试",
+        "在 preprocessing 早期捕获 image-decode failures，返回 400 和类似 image_decode_failed 的具体 error code，让 client 用其他文件重试，而不是返回暗示 server error 的 500",
+        "始终返回 200 和空结果",
+        "把 decoding 移到 classifier"
+      ],
+      "correct": 1,
+      "explanation": "损坏用户输入导致 500 是 API contract bug。坏输入应返回 4xx，让 client 知道问题在自己；5xx 表示 server problem，会触发 client 用同一个坏输入重试，放大负载。命名失败码（image_decode_failed、image_too_large、unsupported_content_type）让 clients 能正确响应。"
+    }
+  ]
+}

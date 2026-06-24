@@ -1,0 +1,78 @@
+{
+  "lesson": "18-vllm-production-stack-lmcache",
+  "title": "带 LMCache KV Offloading 的 vLLM Production Stack",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "LMCache 在 vLLM 部署中主要解决什么问题？",
+      "options": [
+        "HBM 中 KV cache pressure 导致 preemption，并对相同 prefixes 重新 prefill",
+        "Tokenizer GIL contention",
+        "Network egress filtering",
+        "Cold-start image pull"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "哪个 vLLM API 引入了可插拔 KV cache backends？",
+      "options": [
+        "Prefix-caching flag",
+        "PagedAttention v2",
+        "vLLM v0.9.0 中的 Connector API",
+        "ChunkedPrefill API"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "vLLM 0.11.0（2026 年 1 月）在 KV offload path 上增加了什么？",
+      "options": [
+        "异步 offload path，让 engine 在常见情况下不会因 offload 阻塞",
+        "仅同步 offload",
+        "强制 FP8 KV cache",
+        "移除 LMCache 支持"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "什么时候应该选择 LMCache，而不是 native CPU offload？",
+      "options": [
+        "当多个 engines 跨 tenants、LoRA variants 或重复 RAG context 共享 prefixes，cross-engine reuse 值得付出成本时",
+        "当你想完全禁用 KV caching 时",
+        "当单个 engine 有 HBM pressure 且没有 prefix sharing 时",
+        "当你只在 CPU 上运行时"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "当 KV footprint 明显低于 HBM 时，LMCache 的收益会怎样？",
+      "options": [
+        "LMCache 自动禁用",
+        "仍会让 throughput 翻倍",
+        "配置表现接近 baseline，但有约 3-5% overhead，且没有真实收益",
+        "engine 崩溃"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 LMCache 能与 disaggregated serving（Phase 17 · 17）组合？",
+      "options": [
+        "因为 LMCache 替代 NIXL",
+        "prefill 传到 decode 的 KV 会落入 LMCache；后续查询可从 LMCache 拉取并跳过 prefill，因此 cache-aware router 能选择 local 或 LMCache-shared cache 匹配的 engine",
+        "因为 LMCache 与 engine 跑在同一块 GPU 上",
+        "不能组合；它们互斥"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

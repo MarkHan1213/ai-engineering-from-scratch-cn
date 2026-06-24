@@ -1,0 +1,90 @@
+{
+  "lesson": "08-memory-blocks-sleep-time-compute",
+  "title": "Memory Blocks 与 Sleep-Time Compute（Letta）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Letta 的三层记忆是什么？",
+      "options": [
+        "Cache, KV, archival",
+        "Core, recall, archival",
+        "RAM, swap, disk",
+        "Working, episodic, semantic"
+      ],
+      "correct": 1,
+      "explanation": "Letta 使用 core（始终可见）、recall（对话历史）和 archival（外部）三层。"
+    },
+    {
+      "stage": "pre",
+      "question": "sleep-time compute 针对哪个生产问题？",
+      "options": [
+        "在关键路径上做记忆整合导致的尾延迟",
+        "提高数学题准确率",
+        "降低 embedding 成本",
+        "加快 JSON 解析"
+      ],
+      "correct": 0,
+      "explanation": "sleep-time 将 prune、summarize、reconcile 移到用户可见路径之外，让主响应保持快速。"
+    },
+    {
+      "stage": "check",
+      "question": "下面哪个属性不是 Letta memory block 字段？",
+      "options": [
+        "label",
+        "value",
+        "limit",
+        "embedding_model_version"
+      ],
+      "correct": 3,
+      "explanation": "block 包含 id、label、value、limit、description；embedding model version 不是 block schema 的一部分。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 sleep-time agent 可以运行比 primary 更强的模型？",
+      "options": [
+        "它拿到了私有 API key",
+        "它位于关键路径之外，因此不受延迟约束",
+        "它不受 rate limit 限制",
+        "memory ops 的 token 成本减半"
+      ],
+      "correct": 1,
+      "explanation": "因为它不会阻塞用户响应，所以 sleep-time agent 可以更慢、更贵。"
+    },
+    {
+      "stage": "check",
+      "question": "Human 和 Persona block 泛化成了什么模式？",
+      "options": [
+        "vector embeddings",
+        "任意用户自定义的、带类型且可编辑的 blocks（Task、Project、Safety 等）",
+        "JSON-RPC channels",
+        "OS processes"
+      ],
+      "correct": 1,
+      "explanation": "Letta 将 MemGPT 的两个 block 泛化为任何用户自定义 block，字段包括 id、label、value、limit、description。"
+    },
+    {
+      "stage": "post",
+      "question": "这个模式中的 silent drift 是什么？",
+      "options": [
+        "primary agent 没看到 sleep-time agent 在背后改写了 block；可用版本化和可见 diff 修复",
+        "磁盘写入很慢",
+        "embedding model 升级",
+        "rate-limit 抖动"
+      ],
+      "correct": 0,
+      "explanation": "对 block 做版本化，并在 trace 中展示 diff，可以让 primary loop 看见 sleep-time 的重写。"
+    },
+    {
+      "stage": "post",
+      "question": "Letta V1 中，什么替代了 inline `Thought:` token 和 send_message/heartbeat 模式？",
+      "options": [
+        "通过单独 channel 输出并跨 turn 传递的原生 reasoning",
+        "专门负责 thoughts 的第二个 LLM",
+        "更大的 system prompt",
+        "用户手动输入的 thoughts"
+      ],
+      "correct": 0,
+      "explanation": "Letta V1（letta_v1_agent）使用 provider 级原生 reasoning，而不是 prompt 形态的 thoughts。"
+    }
+  ]
+}

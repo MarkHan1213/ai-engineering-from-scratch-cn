@@ -1,0 +1,78 @@
+{
+  "lesson": "80-checkpoint-sharded-resume",
+  "title": "Sharded Checkpoint 与 Atomic Resume",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 gather-then-write 在规模化场景下是错误的 checkpoint pattern？",
+      "options": [
+        "它看起来不好看",
+        "所有 state 都经过 rank 0；write bandwidth 是最慢的单链路，而不是聚合带宽，所以 TB 级写入会花数小时",
+        "它使用太多 CPU",
+        "它需要特殊硬件"
+      ],
+      "correct": 1,
+      "explanation": "sharded write 会随 cluster size 缩放：64 个 ranks 并行写入，会以单个 rank 写 gathered state 的 1/64 时间完成。"
+    },
+    {
+      "stage": "pre",
+      "question": "manifest 记录了哪些 shard files 自己无法记录的信息？",
+      "options": [
+        "随机数",
+        "world_size、schema version、per-shard sha256 和 shard ownership；让 loader 在触碰 state 前有契约可验证",
+        "filesystem name",
+        "hostname"
+      ],
+      "correct": 1,
+      "explanation": "没有 manifest 时，loader 只能猜哪个 shard 属于哪个 rank，并信任文件数量正确。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么要写入 <name>.tmp 后再 rename，而不是直接写目标文件？",
+      "options": [
+        "更快",
+        "同一 filesystem 内的 POSIX rename 是原子的：写到一半崩溃会让上一个文件保持不变。直接写可能留下半成品 checkpoint，污染下一次 resume",
+        "torch 要求这样",
+        "节省内存"
+      ],
+      "correct": 1,
+      "explanation": "没有 atomic write 时，partial save 加上指向它的 updated manifest，会在下一次 load 时破坏 state。"
+    },
+    {
+      "stage": "check",
+      "question": "每个 shard 的 sha256 防护什么？",
+      "options": [
+        "网络攻击",
+        "部分写入或损坏写入；load 时校验 hash 可以在 truncated shards 触碰 model state 前捕获它们",
+        "减速",
+        "memory leak"
+      ],
+      "correct": 1,
+      "explanation": "没有 sha256 verification 时，truncated shard 会静默加载并破坏 optimiser，之后才表现为 NaN loss。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 load path 要明确拒绝 world_size mismatch？",
+      "options": [
+        "只是装饰",
+        "把 4-rank shard layout 在 8 ranks 上 resume 会静默错配 shards；明确拒绝会强制 operator 使用 cross-world-size rebalance path",
+        "更容易编码",
+        "硬件需要它"
+      ],
+      "correct": 1,
+      "explanation": "cross-world-size rebalance 是单独操作；静默拼接错误大小的 shards 会破坏 state。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么生产中要轮转 checkpoints（keep last K）？",
+      "options": [
+        "美观",
+        "不轮转时磁盘会在 run 中途填满，下一个 checkpoint 会失败；轮转会在写入新文件前删除最旧文件，限制磁盘使用量",
+        "压缩",
+        "它不会这样做"
+      ],
+      "correct": 1,
+      "explanation": "真实 run 通常保留最近 3-5 个 checkpoints；每次新 save 前会丢弃最旧的，使磁盘预算固定。"
+    }
+  ]
+}

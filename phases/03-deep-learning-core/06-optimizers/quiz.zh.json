@@ -1,0 +1,62 @@
+[
+  {
+    "question": "momentum 在 gradient descent 中解决什么问题？",
+    "options": [
+      "减少内存使用",
+      "通过累积过去 gradients 来抑制震荡，并加速沿一致方向的移动",
+      "消除对 learning rate 的需要",
+      "防止 overfitting"
+    ],
+    "correct": 1,
+    "explanation": "在狭窄山谷中，gradients 会在谷壁之间震荡，而沿谷底方向进展缓慢。Momentum 会累积过去 gradients：一致方向会被放大，震荡方向会相互抵消，使收敛更平滑、更快。",
+    "stage": "pre"
+  },
+  {
+    "question": "Adam 和 AdamW 的关键区别是什么？",
+    "options": [
+      "AdamW 使用更高 learning rate",
+      "AdamW 直接对 weights 应用 weight decay，而不是通过 gradient，从而得到正确 regularization",
+      "AdamW 不使用 momentum",
+      "AdamW 只适用于 transformers"
+    ],
+    "correct": 1,
+    "explanation": "在 Adam + L2 中，自适应学习率会让 regularization term 对每个 parameter 缩放不同。AdamW 将 weight decay 从 gradient update 中解耦，直接应用与 gradient statistics 无关的统一收缩。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 Adam 在训练早期使用 bias correction？",
+    "options": [
+      "为了防止 overfitting",
+      "moment estimates 初始化为零，所以早期值偏向零；correction 会补偿这个冷启动偏差",
+      "为了 clip large gradients",
+      "为了加速收敛"
+    ],
+    "correct": 1,
+    "explanation": "在 step 1 且 beta1=0.9 时，m_1 = 0.1 * gradient，比真实梯度小 10 倍。除以 (1 - 0.9^1) = 0.1 会把它修正为实际 gradient。约 50 步后，这个修正影响就很小了。",
+    "stage": "post"
+  },
+  {
+    "question": "Adam 的标准默认 hyperparameters 是什么？",
+    "options": [
+      "lr=0.1, beta1=0.5, beta2=0.5",
+      "lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8",
+      "lr=0.01, beta1=0.99, beta2=0.99",
+      "lr=0.0001, beta1=0.8, beta2=0.9"
+    ],
+    "correct": 1,
+    "explanation": "原始 Adam 论文（Kingma & Ba, 2014）推荐 lr=0.001、beta1=0.9、beta2=0.999、epsilon=1e-8。这些默认值对大多数问题都有效。",
+    "stage": "post"
+  },
+  {
+    "question": "训练 transformers 和 LLMs 的现代默认 optimizer 是哪个？",
+    "options": [
+      "Vanilla SGD",
+      "SGD with momentum",
+      "RMSProp",
+      "AdamW"
+    ],
+    "correct": 3,
+    "explanation": "AdamW（带 decoupled weight decay 的 Adam）用于训练 BERT、GPT、LLaMA 以及几乎所有现代 transformers。它结合了自适应 learning rates 和正确的 weight decay regularization。",
+    "stage": "post"
+  }
+]

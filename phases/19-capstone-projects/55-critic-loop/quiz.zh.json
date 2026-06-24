@@ -1,0 +1,78 @@
+{
+  "lesson": "55-critic-loop",
+  "title": "Critic Loop",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 critic 要在五个固定维度上打分，而不是返回自由文本段落？",
+      "options": [
+        "因为模型无法可靠生成段落",
+        "因为固定向量让 harness 可以跨 rounds 检测每个维度的 regression",
+        "因为 LaTeX 要求 score 字段",
+        "因为 reviser 只接受 JSON"
+      ],
+      "correct": 1,
+      "explanation": "固定维度向量把 critique 变成 harness 可以跨 rounds 比较的结构化数据。自由文本批评不可验证；向量能让 regression 可见。"
+    },
+    {
+      "stage": "pre",
+      "question": "每一轮结束时，loop 按什么顺序检查 stop conditions？",
+      "options": [
+        "Budget，然后 plateau，然后 target",
+        "Target，然后 plateau，然后 budget",
+        "Plateau，然后 target，然后 budget",
+        "哪个先触发就随机打破平局"
+      ],
+      "correct": 1,
+      "explanation": "target met 优先（工作已完成）。然后是 plateau（无法继续进步）。最后是 budget（硬上限）。当多个条件可能同时触发时，这个顺序让结果保持确定性。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 plateau detection 要求连续两个 flat rounds，而不是一个？",
+      "options": [
+        "因为 dataclass 要求 list",
+        "因为即使是确定性 scoring，每一轮也会因为应用了不同 suggestions 而有噪声；一个 flat round 信号不足",
+        "因为 model 返回 nondeterministic scores",
+        "因为 dashboard 需要两个点"
+      ],
+      "correct": 1,
+      "explanation": "即使 deterministic scorer，每轮输出也会随哪些建议被应用而变化。要求两个 flat rounds 可以过滤这种噪声。"
+    },
+    {
+      "stage": "check",
+      "question": "reviser 每一轮接收什么输入？",
+      "options": [
+        "完整 Critique object，包括 scores",
+        "paper 和 Suggestion records 列表",
+        "model 生成的段落",
+        "raw LaTeX source"
+      ],
+      "correct": 1,
+      "explanation": "Reviser.__call__ 接收 (paper, suggestions)。每个 Suggestion 携带 dimension、target section 和 edit instruction。reviser 看不到 scores。这种分离让任一侧都能替换，而不影响另一侧。"
+    },
+    {
+      "stage": "post",
+      "question": "trace 中每一轮包含什么？",
+      "options": [
+        "只有最终 paper draft",
+        "Round number、score vector、mean、applied suggestions、verdict",
+        "model prompt 和 completion",
+        "只有 convergence verdict"
+      ],
+      "correct": 1,
+      "explanation": "trace 是逐轮 event log。dashboards 会把它渲染成 score-over-time chart；下一阶段会读取它来判断这个 branch 是否值得保留。"
+    },
+    {
+      "stage": "post",
+      "question": "如果 critic 不断输出从未改善任何 score 的 suggestions，最终会产生哪个 terminal verdict？",
+      "options": [
+        "target，因为 budget 会隐藏这个 bug",
+        "plateau 或 budget，因为 harness 会捕捉到没有进展",
+        "converged，因为 suggestions 被应用了",
+        "异常，因为 loop 会崩溃"
+      ],
+      "correct": 1,
+      "explanation": "要么 plateau（两个 flat rounds），要么 budget（硬上限）会触发。两种 verdict 都会暴露这个 bug。loop 不会静默成功。"
+    }
+  ]
+}

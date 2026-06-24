@@ -1,0 +1,90 @@
+{
+  "lesson": "26-failure-modes-agentic",
+  "title": "失败模式：Agent 为什么会坏掉",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MASFT 的核心主张是什么？",
+      "options": [
+        "失败是随机噪声",
+        "多 Agent 失败是根本性设计缺陷，而不是可以靠更好的 base model 修复的 LLM 局限",
+        "更大的模型会让失败消失",
+        "失败来自网络中断"
+      ],
+      "correct": 1,
+      "explanation": "Berkeley 的 MASFT 将失败归类为设计缺陷；它们不会因为 base model 扩大而消失。"
+    },
+    {
+      "stage": "pre",
+      "question": "下面哪一项不是课程列出的五种反复出现的行业失败模式之一？",
+      "options": [
+        "Hallucinated actions",
+        "Scope creep",
+        "Cascading errors",
+        "Embedding versioning"
+      ],
+      "correct": 3,
+      "explanation": "五种是 hallucinated actions、scope creep、cascading errors、context loss 和 tool misuse。"
+    },
+    {
+      "stage": "check",
+      "question": "本课中的 cascading error 是什么？",
+      "options": [
+        "LLM rate-limit cascade",
+        "一次错误调用触发跨系统的下游影响（例如 phantom SKU 触发四个下游 API 调用）",
+        "cron 失败",
+        "YAML parser error"
+      ],
+      "correct": 1,
+      "explanation": "cascade 会把一次错误调用放大成多系统事故；当 Agent 伪造成功时尤其严重。"
+    },
+    {
+      "stage": "check",
+      "question": "LLM Agent Hallucinations Survey 列出了哪两种表现？",
+      "options": [
+        "Hot and cold tokens",
+        "Instruction-following Deviation 和 Long-range Contextual Misuse",
+        "Greedy 和 beam search",
+        "Soft 和 hard prompts"
+      ],
+      "correct": 1,
+      "explanation": "hallucination 表现为忽略 system prompt，或遗忘/误用早先 turn 的上下文。"
+    },
+    {
+      "stage": "check",
+      "question": "success hallucination 是什么意思？",
+      "options": [
+        "模型在 benchmark 上过度自信",
+        "Agent 返回成功消息，但目标状态并没有变化（常见于工具返回 400 时）",
+        "用户以为成功了但其实没有",
+        "单元测试通过了"
+      ],
+      "correct": 1,
+      "explanation": "应重新探测环境状态；Agent 在无法区分“我失败了”和“不可能完成”时，经常伪造完成。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么只标记 crash 不够？",
+      "options": [
+        "crash 很慢",
+        "大多数 Agent 失败会产生看似有效的输出而不会崩溃；需要内容级检查",
+        "crash 会泄漏 PII",
+        "日志是付费的"
+      ],
+      "correct": 1,
+      "explanation": "基于 crash 的监控会漏掉大部分 Agent 失败，因为它们往往是内容形态的问题。"
+    },
+    {
+      "stage": "post",
+      "question": "课程建议在 reasoning chain 的每一步采取什么缓解措施？",
+      "options": [
+        "加一个 sleep()",
+        "自动 verification gates，对照环境状态检查 factual grounding",
+        "禁用 retries",
+        "只降低 temperature"
+      ],
+      "correct": 1,
+      "explanation": "逐步 gates（safety classifier、argument validation、CRITIC、state re-probe）能在失败级联前拦截问题。"
+    }
+  ]
+}

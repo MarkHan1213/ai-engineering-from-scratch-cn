@@ -1,0 +1,78 @@
+{
+  "lesson": "37-loading-pretrained-weights",
+  "title": "Loading Pretrained Weights",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "loader 为什么需要 name map？",
+      "options": [
+        "pretrained tensor 和 local parameter 使用相同名称",
+        "发布的 GPT-2 weights 使用 wte、wpe、h.N.attn.c_attn 等名称；local model 使用 tok_embed、pos_embed、blocks.N.attn.qkv；loader 要把一套翻译到另一套",
+        "safetensors 文件被加密",
+        "Torch 要求这样"
+      ],
+      "correct": 1,
+      "explanation": "这两套命名约定来自不同历史；map 是一个按 layer 展开的字面 dict。"
+    },
+    {
+      "stage": "check",
+      "question": "conv1d transpose 是什么，哪些 tensor 需要它？",
+      "options": [
+        "所有 weight tensor",
+        "发布的 GPT-2 以 tensorflow conv1d layout 存储 c_attn、c_proj 和 c_fc weights，这正是 nn.Linear.weight 期望布局的转置；loader 在赋值时对这些 tensor 调用 .t()",
+        "只有 embedding",
+        "只有 LayerNorm scale"
+      ],
+      "correct": 1,
+      "explanation": "三个 suffix 需要 transpose；bias 和 LayerNorm 已经是正确 shape。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 LM head 不在 safetensors 文件中？",
+      "options": [
+        "它在运行时从 logits 计算出来",
+        "weight tying：LM head 与 token embedding（wte）共享 storage，因此加载 wte 并在加载后 alias lm_head.weight = tok_embed.weight 就能重建 head",
+        "它太大了",
+        "它从单独文件加载"
+      ],
+      "correct": 1,
+      "explanation": "wte 落位后设置 lm_head.weight = tok_embed.weight 会恢复 alias；如果复制，就会让 parameter count 翻倍。"
+    },
+    {
+      "stage": "check",
+      "question": "遇到 shape mismatch 时，loader 会做什么？",
+      "options": [
+        "padding 较小 tensor",
+        "把 mismatch 记录到 LoadReport.shape_mismatch，并拒绝赋值，保留 local parameter 不变",
+        "让进程 crash",
+        "truncate 较大 tensor"
+      ],
+      "correct": 1,
+      "explanation": "半加载模型是静默失败机器；拒绝赋值可以让 report 保持诚实。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 demo 的 stub fixture 不是真实 GPT-2 download？",
+      "options": [
+        "真实文件不是 safetensors 格式",
+        "demo 必须离线且快速运行；stub 使用完全相同的 pretrained naming convention，因此 loader code path 相同，换成真实文件不会改变 loader",
+        "真实 weights 被加密",
+        "safetensors 不能存储大 tensor"
+      ],
+      "correct": 1,
+      "explanation": "相同 code path，更小 payload；loader 对二者都能工作。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么要在加载前后各生成一次 sample？",
+      "options": [
+        "测量 inference speed",
+        "如果 post-load sample 与 pre-load sample 相同，说明加载没有改变模型，也就是 mapping 静默漏掉了所有 tensor",
+        "预热 GPU cache",
+        "设置 random seed"
+      ],
+      "correct": 1,
+      "explanation": "sanity generation 是最便宜的 gate：如果 sample fingerprint 没有变化，就暴露出 broken load，而 LoadReport summary 本身可能抓不到。"
+    }
+  ]
+}

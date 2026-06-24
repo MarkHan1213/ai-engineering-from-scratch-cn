@@ -230,28 +230,33 @@ function parseReadme(content, roadmapStatuses) {
   return phases;
 }
 
-// ─── Extract lesson summary + keywords from docs/en.md ───────────────
+// ─── Extract lesson summary + keywords from docs/zh.md or docs/en.md ──
 /**
- * Single-pass read of a lesson's docs/en.md.
+ * Single-pass read of a lesson doc.
  *
  * Returns:
+ *   title    — first H1 heading, used by localized lessons to override the
+ *              README title in catalog/navigation.
  *   summary  — first `> blockquote` line (the lesson's one-liner motto).
  *   keywords — all `### H3` heading texts joined by ' · '.
  *              H3 headings are the densest vocabulary in a lesson doc
  *              (e.g. "Scaled dot-product · Causal masking · KV cache"),
  *              so they extend search coverage without bloating data.js.
  *
- * Both fields are empty strings when the file is absent or has no
- * matching content — expected for planned lessons with no docs yet.
+ * Both fields are empty strings when the file is absent or has no matching
+ * content. zh.md is preferred for the Chinese site; en.md remains the
+ * compatible fallback for lessons that have not been localized yet.
  */
-function extractLessonMeta(relPath) {
-  const docPath = path.join(REPO_ROOT, relPath, 'docs', 'en.md');
-  const result = { summary: '', keywords: '' };
+function readLessonDocMeta(docPath) {
+  const result = { title: '', summary: '', keywords: '' };
   try {
     const lines = fs.readFileSync(docPath, 'utf8').split(/\r?\n/);
     const h3s = [];
     for (const raw of lines) {
       const line = raw.trim();
+      if (!result.title && line.startsWith('# ') && line.length > 2) {
+        result.title = line.slice(2).trim();
+      }
       if (!result.summary && line.startsWith('> ') && line.length > 3) {
         const s = line.slice(2).trim();
         result.summary = s.length > 180 ? s.slice(0, 177) + '…' : s;
@@ -266,6 +271,47 @@ function extractLessonMeta(relPath) {
     // File absent or unreadable — expected for planned lessons.
   }
   return result;
+}
+
+function extractLessonMeta(relPath) {
+  const zhMeta = readLessonDocMeta(path.join(REPO_ROOT, relPath, 'docs', 'zh.md'));
+  if (zhMeta.title && zhMeta.summary && zhMeta.keywords) return zhMeta;
+
+  const enMeta = readLessonDocMeta(path.join(REPO_ROOT, relPath, 'docs', 'en.md'));
+  return {
+    title: zhMeta.title || enMeta.title,
+    summary: zhMeta.summary || enMeta.summary,
+    keywords: zhMeta.keywords || enMeta.keywords,
+  };
+}
+
+function copyFileIfExists(from, to) {
+  if (!fs.existsSync(from)) return false;
+  fs.mkdirSync(path.dirname(to), { recursive: true });
+  fs.copyFileSync(from, to);
+  return true;
+}
+
+function copyLessonAssets(phases) {
+  const outRoot = path.join(__dirname, 'phases');
+  fs.rmSync(outRoot, { recursive: true, force: true });
+
+  let copied = 0;
+  for (const phase of phases) {
+    for (const lesson of phase.lessons) {
+      const relPath = lessonPath(lesson.url);
+      if (!relPath) continue;
+
+      const sourceDir = path.join(REPO_ROOT, relPath);
+      const targetDir = path.join(__dirname, relPath);
+      if (copyFileIfExists(path.join(sourceDir, 'docs', 'zh.md'), path.join(targetDir, 'docs', 'zh.md'))) copied++;
+      if (copyFileIfExists(path.join(sourceDir, 'docs', 'en.md'), path.join(targetDir, 'docs', 'en.md'))) copied++;
+      if (copyFileIfExists(path.join(sourceDir, 'quiz.zh.json'), path.join(targetDir, 'quiz.zh.json'))) copied++;
+      if (copyFileIfExists(path.join(sourceDir, 'quiz.json'), path.join(targetDir, 'quiz.json'))) copied++;
+    }
+  }
+
+  console.log(`   copied ${copied} lesson docs/quizzes into site/phases/`);
 }
 
 // ─── Parse glossary/terms.md ──────────────────────────────────────────
@@ -436,13 +482,14 @@ function build() {
   console.log('🔍 Discovering outputs + Phase 14 missions...');
   const artifacts = discoverArtifacts();
 
-  console.log('📚 Extracting lesson summaries + keywords from docs/en.md...');
+  console.log('📚 Extracting lesson summaries + keywords from docs/zh.md, then docs/en.md...');
   let summarized = 0, withKeywords = 0;
   for (const phase of phases) {
     for (const lesson of phase.lessons) {
       if (lesson.url) {
         const relPath = lesson.url.replace(GITHUB_BASE, '').replace(/\/+$/, '');
         const meta = extractLessonMeta(relPath);
+        if (meta.title)    { lesson.name     = meta.title; }
         if (meta.summary)  { lesson.summary  = meta.summary;  summarized++;   }
         if (meta.keywords) { lesson.keywords = meta.keywords; withKeywords++; }
       }
@@ -481,6 +528,7 @@ const ARTIFACTS = ${JSON.stringify(artifacts, null, 2)};
 
   syncCounts(totalLessons, phases.length, artifacts.length);
   syncReadme(totalLessons);
+  copyLessonAssets(phases);
   writeSitemap(phases, glossaryTerms.length);
   writeLlms(phases, glossaryTerms.length, artifacts.length);
 }
@@ -589,8 +637,11 @@ function syncCounts(lessons, phaseCount, outputs) {
     const before = fs.readFileSync(p, 'utf8');
     const after = before
       .replace(/\b\d+( AI engineering)? lessons\b/g, `${lessons}$1 lessons`)
+      .replace(/\d+\s*门课程/g, `${lessons} 门课程`)
       .replace(/\b\d+ phases\b/g, `${phaseCount} phases`)
-      .replace(/\b\d+ outputs\b/g, `${outputs} outputs`);
+      .replace(/\d+\s*个阶段/g, `${phaseCount} 个阶段`)
+      .replace(/\b\d+ outputs\b/g, `${outputs} outputs`)
+      .replace(/\d+\s*个产出/g, `${outputs} 个产出`);
     if (after !== before) {
       fs.writeFileSync(p, after, 'utf8');
       console.log(`   synced counts in ${f}`);

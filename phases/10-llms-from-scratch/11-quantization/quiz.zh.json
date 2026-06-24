@@ -1,0 +1,37 @@
+[
+  {
+    "question": "70B parameter model 使用 FP16 时，仅 weights 需要多少 VRAM？",
+    "options": ["35 GB", "70 GB", "140 GB", "280 GB"],
+    "correct": 2,
+    "explanation": "70 billion parameters * 每个 FP16 parameter 2 bytes = 140 billion bytes = 140 GB。这超过单张 A100（80GB），仅加载 weights 至少就需要两张 GPU。",
+    "stage": "pre"
+  },
+  {
+    "question": "LLM 语境中的 quantization 是什么？",
+    "options": ["移除未使用的 model layers", "降低 weights 的数值精度（如 FP16 到 INT4），以减少内存使用并提高 inference speed", "压缩训练数据", "减小词表大小"],
+    "correct": 1,
+    "explanation": "Quantization 把高精度 floating point weights 映射到低精度 integers。INT4 quantization 每个 weight 用 4 bits 而不是 16 bits 存储，内存减少 4 倍且准确率损失很小。",
+    "stage": "pre"
+  },
+  {
+    "question": "post-training quantization (PTQ) 与 quantization-aware training (QAT) 的关键区别是什么？",
+    "options": ["PTQ 更准确", "PTQ 在训练后量化且不 retrain；QAT 在训练中模拟量化，让模型学会容忍低精度", "QAT 不使用 gradients", "PTQ 需要更多数据"],
+    "correct": 1,
+    "explanation": "PTQ 很快（只需校准和量化），但可能损失准确率。QAT 在训练中加入 fake quantization，让模型调整权重以更耐受精度损失。QAT 通常准确率更好。",
+    "stage": "post"
+  },
+  {
+    "question": "'per-channel' quantization 是什么意思，为什么优于 'per-tensor'？",
+    "options": ["它分别量化每个 output channel，为每个 channel 使用不同 scale/zero-point，从而降低量化误差", "它一次处理一个颜色通道", "它为每个 channel 使用独立 GPU", "它是一种 data parallelism"],
+    "correct": 0,
+    "explanation": "Per-tensor 为整个 weight matrix 使用一个 scale factor。Per-channel 为每个 output channel（row）使用独立 scale。不同 channels 的数值范围不同，per-channel 能更准确地捕捉它们。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么 Llama 3 70B 中 95% 的 weights 落在 -0.1 到 +0.1 之间？",
+    "options": ["模型训练得很差", "训练中的 weight decay 和 normalization 会把 weights 推向较小值，使完整 FP16 范围显得浪费", "Weights 还没收敛", "这是 Llama 架构独有的现象"],
+    "correct": 1,
+    "explanation": "Weight decay regularization 会把权重拉向零。Layer normalization 让 activations 保持居中。两者结合产生集中在零附近的 weight distributions，使低精度 quantization 有效。",
+    "stage": "post"
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "cosine similarity 衡量两个向量之间的什么？",
+      "options": [
+        "它们之间的 Euclidean distance",
+        "它们之间的夹角，忽略各自的大小",
+        "它们逐元素乘积之和",
+        "任一维度上的最大差异"
+      ],
+      "correct": 1,
+      "explanation": "Cosine similarity 通过向量模长归一化后，衡量两个向量夹角的余弦值。它的范围从 -1（方向相反）到 +1（方向相同），并忽略向量长度。这就是它在 NLP 中常用的原因，因为文档长度通常是噪声。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 L1 distance 被称为 Manhattan distance？",
+      "options": [
+        "它是在 Manhattan 发明的",
+        "它衡量沿网格行走的距离，就像在城市街区中步行",
+        "它只适用于恰好二维的情况",
+        "它计算所有维度中的最大差异"
+      ],
+      "correct": 1,
+      "explanation": "L1 distance 会把每个轴上的绝对差相加，对应只能沿坐标轴移动、不能走对角线时的最短路径，就像在城市街道网格中步行。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 L1 regularization（Lasso）会产生稀疏权重，而 L2 regularization（Ridge）通常不会？",
+      "options": [
+        "L1 使用的惩罚常数比 L2 更大",
+        "L1 的菱形约束在坐标轴上有尖角，权重为零；loss 等高线更容易在这些尖角处相切",
+        "L2 regularization 只作用于 bias 项",
+        "L1 regularization 会把低于阈值的权重裁剪为零"
+      ],
+      "correct": 1,
+      "explanation": "L1 约束区域是一个与坐标轴对齐的菱形，尖角位于坐标轴上。损失函数的椭圆等高线最可能先接触这些尖角，而尖角处一个或多个权重正好为零。L2 约束是没有尖角的圆，因此相切点通常所有权重都非零。"
+    },
+    {
+      "stage": "post",
+      "question": "比较概率分布时，Wasserstein distance 相比 KL divergence 有什么优势？",
+      "options": [
+        "Wasserstein 总是小于 KL divergence",
+        "即使两个分布不重叠，Wasserstein 仍能提供有意义的梯度，而 KL 会趋于无穷大",
+        "Wasserstein 是对称的，而 KL 不是",
+        "B 和 C 都正确"
+      ],
+      "correct": 3,
+      "explanation": "Wasserstein distance 是真正的度量（对称并满足三角不等式），而且即使分布不重叠也能提供梯度。KL divergence 是非对称的，并且在分布不重叠时会趋于无穷大，这也是 WGAN 用它替代 KL 型 GAN 的原因。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候会使用 Mahalanobis distance，而不是 Euclidean distance？",
+      "options": [
+        "当特征全是二值（0 或 1）时",
+        "当特征尺度不同，并且彼此相关时",
+        "当比较的是字符串而不是向量时",
+        "当你需要比 L2 更快的计算时"
+      ],
+      "correct": 1,
+      "explanation": "Mahalanobis distance 会考虑数据的协方差结构，在计算 L2 距离前对特征去相关并归一化。它能正确处理尺度不同且存在相关性的特征，而 Euclidean distance 会同等对待所有维度。"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "action-conditioned world model（Genie 3）与纯 video generation model（Sora 2）在架构上有什么区别？",
+      "options": [
+        "action-conditioned models 更小",
+        "纯 video generators 在 t=0 用 prompt 条件化并 rollout；action-conditioned world models 每帧接受 latent 或 explicit action，让用户能在生成过程中途控制 rollout",
+        "只有训练数据集不同",
+        "World models 只适用于 3D scenes"
+      ],
+      "correct": 1,
+      "explanation": "Sora 2 对 spacetime tokens 做 autoregressive 建模；prompt 设定场景，但你不能在 rollout 中途改变方向。Genie 3 在每步推断或接收 latent action，并基于它条件化下一帧预测，让用户与模拟世界互动。这种交互性让模型成为 world simulator，而不只是 video generator。"
+    },
+    {
+      "stage": "pre",
+      "question": "video transformer 中的 divided attention 是什么意思？",
+      "options": [
+        "mask 一半 tokens",
+        "每个 block 先做 temporal attention（同一空间位置、跨 frames），再做 spatial attention（同一 frame、跨 positions）；这把成本从 O((T*H*W)^2) 分解为 O((H*W)*T^2) + O(T*(H*W)^2)，比 joint product 便宜得多",
+        "只有一半 layers 运行 attention",
+        "attention 被拆到多块 GPUs 上"
+      ],
+      "correct": 1,
+      "explanation": "对 spacetime tokens 做 full joint attention 成本极高：T=150 temporal tokens 和 60x45 spatial grid（2700 spatial tokens）时，joint (T*H*W)^2 约 1.6e11 pairs。Divided attention 在每个空间位置做 temporal attention（H*W * T^2 约 6.1e7），并在每个 timestep 做 spatial attention（T * (H*W)^2 约 1.1e9），少了多个数量级。TimeSformer 引入了这种模式；几乎每个 2026 video DiT（Sora、Wan、HunyuanVideo）都使用 divided 或 window 变体。"
+    },
+    {
+      "stage": "post",
+      "question": "Sora 2 的 2026 release 宣称提升 physical plausibility。它具体针对哪些失败模式？",
+      "options": [
+        "Colour balance 和 contrast",
+        "Weight、balance、object permanence、cause-and-effect：模型现在能比 Sora 1 更可信地处理掉落物体、角色碰撞，以及“故意失败”（错过跳跃）",
+        "图像中的 text rendering",
+        "Video length"
+      ],
+      "correct": 1,
+      "explanation": "上一代 video models 经常在吃意面、从杯子喝水、持久物体场景上失败：手会穿过物体，物品会在动作中途消失。Sora 2 明确宣称在 weight、balance、object permanence 和 cause-and-effect 上改进，并用内部与公开 plausibility benchmarks 衡量。这些仍是领域中最主要的质量失败模式。"
+    },
+    {
+      "stage": "post",
+      "question": "在新兴 robotics stack（VLM + video generation + inverse dynamics）中，inverse dynamics model 做什么？",
+      "options": [
+        "生成下一帧",
+        "接收一对 (current observation, desired next observation from the video model)，输出连接它们所需的 low-level motor action；这把 imagined rollouts 与实际 actuation 闭环连接起来",
+        "训练 VLM",
+        "标注训练数据"
+      ],
+      "correct": 1,
+      "explanation": "VLM 规划，video model 想象，inverse dynamics model 把想象变成 motor commands。给定两个连续 observations，inverse dynamics 问：是什么 action 产生了这个 transition？这个三组件 stack 让机器人可以主要在 learned simulator 中训练，用 video model 生成数据，再用 inverse dynamics model 执行。"
+    },
+    {
+      "stage": "post",
+      "question": "自动驾驶团队使用 world models（Cosmos-Drive、Gaia-2、DrivingWorld）来替代哪类成本？",
+      "options": [
+        "实际车队保险",
+        "为罕见或危险 corner cases（行人乱穿马路、结冰道路、异常车辆）采集真实世界数据的高昂成本；合成 driving video 可按需提供这些场景的训练和评估数据",
+        "道路通行费",
+        "车辆折旧"
+      ],
+      "correct": 1,
+      "explanation": "采集 corner-case driving data 需要数百万真实道路里程。Cosmos-Drive、Gaia-2 和 DrivingWorld 能基于 trajectories 和 maps 生成这些数据。团队用它们扩展训练集、在可复现场景中评估 planners，并降低现实中不能合乎伦理驾驶场景的风险。用合成替代一部分真实采集，是 2026 年 video world models 最清晰的生产收益之一。"
+    }
+  ]
+}

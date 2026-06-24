@@ -1,0 +1,78 @@
+{
+  "lesson": "15-indirect-prompt-injection",
+  "title": "Indirect Prompt Injection：生产环境攻击面",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "indirect prompt injection（IPI）与 direct prompt injection 的区别是什么？",
+      "options": [
+        "IPI 需要微调目标模型",
+        "IPI 把指令嵌入外部内容（网页、邮件、工具输出）中，Agent 在正常运行时会消费这些内容，攻击者不需要接触用户的 prompt",
+        "IPI 是 jailbreaking 的同义词",
+        "IPI 只适用于多模态模型"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是课程列出的三种 IPI 投递向量之一？",
+      "options": [
+        "Retrieval-augmented generation（poisoned retrieval）",
+        "用户直接编辑 system prompt",
+        "Tool output",
+        "Inbox / document workflow"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 user-input filter 会漏掉 IPI？",
+      "options": [
+        "filter 无法读取 JSON",
+        "user-input filter 区分大小写",
+        "payload 从未出现在用户输入中；它出现在 retrieval 或 tool 提供的内容里",
+        "filter 只在模型响应之后运行"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Information Flow Control（IFC）用于 AI Agent 的中心原则是什么？",
+      "options": [
+        "加密所有检索内容",
+        "只使用单轮 prompt",
+        "默认禁用所有工具",
+        "按来源把内容标为 trusted 或 untrusted；由 untrusted 内容触发的动作必须先由 trusted input 确认才能执行"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Nasr 等人（2025 年 10 月，《The Attacker Moves Second》）用 adaptive attack 评估 12 个已发表 IPI 防御后发现了什么？",
+      "options": [
+        "adaptive attack 太昂贵，无法评估",
+        "它们报告的近零 ASR 在 adaptive attack 下仍然成立",
+        "只有一个防御被攻破",
+        "尽管原论文声称 ASR 近零，adaptive attack（gradient、RL、random search、人类 red-team）仍攻破了其中超过 90%"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "prompt injection 在 2025 OWASP LLM Top 10 中排在哪里？",
+      "options": [
+        "未列入",
+        "LLM01（最高，#1 application-layer threat）",
+        "LLM05",
+        "LLM10（最低）"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

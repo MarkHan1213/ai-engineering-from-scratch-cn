@@ -1,0 +1,67 @@
+[
+  {
+    "id": "feateng-pre-1",
+    "stage": "pre",
+    "question": "为什么 feature engineering 往往比选择更花哨的算法更有影响？",
+    "options": [
+      "feature engineering 会让代码运行更快",
+      "好特征能把原始数据隐藏的模式暴露给模型，让简单模型也有效",
+      "feature engineering 消除了对 test set 的需求",
+      "花哨算法无法处理原始数据"
+    ],
+    "correct": 1,
+    "explanation": "数据表示往往比算法本身更重要。像 BMI（weight/height^2）这样的良好特征会直接暴露相关模式，使 logistic regression 这样的简单模型也能与复杂 ensemble 竞争。"
+  },
+  {
+    "id": "feateng-pre-2",
+    "stage": "pre",
+    "question": "什么是 one-hot encoding？",
+    "options": [
+      "用每个类别在数据集中的频率替换该类别",
+      "为每个类别创建一个二元列，每行恰好有一列为 1",
+      "把所有特征转换到 0 和 1 之间",
+      "把目标变量编码为概率"
+    ],
+    "correct": 1,
+    "explanation": "One-hot encoding 会为每个唯一类别创建一个二元列。对于取值为 red/blue/green 的 color 特征，它会产生三列：is_red、is_blue、is_green。"
+  },
+  {
+    "id": "feateng-post-1",
+    "stage": "post",
+    "question": "target encoding 的 data leakage 风险是什么？",
+    "options": [
+      "它会让模型训练太慢",
+      "它用目标均值替换类别；如果不是只在训练数据上计算，就可能泄漏 test set 信息",
+      "它会创建过多特征",
+      "它只适用于 binary targets"
+    ],
+    "correct": 1,
+    "explanation": "Target encoding 会用每个类别的目标均值替换该类别。如果在完整数据集（包括测试数据）上计算，测试标签会泄漏到训练特征中，夸大性能估计。"
+  },
+  {
+    "id": "feateng-post-2",
+    "stage": "post",
+    "question": "TF-IDF 会用 inverse document frequency 给词加权。效果是什么？",
+    "options": [
+      "像 the 这样的常见词因为出现频繁而获得高权重",
+      "罕见且有区分度的词获得更高权重，常见词获得更低权重",
+      "所有词不管频率如何都获得相同权重",
+      "每个文档中只保留最常见的词"
+    ],
+    "correct": 1,
+    "explanation": "IDF = log(total docs / docs containing word)。常见词（出现在许多文档中）得到低 IDF。罕见且有区分度的词得到高 IDF，在表示中影响更大。"
+  },
+  {
+    "id": "feateng-post-3",
+    "stage": "post",
+    "question": "你有两个 correlation 为 0.98 的特征。为什么可能要移除其中一个？",
+    "options": [
+      "高度相关特征总会导致模型崩溃",
+      "它们是冗余的，几乎携带相同信息；保留两者会增加 overfitting 风险，却不增加信号",
+      "相关特征会让数据变得 non-stationary",
+      "correlation 高于 0.5 表示这些特征在测量不同事物"
+    ],
+    "correct": 1,
+    "explanation": "r=0.98 的特征几乎冗余。保留两者相当于加入带噪声的重复特征，会增加维度、overfitting 风险和 multicollinearity，却不提供新的目标信息。"
+  }
+]

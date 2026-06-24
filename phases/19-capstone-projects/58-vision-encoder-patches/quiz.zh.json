@@ -1,0 +1,78 @@
+{
+  "lesson": "58-vision-encoder-patches",
+  "title": "Vision Encoder Patches",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 Vision Transformer 使用 patches，而不是把每个 pixel 当作一个 token 输入？",
+      "options": [
+        "Patches 是 PyTorch 要求的",
+        "pixel-per-token 序列会让 attention compute 按平方爆炸，在典型分辨率下不可处理",
+        "Patches 会提升图像质量",
+        "这样可以避免使用 tokenizer"
+      ],
+      "correct": 1,
+      "explanation": "一张 224x224 图像有 150528 个 pixel tokens。Attention 对长度是平方复杂度，所以 16x16 patching 会把序列缩到 196 个 tokens，让模型可处理。"
+    },
+    {
+      "stage": "pre",
+      "question": "kernel = stride = patch_size 的 Conv2d 与 flatten-then-linear 之间是什么关系？",
+      "options": [
+        "它们产生不同输出",
+        "Conv2d 是对每个 patch 做同一个 linear projection 的更快写法",
+        "Conv2d 会加入非线性",
+        "flatten-then-linear 不可能实现"
+      ],
+      "correct": 1,
+      "explanation": "每个 Conv2d 输出位置都会把 patch pixels 与一个 filter 做点积，这与 flatten-then-linear 完全相同。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 2D sinusoidal position embedding 是确定性的，而不是 learned？",
+      "options": [
+        "learned positions 是非法的",
+        "固定 sin/cos 信号可以干净地插值到模型从未见过的 grid，这在分辨率变化时很有用",
+        "它节省磁盘空间",
+        "必须使用 random init"
+      ],
+      "correct": 1,
+      "explanation": "固定 sinusoidal positions 在不同分辨率下都是确定的，并让同一个 encoder 可以处理训练时没见过的输入。"
+    },
+    {
+      "stage": "check",
+      "question": "一张 224x224 图像使用 patch_size=16，并加一个 CLS token，输出序列长度是多少？",
+      "options": [
+        "196",
+        "197",
+        "224",
+        "256"
+      ],
+      "correct": 1,
+      "explanation": "224/16 = 14，所以有 14x14 = 196 个 patches，再加一个 CLS token，总共 197 个 tokens。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 reconstruction（unfold 后再 unflatten）是 patch front end 的有用 sanity check？",
+      "options": [
+        "它提升 accuracy",
+        "在没有 projection 时，pixels 经过 patch-flatten 再 round-trip 必须等于输入；失败说明 unfold math 错了",
+        "ONNX 要求这样",
+        "它加速 inference"
+      ],
+      "correct": 1,
+      "explanation": "没有 projection 时，patch step 是可逆的。如果 round-trip 发生漂移，说明 unfold 逻辑有 bug，encoder 后续也不可靠。"
+    },
+    {
+      "stage": "post",
+      "question": "在这节课中，把 learned position embedding 换成 2D sinusoidal one 会改变什么？",
+      "options": [
+        "没有任何变化",
+        "learned positions 可能在固定分辨率上拟合得略好；sinusoidal positions 不用重新训练就能迁移到新分辨率",
+        "sinusoidal positions 需要更多参数",
+        "sinusoidal positions 每个 step 都是随机的"
+      ],
+      "correct": 1,
+      "explanation": "learned positions 在单一分辨率上更灵活。sinusoidal positions 不消耗参数，并且能承受分辨率变化。"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "什么是 'single-agent ceiling'？",
+      "options": ["一个 agent 能使用的最大工具数量", "当任务超过单个 context window、需要不同专业能力，或需要并行工作时，单 agent 开始失效的边界", "一个 agent 每分钟能发起的 API 调用上限", "单个 GPU 能运行的最大模型规模"],
+      "correct": 1,
+      "explanation": "单 agent 只有一个 context window、一个 system prompt，并且顺序处理。当任务需要读 50 个文件（context overflow）、在研究和编码之间切换（mixed expertise），或同时做独立工作（parallelism）时，单 agent 就会失效。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么可能会使用多个 specialized agents，而不是一个强大的 general agent？",
+      "options": ["多个 agents 总是比单个大模型更便宜", "每个 agent 可以拥有聚焦的 system prompt、更小的 context 和专用工具，从而在自己的子任务上表现更好", "多个 agents 可以共享同一个 context window", "General agents 不能使用工具"],
+      "correct": 1,
+      "explanation": "为搜索优化的 researcher agent、为实现优化的 coder agent、为代码质量优化的 reviewer agent，各自做本职工作通常比一个 agent 同时扮演三种角色更好。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候 pipeline（sequential）multi-agent pattern 比 parallel fan-out pattern 更合适？",
+      "options": ["想最小化总延迟时", "每个阶段依赖上一阶段输出时，例如先 research 再 code 再 review", "所有子任务彼此独立时", "GPU 数量多于任务数量时"],
+      "correct": 1,
+      "explanation": "Pipeline pattern 适合天然顺序的工作：coder 需要 researcher 的输出，reviewer 需要 coder 的输出。子任务独立时，parallel fan-out 更合适。"
+    },
+    {
+      "stage": "post",
+      "question": "Multi-agent systems 中的 supervisor pattern 是什么？",
+      "options": ["人类手动给每个 agent 分配任务", "一个 central orchestrator agent，负责拆解任务、委派给 worker agents、收集结果并决定下一步", "记录 agent 行动用于调试的监控系统", "agents 对最佳回答投票的模式"],
+      "correct": 1,
+      "explanation": "Supervisor agent 像项目经理：把任务拆成子任务，分配给专门的 workers，审查输出，并决定是迭代还是收尾。这为 workflow 提供集中控制。"
+    },
+    {
+      "stage": "post",
+      "question": "相比 single agents，multi-agent systems 的主要 tradeoff 是什么？",
+      "options": ["Multi-agent systems 总是产出更低质量结果", "多次 LLM calls 和 inter-agent communication 带来的复杂度、延迟和成本增加，用来换取对复杂任务的更好处理能力", "Multi-agent systems 需要更多训练数据", "Multi-agent systems 不能使用外部工具"],
+      "correct": 1,
+      "explanation": "每增加一个 agent，就意味着更多 LLM calls（成本）、更多往返（延迟）和更多 failure modes（调试复杂度）。只有任务确实超出单 agent 能力时，multi-agent 才值得。"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 Stable Diffusion 在 4x64x64 latent space 中运行 DDPM，而不是直接在 3x512x512 pixel images 上运行？",
+      "options": [
+        "Latents 更容易可视化",
+        "在 16,384 个 latent values 上训练和采样，比在 786,432 个 pixels 上便宜约 48 倍；pretrained VAE 负责 image <-> latent 转换，diffusion model 只需要建模结构化 latent manifold",
+        "Latents 是 GPUs 的原生输出",
+        "为了让 inference deterministic"
+      ],
+      "correct": 1,
+      "explanation": "Latent diffusion 是让消费级 GPU 上的 text-to-image 变得实际可行的关键创新。VAE 在空间和通道上压缩约 48 倍。diffusion model 可以把全部参数和计算预算用于建模 latent manifold，而用户最终看到的是 decode 后的图像。"
+    },
+    {
+      "stage": "pre",
+      "question": "classifier-free guidance（CFG）在 inference 时做什么？",
+      "options": [
+        "运行两个独立模型并取平均",
+        "使用一个训练过的模型同时预测 conditional eps_cond 和 unconditional eps_uncond noise，然后按 eps = eps_uncond + w*(eps_cond - eps_uncond) 组合，以放大 prompt adherence",
+        "在测试时给模型添加 classifier head",
+        "使用更大的 scheduler"
+      ],
+      "correct": 1,
+      "explanation": "CFG 会用同一个模型训练 cond 和 uncond 预测：训练时 10% 情况下丢弃 conditioning，让同一组 weights 能产生两种预测。inference 时，上面的公式会放大 conditional direction。Guidance scale w 是调 prompt adherence 与 diversity 的标准旋钮；SD 默认 7.5。"
+    },
+    {
+      "stage": "post",
+      "question": "你把 SD 的默认 scheduler 换成 DPM-Solver++ 2M Karras，并把 num_inference_steps 从 50 降到 20。预期结果是什么？",
+      "options": [
+        "质量更差且运行更慢",
+        "质量相近，耗时约减半；DPM-Solver++ 是二阶 ODE integrator，相比 DDIM 在相同 sample quality 下用更少 steps 收敛",
+        "数值不稳定",
+        "还必须重新训练模型"
+      ],
+      "correct": 1,
+      "explanation": "Schedulers 与 model weights 解耦。DPM-Solver++ 是高阶 solver，约 20 steps 就能达到 DDIM-50 质量。无需 retraining，而且它是 2026 年生产默认选择。低于 8 steps 通常需要 LCM 或 Turbo 这类 distilled/consistency-model variants。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 Stable Diffusion 中 LoRA fine-tuning 比 full fine-tuning 更受欢迎？",
+      "options": [
+        "LoRA 默认生成更好的图像",
+        "LoRA 冻结 860M base U-Net，只在 attention layers 中插入很小的 rank-decomposition matrices，因此可在消费级硬件上几分钟训练，产出 10-50 MB adapters，并能在 inference 时替换或混合",
+        "diffusers 要求使用 LoRA",
+        "LoRA 完全防止 overfitting"
+      ],
+      "correct": 1,
+      "explanation": "LoRA 的价值在训练成本和分发方式。完整 SD fine-tuning 会更新 860M+ 参数，并需要 20+ GB VRAM。LoRA 只更新约 1-10M 参数，6-8 GB 显存即可。base model 不变，因此同一个 LoRA 可以加载到任何兼容 checkpoint，多个 LoRAs 也能组合。CivitAI 生态几乎完全建立在 LoRAs 上。"
+    },
+    {
+      "stage": "post",
+      "question": "你用 guidance_scale=15 生成同一个 prompt，看到颜色过饱和和烧灼式 artefacts。发生了什么？",
+      "options": [
+        "模型坏了",
+        "CFG 会放大 conditional direction；超过约 9-12 的阈值后，放大会把预测推到 VAE 无法干净 decode 的 manifold 外，产生视觉 artefacts。把 guidance 降到 7-9 可获得更平衡结果",
+        "VAE 需要 retraining",
+        "seed 错了"
+      ],
+      "correct": 1,
+      "explanation": "CFG 的公式没有上界：w 越大，prediction 越沿着 (eps_cond - eps_uncond) 方向走得更远。超过某个点后会离开训练分布，VAE decoder 会产生过饱和、海报化图像。生产默认通常是 7-8。一些新 schedulers 支持 CFG scheduling（final timesteps 降低 w）来避免这个问题。"
+    }
+  ]
+}

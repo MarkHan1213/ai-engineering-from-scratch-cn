@@ -1,0 +1,78 @@
+{
+  "lesson": "13-llm-observability",
+  "title": "LLM Observability Stack 选型",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "课程如何划分 2026 年 LLM observability 市场？",
+      "options": [
+        "development platforms（捆绑 evals/prompts/sessions）与 gateway/telemetry tools",
+        "on-prem 与 cloud",
+        "vendor 与 open source",
+        "Python 与 TypeScript"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程将哪个工具定位为 MIT-licensed core、强 self-host story，并且 cloud free tier 为每月 50K events？",
+      "options": [
+        "LangSmith",
+        "Phoenix",
+        "Arize AX",
+        "Langfuse"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "相对 Datadog 这类 monolithic observability stacks，Arize AX 的主要规模化主张是什么？",
+      "options": [
+        "总是更贵",
+        "通过 zero-copy Iceberg/Parquet integration，在规模化时大约便宜 100 倍",
+        "每天 1M events 以下免费",
+        "便宜 10%"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程认为为了 portability，哪个 instrumentation layer 是错误的？",
+      "options": [
+        "在 agent framework 内部 instrument，因为它会把你耦合到该框架",
+        "对成功请求采样 5%",
+        "使用 OpenTelemetry GenAI semantic conventions",
+        "在 HTTP/OpenAI-SDK layer instrument"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程认为 2026 年 observability tools 之间的互操作层是哪种 OpenTelemetry conventions？",
+      "options": [
+        "OTel messaging semantic conventions",
+        "OTel database semantic conventions",
+        "GenAI semantic conventions（gen_ai.system, gen_ai.request.model, gen_ai.usage.input_tokens）",
+        "OTel HTTP semantic conventions"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么课程认为 full-trace retention 无法扩展到每天 1M requests 以上？",
+      "options": [
+        "retention storage 成本会超过 LLM 调用本身；团队必须采样（例如 100% errors、100% high-cost、5% successes）",
+        "OpenTelemetry 限制 trace volume",
+        "vendor 会阻止它",
+        "Phoenix 只支持 1M traces"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

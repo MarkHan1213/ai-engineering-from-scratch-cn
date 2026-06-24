@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 Bayes' theorem 中，prior 指什么？",
+      "options": [
+        "证据的概率",
+        "观察任何证据之前，你对某个假设的信念",
+        "在假设成立时观察到证据的概率",
+        "看到证据后的最终更新概率"
+      ],
+      "correct": 1,
+      "explanation": "prior P(A) 表示在看到任何数据之前，你对假设 A 的初始信念。观察到证据 B 后，它会被更新为 posterior P(A|B)。"
+    },
+    {
+      "stage": "pre",
+      "question": "一种罕见疾病每 10,000 人中有 1 人患病。一个 99% 准确的检测结果为阳性。你实际患病的概率大约是多少？",
+      "options": [
+        "99%",
+        "约 1%",
+        "50%",
+        "10%"
+      ],
+      "correct": 1,
+      "explanation": "尽管检测准确率为 99%，但疾病极其罕见（0.01%），所以大多数阳性结果来自健康人的假阳性。Bayes' theorem 给出 P(sick|positive) 约为 0.98%，而不是 99%。"
+    },
+    {
+      "stage": "post",
+      "question": "Naive Bayes 分类器中的 Laplace smoothing 是什么，为什么需要它？",
+      "options": [
+        "把特征值归一化为零均值和单位方差",
+        "给每个特征加一个小计数，避免未见过的词产生零概率，从而把整个概率乘积变成零",
+        "平滑类别之间的决策边界",
+        "降低特征空间的维度"
+      ],
+      "correct": 1,
+      "explanation": "如果不做平滑，一个从未在垃圾邮件训练数据中出现过的词会得到 P(word|spam)=0，使整个概率乘积为零，即使其他词强烈指向垃圾邮件。给每个计数加 1 可以避免这种情况。"
+    },
+    {
+      "stage": "post",
+      "question": "MAP（Maximum A Posteriori）估计和 MLE（Maximum Likelihood Estimation）有什么不同？",
+      "options": [
+        "MAP 使用的数据集比 MLE 更大",
+        "MAP 会引入参数的先验分布，等价于加入正则化；MLE 只使用似然",
+        "MAP 比 MLE 计算更快",
+        "MLE 总是比 MAP 效果更好"
+      ],
+      "correct": 1,
+      "explanation": "MAP 最大化 P(data|params) * P(params)，而 MLE 只最大化 P(data|params)。先验 P(params) 起到正则化作用：Gaussian prior 等价于 L2 正则，Laplace prior 等价于 L1。"
+    },
+    {
+      "stage": "post",
+      "question": "在顺序 Bayesian updating 中，你从 Beta(1,1) 开始，观察到 7 次正面和 3 次反面。posterior 是什么？",
+      "options": [
+        "Beta(7, 3)",
+        "Beta(8, 4)",
+        "Beta(1.7, 1.3)",
+        "Normal(0.7, 0.1)"
+      ],
+      "correct": 1,
+      "explanation": "Beta-Binomial 共轭更新会把成功次数加到第一个参数，把失败次数加到第二个参数：Beta(1+7, 1+3) = Beta(8, 4)。posterior mean 是 8/12 = 0.667。"
+    }
+  ]
+}

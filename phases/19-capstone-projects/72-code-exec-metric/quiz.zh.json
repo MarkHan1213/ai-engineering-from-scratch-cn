@@ -1,0 +1,78 @@
+{
+  "lesson": "72-code-exec-metric",
+  "title": "Code Exec Metric",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 runner 要为每个 candidate 启动新的 Python subprocess，而不是 inline 调用 exec？",
+      "options": [
+        "它比 exec 更快",
+        "它避免污染 builtins",
+        "它把 timeouts、output overruns 和危险 imports 与 host eval process 隔离开",
+        "exec 在现代 Python 中已废弃"
+      ],
+      "correct": 2,
+      "explanation": "candidate code 中的无限循环或失控内存分配只会让 subprocess 崩溃。host eval 还能继续推进。"
+    },
+    {
+      "stage": "pre",
+      "question": "一个 task 有三个 assertions，其中两个通过、一个失败，score 是多少？",
+      "options": [
+        "1.0",
+        "0.667",
+        "0.0",
+        "0.5"
+      ],
+      "correct": 1,
+      "explanation": "score 是 passed 除以 total。三项中过两项是 0.667。exit code 是 assertion_fail。"
+    },
+    {
+      "stage": "check",
+      "question": "当 candidate code 无法 parse 时，runner 返回哪个 exit code？",
+      "options": [
+        "error",
+        "assertion_fail",
+        "timeout",
+        "syntax_error"
+      ],
+      "correct": 3,
+      "explanation": "compile() 会在 runner 内部抛出 SyntaxError，inner script 捕获它并写出 exit_code=syntax_error。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 wall-clock timeout 是承重控制，而不是 import denylist？",
+      "options": [
+        "Python 中无法禁止 imports",
+        "大多数失败是无限循环，而且有决心的对手可以绕过任何 in-process denylist",
+        "subprocess.run 不支持 denylists",
+        "wall-clock 会在 compile time 检查"
+      ],
+      "correct": 1,
+      "explanation": "Denylists 抓的是偷懒代码，timeouts 抓的是无限循环。denylist 是后备，timeout 才是底线。"
+    },
+    {
+      "stage": "check",
+      "question": "当 n - c < k 时，pass_at_k(n, c, k) 返回什么？",
+      "options": [
+        "Zero，因为 sample 未定义",
+        "One，因为 sample 必然包含至少一个 passing solution",
+        "c / n，即 empirical pass rate",
+        "抛出 ValueError"
+      ],
+      "correct": 1,
+      "explanation": "如果 failures 数量少于 sample size，那么任意大小为 k 的 sample 必然至少包含一个 pass，所以概率为 1。"
+    },
+    {
+      "stage": "post",
+      "question": "runner 如何暴露 output overflow？为什么 cap 是 256 KB？",
+      "options": [
+        "subprocess 的 stdout 会被流式读取；一旦 256 KB running total 被越过，child 就会被杀掉，task 记录为 exit_code=error，detail 为 \"output overflow\"",
+        "只看 stderr；大小匹配 OS pipe 默认值",
+        "candidate source size，设置上限是为了让生成代码保持较小",
+        "score value，用两位小数表示百分比"
+      ],
+      "correct": 0,
+      "explanation": "cap 用来保护 host。持续刷 stdout 的 candidate code 会在流式输出中途被杀掉；runner 会把结果归一化为 exit_code=error 且 detail 为 \"output overflow\"，而不是新增一个 exit code。"
+    }
+  ]
+}

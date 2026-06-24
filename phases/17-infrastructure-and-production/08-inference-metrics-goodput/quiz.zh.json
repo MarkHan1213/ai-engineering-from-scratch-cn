@@ -1,0 +1,78 @@
+{
+  "lesson": "08-inference-metrics-goodput",
+  "title": "推理指标：TTFT、TPOT、ITL、Goodput、P99",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "哪些组件主导 TTFT（time to first token）？",
+      "options": [
+        "仅 decode forward time",
+        "weights 的 disk I/O",
+        "Tokenizer GIL overhead",
+        "Queue time、network request time 和 prefill time"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程称哪个 metric 才是真正对产品重要的？",
+      "options": [
+        "GPU duty cycle",
+        "tokens per second 聚合吞吐",
+        "Goodput：同时满足所有 SLO 约束的 requests 比例",
+        "Mean ITL"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 mean 是报告 LLM latency 的错误统计量？",
+      "options": [
+        "streaming responses 上无法计算 mean",
+        "mean 只适用于 prefill，不适用于 decode",
+        "LLM latency distributions 是右偏的；用户经常撞到 mean 会掩盖的 P99 outliers",
+        "GenAI-Perf 不支持 mean"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么同一次 run 中 GenAI-Perf 和 LLMPerf 对 TPOT 的结果会不同？",
+      "options": [
+        "GenAI-Perf 只在 Blackwell 上运行",
+        "GenAI-Perf 在 ITL 计算中排除 TTFT；LLMPerf 包含它，因此工具选择会改变数字",
+        "LLMPerf 使用 microseconds，GenAI-Perf 使用 milliseconds",
+        "它们采样不同 requests"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "对于长输出请求（>500 tokens），哪个 metric 主导端到端延迟？",
+      "options": [
+        "TPOT 乘以输出长度",
+        "Cold-start time",
+        "TTFT",
+        "Network response time"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪组最能概括课程中 2026 年面向消费者的 70B chat model 合理 SLO？",
+      "options": [
+        "只看 P50，不看更高 percentile",
+        "TTFT P99 800 ms，TPOT P99 25 ms，<300-token outputs 的 E2E P99 3 s，goodput >= 99%",
+        "TTFT P99 8s，TPOT P99 200ms，goodput 50%",
+        "Mean TTFT 10 ms，mean TPOT 1 ms"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

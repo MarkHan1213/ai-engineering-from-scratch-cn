@@ -1,0 +1,37 @@
+[
+  {
+    "question": "一个 7B parameter model 使用 FP16 时，仅 weights 需要多少 VRAM？",
+    "options": ["7 GB", "14 GB", "28 GB", "56 GB"],
+    "correct": 1,
+    "explanation": "FP16 中每个参数占 2 bytes。7 billion * 2 bytes = 14 GB。加上 Adam optimizer states（2 份）和 gradients，训练总内存大约是 56 GB，还没算 activations。",
+    "stage": "pre"
+  },
+  {
+    "question": "Distributed training 中使用的三类 parallelism 是什么？",
+    "options": ["CPU、GPU 和 TPU parallelism", "Data parallelism、tensor parallelism 和 pipeline parallelism", "Batch、sequence 和 token parallelism", "Forward、backward 和 optimizer parallelism"],
+    "correct": 1,
+    "explanation": "Data parallelism 在每个 GPU 上复制模型并切分数据。Tensor parallelism 把单层拆到多个 GPU。Pipeline parallelism 把模型层拆成跨 GPU 的 stages。",
+    "stage": "pre"
+  },
+  {
+    "question": "FSDP (Fully Sharded Data Parallel) 做了什么标准 DDP 不做的事？",
+    "options": ["它使用不同 optimizer", "它把 model parameters、gradients 和 optimizer states 分片到多个 GPU，而不是在每张卡上复制完整模型", "它更快处理数据", "它支持更多 GPU"],
+    "correct": 1,
+    "explanation": "标准 DDP 会在每个 GPU 上复制整个模型（浪费）。FSDP 把参数分片到多个 GPU，每张卡只持有一部分。计算时按需 gather 参数，之后释放。",
+    "stage": "post"
+  },
+  {
+    "question": "DeepSpeed ZeRO Stage 3 是什么？",
+    "options": ["一种 quantization 方法", "它把 optimizer states、gradients 和 model parameters 都切分到多个 GPU，以达到最高内存效率", "一种 learning rate schedule", "一种 data preprocessing pipeline"],
+    "correct": 1,
+    "explanation": "ZeRO Stage 1 分片 optimizer states，Stage 2 增加 gradient sharding，Stage 3 增加 parameter sharding。Stage 3 内存节省最大，可以训练远超单 GPU 内存的模型。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么 data-parallel training 需要 gradient synchronization？",
+    "options": ["为了防止 overfitting", "每个 GPU 在不同数据上计算 gradients；跨 GPU 平均 gradients 能确保所有 replicas 做相同更新", "为了减少内存使用", "为了加速 forward pass"],
+    "correct": 1,
+    "explanation": "在 data parallelism 中，每个 GPU 处理不同 batch，计算不同 gradients。AllReduce 会在所有 GPU 间平均这些 gradients，让每个 replica 应用相同更新并保持同步。",
+    "stage": "post"
+  }
+]

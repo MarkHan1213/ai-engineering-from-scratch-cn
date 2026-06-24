@@ -1,0 +1,90 @@
+{
+  "lesson": "21-computer-use-agents",
+  "title": "Computer Use：Claude、OpenAI CUA、Gemini",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Claude computer use 接收什么输入，又输出什么？",
+      "options": [
+        "输入 accessibility tree，输出键盘/鼠标命令",
+        "输入截图（基于视觉），输出键盘/鼠标命令",
+        "输入 DOM XML，输出 JavaScript",
+        "输入 JSON，输出 SQL"
+      ],
+      "correct": 1,
+      "explanation": "Claude 读取像素并输出键盘/鼠标动作；不使用 OS accessibility API。"
+    },
+    {
+      "stage": "pre",
+      "question": "Gemini 2.5 Computer Use 最有辨识度的安全功能是什么？",
+      "options": [
+        "逐步 safety service，会在执行前评估每个 action，并拒绝不安全 action",
+        "硬编码 WAF 规则",
+        "强制 CAPTCHA",
+        "默认只读模式"
+      ],
+      "correct": 0,
+      "explanation": "Gemini 2.5 Computer Use 的标志性功能是逐步 safety classifier。"
+    },
+    {
+      "stage": "check",
+      "question": "课程指出，在这三个模型中，哪些内容都属于不可信输入？",
+      "options": [
+        "只有 HTTPS 响应",
+        "截图、DOM 文本、工具输出、PDF 内容、任何检索到的内容",
+        "只有 PDF 内容",
+        "没有不可信内容；一切都可信"
+      ],
+      "correct": 1,
+      "explanation": "只有用户直接指令才算授权；其他所有内容都不可信。"
+    },
+    {
+      "stage": "check",
+      "question": "课程引用了 OpenAI CUA 发布时在 OSWorld / WebArena 上的哪些数字？",
+      "options": [
+        "OSWorld 38.1%、WebArena 58.1%、WebVoyager 87%",
+        "OSWorld 0%、WebArena 0%",
+        "OSWorld 99%、WebArena 99%",
+        "未报告数字"
+      ],
+      "correct": 0,
+      "explanation": "这些是课程引用的发布时指标。"
+    },
+    {
+      "stage": "check",
+      "question": "下面哪种防御模式不在 2026 年收敛列表中？",
+      "options": [
+        "逐步 safety classifier",
+        "导航目标 allowlist/blocklist",
+        "对敏感动作使用 human-in-the-loop",
+        "为了省时间自动点击确认对话框"
+      ],
+      "correct": 3,
+      "explanation": "自动点击对话框与安全相反；课程建议显式确认。"
+    },
+    {
+      "stage": "post",
+      "question": "课程强调的针对 computer-use agents 的主要攻击是什么？",
+      "options": [
+        "网络中断",
+        "恶意页面或 PDF 在检索内容中嵌入指令，模型把它当成用户意图",
+        "渲染缓慢",
+        "OS 更新滞后"
+      ],
+      "correct": 1,
+      "explanation": "将截图或 DOM 文本视为授权，是典型的 indirect-prompt-injection 失败。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候特别建议使用 human-in-the-loop 确认？",
+      "options": [
+        "只读导航时",
+        "登录、购买、删除文件这类敏感动作时",
+        "只有模型要求时",
+        "永不需要"
+      ],
+      "correct": 1,
+      "explanation": "涉及金钱、数据暴露、新登录等敏感动作时，需要明确的人类确认。"
+    }
+  ]
+}

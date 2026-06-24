@@ -1,0 +1,90 @@
+{
+  "lesson": "16-openai-agents-sdk",
+  "title": "OpenAI Agents SDK：Handoffs、Guardrails、Tracing",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "OpenAI Agents SDK 的五个 primitives 是什么？",
+      "options": [
+        "Agent, Handoff, Guardrail, Session, Tracing",
+        "Node, Edge, Reducer, Checkpointer, Subgraph",
+        "Plan, Worker, Solver, Evaluator, Reflector",
+        "Tool, Prompt, Model, Memory, Trace"
+      ],
+      "correct": 0,
+      "explanation": "SDK 提供这五个 primitives。"
+    },
+    {
+      "stage": "pre",
+      "question": "模型如何看到一次 handoff？",
+      "options": [
+        "作为自定义 HTTP endpoint",
+        "作为名为 transfer_to_<agent_name> 的工具",
+        "作为 system message",
+        "作为特殊 token"
+      ],
+      "correct": 1,
+      "explanation": "Handoff 会暴露为工具，名称形态是 transfer_to_<agent>。"
+    },
+    {
+      "stage": "check",
+      "question": "SDK 自带哪三类 guardrail？",
+      "options": [
+        "Input、output 和 tool guardrails",
+        "Pre、post 和 inline guardrails",
+        "Hard、soft 和 best-effort guardrails",
+        "Static、dynamic 和 federated guardrails"
+      ],
+      "correct": 0,
+      "explanation": "包括 input（第一个 agent）、output（最后一个 agent）和 tool（每个 function tool）guardrails。"
+    },
+    {
+      "stage": "check",
+      "question": "parallel guardrails 和 blocking guardrails 有什么区别？",
+      "options": [
+        "Parallel 与主 LLM 同时运行（低延迟，但触发时浪费 token）；blocking 先运行（触发时不浪费 token）",
+        "Blocking 是异步的；parallel 是同步的",
+        "Parallel 总是更贵",
+        "Blocking 只适用于 output"
+      ],
+      "correct": 0,
+      "explanation": "parallel 优化延迟，但在被触发时会浪费 token；blocking 节省 token，但会增加延迟。"
+    },
+    {
+      "stage": "check",
+      "question": "SDK 中 tracing 是如何启用的？",
+      "options": [
+        "默认关闭；按 agent 启用",
+        "默认开启；OPENAI_AGENTS_DISABLE_TRACING=1 可关闭",
+        "只能通过 OpenTelemetry collector",
+        "只能在 hosted dashboard 上使用"
+      ],
+      "correct": 1,
+      "explanation": "LLM、tool、handoff 和 guardrail 的 spans 默认发出；可用环境变量禁用。"
+    },
+    {
+      "stage": "post",
+      "question": "什么是 handoff drift，课程建议如何缓解？",
+      "options": [
+        "tracing 落后；减少 span 数量",
+        "Agent A handoff 给 B，B 又 handoff 回 A，形成循环；增加 hop counter",
+        "session 溢出；归档旧 session",
+        "guardrails 不同步；重新训练"
+      ],
+      "correct": 1,
+      "explanation": "hop counter 可以在 transfer chain 无限循环前给它设上限。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 built-in tools 会形成 guardrail gap？",
+      "options": [
+        "它们比 function tools 更慢",
+        "tool guardrails 只在 function tools 上触发；built-in tools（file reader、web fetch）需要单独策略",
+        "它们不能被 traced",
+        "它们不支持 handoffs"
+      ],
+      "correct": 1,
+      "explanation": "逐工具 guardrails 覆盖 function tools；built-in tools 需要额外的 policy layer。"
+    }
+  ]
+}

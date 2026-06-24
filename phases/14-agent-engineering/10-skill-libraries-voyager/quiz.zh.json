@@ -1,0 +1,90 @@
+{
+  "lesson": "10-skill-libraries-voyager",
+  "title": "Skill Libraries 与终身学习（Voyager）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Voyager 将什么视为 action space？",
+      "options": [
+        "原始 Minecraft 命令",
+        "可执行代码（JavaScript functions），并对其进行存储、检索和组合",
+        "只有文本 prompt",
+        "强化学习 Q-values"
+      ],
+      "correct": 1,
+      "explanation": "Voyager 的贡献是让代码成为 action：skill 是程序，而不是原始命令。"
+    },
+    {
+      "stage": "pre",
+      "question": "Voyager Agent 由哪三个组件定义？",
+      "options": [
+        "Encoder, decoder, value head",
+        "Automatic curriculum, skill library, iterative prompting",
+        "Planner, executor, judge",
+        "Retriever, generator, ranker"
+      ],
+      "correct": 1,
+      "explanation": "Voyager 围绕 curriculum、skill library 和 iterative prompting 来组织 Agent。"
+    },
+    {
+      "stage": "check",
+      "question": "skill 执行尝试会返回哪三种信号？",
+      "options": [
+        "Pass, fail, retry",
+        "Success, error（带 stack trace）, self-verification failure",
+        "Green, yellow, red",
+        "Heartbeat, ack, nack"
+      ],
+      "correct": 1,
+      "explanation": "Voyager 的 iterative prompting 机制由这三种信号驱动，并把它们折回下一版实现中。"
+    },
+    {
+      "stage": "check",
+      "question": "automatic curriculum 如何选择下一个任务？",
+      "options": [
+        "在 action space 上均匀随机选择",
+        "根据环境状态和 skill 库存，选择略高于当前能力的任务（探索的最佳难度区间）",
+        "总是选择最难的可用任务",
+        "只使用用户提供的列表"
+      ],
+      "correct": 1,
+      "explanation": "proposer 会瞄准略高于当前能力的任务，让进展保持稳定。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个 2026 年产品最明显对应课程中的 Voyager skill？",
+      "options": [
+        "OpenAI fine-tuning",
+        "Claude Agent SDK skills：按名称检索、按需加载的代码和指令",
+        "Pinecone indices",
+        "AWS Lambda layers"
+      ],
+      "correct": 1,
+      "explanation": "Agent SDK skills 对应 Voyager 中“可命名、可检索、可组合代码”的模式。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么课程建议在写入 skill library 时做去重？",
+      "options": [
+        "磁盘很贵",
+        "否则同一个 skill 会以略有差异的 description 被反复添加；检索应返回一个 canonical version",
+        "provider 会拒绝重复项",
+        "Git 会阻止重复项"
+      ],
+      "correct": 1,
+      "explanation": "近重复 description 会合并成单一 canonical skill，让检索保持干净。"
+    },
+    {
+      "stage": "post",
+      "question": "composed-skill drift 描述的是什么问题？",
+      "options": [
+        "Python 升级后某个 skill 不再能编译",
+        "parent skill 悄悄使用了未经它测试的 refined child 版本；修复方式是 pin skill versions",
+        "skill 在存储中被加密",
+        "检索没有返回任何内容"
+      ],
+      "correct": 1,
+      "explanation": "没有版本 pinning 时，child 的一次 refinement 会静默改变 parent 的行为。"
+    }
+  ]
+}

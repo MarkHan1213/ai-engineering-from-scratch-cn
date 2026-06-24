@@ -1,0 +1,102 @@
+{
+  "lesson": "01-text-processing",
+  "title": "文本处理：Tokenization、Stemming 与 Lemmatization",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么语言模型在训练前需要做预处理？",
+      "options": [
+        "预处理会提高 GPU 利用率",
+        "模型消费的是离散整数 token，而不是原始文本",
+        "模型可以直接读取字符串",
+        "只有没有空格的语言才需要预处理"
+      ],
+      "correct": 1,
+      "explanation": "模型实际操作的是整数 token ID；预处理把连续的自然语言文本转换成离散输入。"
+    },
+    {
+      "stage": "pre",
+      "question": "哪种预处理操作是基于规则去掉词尾？",
+      "options": [
+        "Stemming",
+        "POS tagging",
+        "Lemmatization",
+        "Tokenization"
+      ],
+      "correct": 0,
+      "explanation": "Stemming 用规则砍掉后缀；速度快，但可能得到不合法或错误的词形。"
+    },
+    {
+      "stage": "check",
+      "question": "Porter stemmer 的 step 1a 会把单词 'ponies' 变成什么？",
+      "options": [
+        "ponies",
+        "ponie",
+        "pony",
+        "poni"
+      ],
+      "correct": 3,
+      "explanation": "'ies' 规则会把后缀替换成 'i'，得到 'poni'；真实 Porter 算法后续 step 1b 会继续清理。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 lemmatization 通常需要 POS tag？",
+      "options": [
+        "处理 Unicode",
+        "提升速度",
+        "语法上下文能区分 'better' (ADJ) 和 'better' (VERB) 这类词形",
+        "减少内存占用"
+      ],
+      "correct": 2,
+      "explanation": "lemma 取决于词在句子里的语法角色；没有 tag 时，查表会有歧义。"
+    },
+    {
+      "stage": "check",
+      "question": "把 NLTK Penn Treebank POS tag 转成 WordNet tag 时，以 'V' 开头的 tag 会映射到什么？",
+      "options": [
+        "'n' (noun)",
+        "'v' (verb)",
+        "'r' (adverb)",
+        "'a' (adjective)"
+      ],
+      "correct": 1,
+      "explanation": "Penn Treebank 中动词前缀的 tag 会映射到 WordNet 的 'v'。"
+    },
+    {
+      "stage": "post",
+      "question": "NLP 预处理里的 'training/inference mismatch' 是什么？",
+      "options": [
+        "训练和测试使用了不同 batch size",
+        "训练和服务阶段使用了不同预处理，导致推理时模型看到陌生分布",
+        "GPU 内存问题",
+        "在一个 notebook 里混用 tokenizer 库"
+      ],
+      "correct": 1,
+      "explanation": "训练和推理预处理不一致，是生产 NLP 系统最常见的故障来源之一。"
+    },
+    {
+      "stage": "post",
+      "question": "在 transformer pipeline 中，应该用什么替代传统预处理工具？",
+      "options": [
+        "NLTK word_tokenize",
+        "模型自带的 tokenizer（例如通过 tokenizers / transformers 使用）",
+        "正则 tokenizer",
+        "spaCy en_core_web_sm"
+      ],
+      "correct": 1,
+      "explanation": "Transformer 模型会随模型一起发布匹配的 tokenizer；经典预处理通常会被绕过。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么要在 requirements 中固定 NLTK 和 spaCy 的版本？",
+      "options": [
+        "许可证兼容性",
+        "Tokenizer 和 lemmatizer 的行为可能随小版本变化，悄悄改变训练分布",
+        "旧版本支持更多语言",
+        "新版本更慢"
+      ],
+      "correct": 1,
+      "explanation": "库升级可能改变 tokenization 输出，让线上输入偏离训练分布。"
+    }
+  ]
+}

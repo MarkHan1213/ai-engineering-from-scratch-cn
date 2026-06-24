@@ -1,0 +1,78 @@
+{
+  "lesson": "24-chaos-engineering-llm",
+  "title": "LLM Production 的 Chaos Engineering",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "课程要求在生产中运行 chaos 前具备哪五个前置条件？",
+      "options": [
+        "Slack channel、sticker pack、mascot、hashtag、blog post",
+        "SLI/SLO、observability、automated rollback、structured runbooks、on-call",
+        "只有 vector database",
+        "三个 frontier models"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "chaos architecture 有哪四个 planes，加上 feedback loop？",
+      "options": [
+        "Ingest, transform, store, serve",
+        "Train, eval, deploy, archive",
+        "Control, target, safety, observability，并反馈到 SLO adjustments",
+        "Frontend, backend, mobile, web"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "chaos experiments 期间 burn-rate alert guardrail 做什么？",
+      "options": [
+        "禁用 observability",
+        "自动将实验提升到 production",
+        "加快实验",
+        "当每日 error-budget burn 超过预期约 2 倍时暂停实验"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项是课程列出的 LLM-specific chaos experiment？",
+      "options": [
+        "丢弃所有 DNS",
+        "随机降低 fan-speed",
+        "KV eviction storm，强制 vLLM block-budget saturation",
+        "重启整个 datacenter"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程建议 chaos exercises 采用什么节奏？",
+      "options": [
+        "每周小 canary，每月带 postmortem 的 game day，每季度跨团队 resilience audit",
+        "每天全生产 outage",
+        "永不运行",
+        "只每年一次"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "malformed-prompt experiment 会揭示哪种 LLM-specific failure mode？",
+      "options": [
+        "tokenizer stalls，在 deeply nested unicode 或 huge UTF-8 codepoints 这类输入上锁住 worker",
+        "disk I/O contention",
+        "GPU undervolt",
+        "network packet loss"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

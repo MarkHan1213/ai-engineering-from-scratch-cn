@@ -1,0 +1,78 @@
+{
+  "lesson": "49-lm-eval-harness",
+  "title": "Language Model Evaluation Harness",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 harness 的 JSONL 格式中，哪四类字段定义了一个 task example？",
+      "options": [
+        "name, score, payload, vendor",
+        "id、prompt、targets、metric，以及一个可选的 extras dict，用来放 metric 需要的 side data",
+        "input 和 output",
+        "weights 和 bias"
+      ],
+      "correct": 1,
+      "explanation": "JSONL 中的一行就是契约。extras 字段让 code_exec metric 可以传入 io_pairs，而不会污染 prompt。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 metric function 的签名是 (prediction, targets, extras) -> float？",
+      "options": [
+        "随机选择",
+        "这是能同时处理单 target string match、多 reference rouge-l、以及带 side data 的 code_exec 的最小签名，同时把分数保持在可比较的 [0.0, 1.0] 范围内",
+        "它返回 integer",
+        "它需要 model object"
+      ],
+      "correct": 1,
+      "explanation": "[0,1] 内的 float 让每个 task 和总体分数都是可解释的平均值。extras slot 是 code_exec 获取 io_pairs 的方式。"
+    },
+    {
+      "stage": "check",
+      "question": "code_exec metric 如何抵抗恶意 prediction？",
+      "options": [
+        "它没有防护",
+        "它用被削减过的 __builtins__ dict 运行 prediction，因此 namespace 只暴露少量安全名称；import 语句会失败，因为 importer 不在作用域内",
+        "它使用 sandbox containers",
+        "它拒绝任何包含 def 的内容"
+      ],
+      "correct": 1,
+      "explanation": "本课的 safe namespace 会把 builtins 缩减到少数名称。测试断言 import os 会返回 score 0.0，而不是执行。"
+    },
+    {
+      "stage": "check",
+      "question": "model adapter 抽象带来了什么？",
+      "options": [
+        "没有任何作用",
+        "它是 harness 中唯一与具体模型相关的代码；把 adapter 换到新 vendor，tasks、metrics、runner 和 leaderboard format 都保持不变",
+        "它让模型更快",
+        "torch 要求这样"
+      ],
+      "correct": 1,
+      "explanation": "本课中的 ToyAdapter 是确定性的 pattern matcher。面向真实 vendor 的 HttpAdapter 也有相同的 generate(prompts) -> list[str] 表面。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 leaderboard JSON 要携带 leaderboard.v1 这样的 schema string？",
+      "options": [
+        "为了 SEO",
+        "这样未来格式变化时可以 bump version，下游 dashboards 能按版本分派，而不是静默损坏",
+        "只是随机字段",
+        "它会压缩文件"
+      ],
+      "correct": 1,
+      "explanation": "这和 lesson 47 的 checkpoint payload 是同一个技巧。schema 字段就是 migration hook。"
+    },
+    {
+      "stage": "post",
+      "question": "阅读 leaderboard 时，overall_score 是如何计算的？比较两次 run 时还应该注意什么？",
+      "options": [
+        "正确数量之和",
+        "per-task scores 的平均值（每个都在 [0,1]）；比较时还要对分数变化的 task diff per-example predictions，因为单个分数会隐藏哪些 example 退化了",
+        "最佳 task score",
+        "随机样本"
+      ],
+      "correct": 1,
+      "explanation": "per-task means 的平均值会给每个 task 相同权重。使用 --include-per-example 把 prediction-level 证据与分数放在一起，才能看清 regression。"
+    }
+  ]
+}

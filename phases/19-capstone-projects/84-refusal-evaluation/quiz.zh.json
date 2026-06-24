@@ -1,0 +1,78 @@
+{
+  "lesson": "84-refusal-evaluation",
+  "title": "Capstone 84：Refusal Evaluation",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "under-refusal 衡量什么？",
+      "options": [
+        "模型回答 labeled unsafe prompts 的频率",
+        "模型拒绝 labeled safe prompts 的频率",
+        "模型每个 response 输出多少 tokens",
+        "每个 prompt 的 API call 成本"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "为什么这节课使用 mock LLM，而不是真实模型？",
+      "options": [
+        "因为 capstones 中不允许真实模型",
+        "这样同一 input 在每次 run 中都会产生相同 output，让 code changes 可归因到已知原因",
+        "因为 mock LLMs 比真实模型更准确",
+        "因为这节课需要 GPU hardware"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "safe prompt count = 30、refused safe count = 5 时，over-refusal rate 是多少？",
+      "options": [
+        "0.50",
+        "0.17",
+        "0.30",
+        "0.05"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "这里的 Expected Calibration Error (ECE) 衡量什么？",
+      "options": [
+        "unsafe prompts 上 refusals 的占比",
+        "模型声明的 confidence 与观察到的 accuracy 之间的差距，并按 confidence ranges 分 bin",
+        "所有 responses 的总 token count",
+        "触发的 regex rules 数量"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 framework 要把 unsafe prompts 与 lesson 82 taxonomy join？",
+      "options": [
+        "为了重新运行 lesson 82 corpus loader",
+        "为了按 attack category 汇报 under-refusal，让团队看见模型在哪条 boundary 上泄漏",
+        "为了把每个 prompt 的 severity 提高一档",
+        "为了移除重复项"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 framework 返回 under-refusal 和 over-refusal 两个指标，而不是单个 safety score？",
+      "options": [
+        "因为 Python dataclasses 更喜欢多个字段",
+        "因为它们是两个相反错误，单个数字会隐藏某个 build 中更糟的那一项",
+        "因为 under-refusal 只用于 CI",
+        "因为 over-refusal 由另一个团队计算"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

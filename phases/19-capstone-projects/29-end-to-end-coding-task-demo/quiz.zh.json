@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/29-end-to-end-coding-task-demo",
+  "title": "基于 Harness 的端到端 Coding Agent",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "阅读本课前：为什么端到端 demo 用 deterministic policy 替代 LLM？",
+      "options": [
+        "LLM 在测试中运行太慢。",
+        "本课测试的是 harness；policy 是可替换的接入点。",
+        "deterministic policy 在 coding task 上总是优于 LLM。",
+        "本课负担不起推理成本。"
+      ],
+      "correct": 1,
+      "explanation": "harness contract 不关心 policy 是 LLM 还是状态机。移除 LLM 就移除了网络和方差，让本课成为可复现的 integration test。"
+    },
+    {
+      "stage": "check",
+      "question": "Agent 的状态机有五个状态。正常通过时，它按什么顺序执行？",
+      "options": [
+        "SURVEY -> FIX -> VERIFY -> RUN_TESTS -> INSPECT。",
+        "SURVEY -> RUN_TESTS -> INSPECT -> FIX -> VERIFY。",
+        "RUN_TESTS -> SURVEY -> INSPECT -> FIX -> VERIFY。",
+        "SURVEY -> INSPECT -> FIX -> RUN_TESTS -> VERIFY。"
+      ],
+      "correct": 1,
+      "explanation": "Agent 先 survey 项目，再运行测试，inspect 失败测试，修 bug，然后 verify。RUN_TESTS 在 INSPECT 之前，因为测试失败是 policy 读取的信号。"
+    },
+    {
+      "stage": "check",
+      "question": "内置 fixture 的 bug 是 src/fizz.py 中的 off-by-one：range(1, n) 应为 range(1, n + 1)。policy 在哪里决定应用修复？",
+      "options": [
+        "在 SURVEY 状态中，通过读取文件头。",
+        "在 INSPECT 状态中，在测试失败已经指出 expected output 之后。",
+        "在 VERIFY 状态中，在 rerun 之后。",
+        "在状态机外部，在 gate chain 中。"
+      ],
+      "correct": 1,
+      "explanation": "INSPECT 是 policy 读取失败测试并理解 expected shape 的地方。修复在那里被识别，并在下一个 FIX 状态写入。"
+    },
+    {
+      "stage": "check",
+      "question": "每个 tool call 按什么组件链路依次通过？",
+      "options": [
+        "Sandbox -> GateChain -> SpanBuilder -> ObservationLedger。",
+        "GateChain -> SpanBuilder -> Sandbox -> ObservationLedger。",
+        "SpanBuilder -> GateChain -> Sandbox -> ObservationLedger。",
+        "ObservationLedger -> GateChain -> Sandbox -> SpanBuilder。"
+      ],
+      "correct": 1,
+      "explanation": "先 gate（allow / refuse），再 span（这样 refusal 也被捕获），第三是 sandbox（只在允许时），最后是 ledger（只在成功时）。本课代码就是这样 wiring 的。"
+    },
+    {
+      "stage": "post",
+      "question": "你把 deterministic policy 换成真实 LLM。哪个 harness component 会变化？",
+      "options": [
+        "gate chain 必须重写以处理 LLM 随机性。",
+        "sandbox 必须用 seccomp 加固。",
+        "harness 中没有东西变化；只替换 policy 这一块。",
+        "Prometheus exposition format 变得不兼容。"
+      ],
+      "correct": 2,
+      "explanation": "本课要点是：harness 与 policy 无关。接入点是 next_action / observe interface。LLM 插在那里，不需要触碰 gate、sandbox、ledger 或 span。"
+    },
+    {
+      "stage": "post",
+      "question": "demo 断言 Agent 在少于 12 步内解决 fixture。deterministic policy 使用 5 步。真实 LLM Agent 可能会怎样，harness 如何处理？",
+      "options": [
+        "LLM 也使用 5 步；harness 不变。",
+        "LLM 可能使用更多步；step_budget 限制 loop，未解决的 run 会作为 failure 报告并带 halted_reason。",
+        "LLM 不能在这个 harness 中运行。",
+        "harness 静默扩展 budget。"
+      ],
+      "correct": 1,
+      "explanation": "step budget 是明确、确定性的停止标准。乱逛的 LLM 会被 cap，报告会准确告诉你原因。"
+    }
+  ]
+}

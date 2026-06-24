@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/27-eval-harness-fixture-tasks",
+  "title": "带 Fixture Task 的 Eval Harness",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "阅读本课前：一个好的 Agent eval verifier 最需要哪种性质？",
+      "options": [
+        "毫秒级速度。",
+        "跨运行的确定性。",
+        "对 verdict 的自然语言解释。",
+        "覆盖 candidate 代码的每一行。"
+      ],
+      "correct": 1,
+      "explanation": "确定性让 regression 可检测。非确定性的 verifier 会把每次红灯都变成抛硬币。"
+    },
+    {
+      "stage": "check",
+      "question": "某个 candidate 在单个 task 的 5 个 sample 中通过 3 个。本课的 pass@5 公式返回多少（四舍五入到两位小数）？",
+      "options": [
+        "0.60",
+        "0.99",
+        "0.75",
+        "1.00"
+      ],
+      "correct": 1,
+      "explanation": "pass@k = 1 - (1 - p)^k = 1 - (1 - 0.6)^5 = 1 - 0.4^5 = 1 - 0.01024 = 0.98976，四舍五入为 0.99。原始 per-sample rate（0.6）是选项 (a)，但该公式会在 k 个 sample 上放大它。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么本课在报告中同时包含 pass@1 和 pass@k？",
+      "options": [
+        "pass@1 是用户在 dashboard 中看到的值；pass@k 用于内部调试。",
+        "pass@k 可能掩盖一个模型只有很多次尝试中一次正确的事实，所以 pass@1 把结果锚定到第一次尝试质量。",
+        "当 k > 1 时，pass@k 和 pass@1 在数学上相同。",
+        "pass@1 是 verifier registry 支持的版本；pass@k 留给未来 verifier。"
+      ],
+      "correct": 1,
+      "explanation": "pass@k 会让那些多次尝试中只答对一次的模型看起来很强；pass@1 是第一次尝试的下限。同时报告二者可以避免过度宣称。"
+    },
+    {
+      "stage": "check",
+      "question": "harness 在每个 sample 前都调用 _prepare_scratch。为什么这对 pass@k > 1 很重要？",
+      "options": [
+        "它避免共享 temp directory 上的 race condition。",
+        "它确保每个 sample 都从 buggy setup 开始，而不是从上一个 sample 的输出开始。",
+        "它纯粹是性能优化。",
+        "它只和 shell verifier 有关。"
+      ],
+      "correct": 1,
+      "explanation": "没有新的 scratch 时，第 N+1 个 sample 会从第 N 个 sample 的输出开始。harness 测到的就会是“第二次尝试清理”，而不是第一次尝试成功率。"
+    },
+    {
+      "stage": "post",
+      "question": "你新增了一个 verifier：pytest_passes，它在 scratch dir 中运行 pytest。它应基于哪个已有 verifier？",
+      "options": [
+        "file_equals，因为 pytest 会写结果文件。",
+        "regex_match，因为 pytest output 包含单词 'passed'。",
+        "shell_exit_zero，因为 pytest 通过 exit code 0 表示成功。",
+        "pytest 无法表示为 verifier。"
+      ],
+      "correct": 2,
+      "explanation": "pytest 成功时 exit 0，失败时非零。shell_exit_zero 是正确原语。生产 wiring 会通过第 26 课的 sandbox 路由这次调用。"
+    },
+    {
+      "stage": "post",
+      "question": "reviewer 问：“这是模型 regression，还是 harness regression？”哪个 artifact 能回答这个问题？",
+      "options": [
+        "Agent 的 chain-of-thought transcript。",
+        "per-task、per-sample 的 SampleResult 加 verifier detail message。",
+        "verifier registry 源码。",
+        "fixture JSON 文件。"
+      ],
+      "correct": 1,
+      "explanation": "per-sample latency、verifier detail 和 pass/fail 能帮助 triage：同样 fixture、不同 verdict，说明模型变了；同样 verdict、不同 latency，说明别的东西变了。"
+    }
+  ]
+}

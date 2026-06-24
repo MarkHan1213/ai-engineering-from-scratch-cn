@@ -1,0 +1,90 @@
+{
+  "lesson": "17-claude-agent-sdk",
+  "title": "Claude Agent SDK：Subagents 与 Session Store",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Anthropic Client SDK 和 Claude Agent SDK 有什么区别？",
+      "options": [
+        "Client SDK 是原始 Messages API；Agent SDK 是 Claude Code harness 形态，内置 tools、MCP、hooks、subagents 和 session store",
+        "Client SDK 付费；Agent SDK 免费",
+        "Client SDK 仅用于 Python",
+        "没有区别"
+      ],
+      "correct": 0,
+      "explanation": "Client SDK 给你循环；Agent SDK 直接提供预构建的循环。"
+    },
+    {
+      "stage": "pre",
+      "question": "subagents 的两个文档化用途是什么？",
+      "options": [
+        "并行化和上下文隔离",
+        "缓存和限流",
+        "日志和指标",
+        "Authn 和 authz"
+      ],
+      "correct": 0,
+      "explanation": "subagents 可并发执行独立工作，并通过上下文隔离保护 orchestrator 的上下文预算。"
+    },
+    {
+      "stage": "check",
+      "question": "下面哪个方法不属于 session store surface？",
+      "options": [
+        "append",
+        "load",
+        "list_subkeys",
+        "compile_prompt"
+      ],
+      "correct": 3,
+      "explanation": "session store 提供 append、load、list_sessions、delete、list_subkeys；compile_prompt 不是 session API。"
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是 Claude Agent SDK lifecycle hook？",
+      "options": [
+        "PreToolUse",
+        "PostToolUse",
+        "PreCompact",
+        "PreEmbedding"
+      ],
+      "correct": 3,
+      "explanation": "hooks 包括 PreToolUse、PostToolUse、SessionStart/End、UserPromptSubmit、PreCompact、Stop、Notification。PreEmbedding 不是 hook。"
+    },
+    {
+      "stage": "check",
+      "question": "trace context 如何跨 Agent 和 CLI subprocess 传播？",
+      "options": [
+        "通过文件系统",
+        "通过传入 CLI subprocess 的 W3C trace context headers",
+        "只能通过 provider dashboard",
+        "只通过环境变量"
+      ],
+      "correct": 1,
+      "explanation": "caller 上的 OTel spans 会通过 W3C trace context 传播进 CLI subprocess，让整个多进程运行属于同一条 trace。"
+    },
+    {
+      "stage": "post",
+      "question": "什么是 subagent over-spawn，什么时候会发生？",
+      "options": [
+        "为 100 个小任务启动 100 个 subagents，导致开销占主导；应改为批处理",
+        "忘记关闭 subagents",
+        "在 SessionStart 之前启动",
+        "启动的 subagents 多于 CPU core 数"
+      ],
+      "correct": 0,
+      "explanation": "subagents 有开销；小任务应批处理，而不是每个都启动一个。"
+    },
+    {
+      "stage": "post",
+      "question": "Claude Managed Agents 相比 self-hosted SDK 做了什么取舍？",
+      "options": [
+        "用控制权换托管基础设施（long-running async、内置 prompt caching、内置 compaction）",
+        "用延迟换成本",
+        "用工具换记忆",
+        "用 tracing 换 streaming"
+      ],
+      "correct": 0,
+      "explanation": "Managed Agents 是长时间异步工作的托管替代方案；控制更少，运维面也更小。"
+    }
+  ]
+}

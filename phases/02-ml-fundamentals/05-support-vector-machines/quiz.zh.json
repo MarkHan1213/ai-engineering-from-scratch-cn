@@ -1,0 +1,67 @@
+[
+  {
+    "id": "svm-pre-1",
+    "stage": "pre",
+    "question": "SVM 中的 support vectors 是什么？",
+    "options": [
+      "训练集中的所有数据点",
+      "最靠近决策边界、并决定 hyperplane 的训练点",
+      "kernel transformation 后的特征向量",
+      "训练过程中学到的权重向量"
+    ],
+    "correct": 1,
+    "explanation": "support vectors 是正好位于 margin boundaries 上的训练点。它们是决定决策 hyperplane 的唯一点。移除非 support-vector 点不会改变边界。"
+  },
+  {
+    "id": "svm-pre-2",
+    "stage": "pre",
+    "question": "SVM 在寻找决策边界时最大化什么？",
+    "options": [
+      "正确分类的训练点数量",
+      "margin，也就是决策边界到每个类别最近点之间的距离",
+      "所有点到边界的总距离",
+      "决策边界的复杂度"
+    ],
+    "correct": 1,
+    "explanation": "SVM 会寻找让两个类别之间 margin 最大的 hyperplane。更宽的 margin 通常能在未见数据上获得更好的泛化。"
+  },
+  {
+    "id": "svm-post-1",
+    "stage": "post",
+    "question": "增大 SVM 中的 C 参数会发生什么？",
+    "options": [
+      "margin 变宽，并允许更多误分类",
+      "margin 变窄，容忍的误分类更少，模型可能 overfit",
+      "kernel function 从 linear 变为 RBF",
+      "support vectors 的数量总是增加"
+    ],
+    "correct": 1,
+    "explanation": "较大的 C 会重罚误分类，产生更窄的 margin，并更贴合训练数据。这可能导致 overfitting。较小的 C 允许更多违反 margin 的点，从而得到更宽、更强正则化的 margin。"
+  },
+  {
+    "id": "svm-post-2",
+    "stage": "post",
+    "question": "kernel trick 如何让 SVM 学习非线性边界？",
+    "options": [
+      "它用神经网络替换 SVM",
+      "它在高维空间中计算点积，但不显式把数据映射到那个空间",
+      "它在训练前移除数据集中的 outliers",
+      "它直接给输入数据添加 polynomial features"
+    ],
+    "correct": 1,
+    "explanation": "kernel trick 会把每个点积 x_i . x_j 替换为 K(x_i, x_j)，等价于在高维特征空间中计算点积；对 RBF 来说甚至是无限维空间，但从不真正构造该空间。"
+  },
+  {
+    "id": "svm-post-3",
+    "stage": "post",
+    "question": "当 y * f(x) >= 1 时，hinge loss 为零。这在分类上表示什么？",
+    "options": [
+      "该点被错误分类",
+      "该点被正确分类，并且位于 margin 外侧",
+      "该点正好在决策边界上",
+      "该点是应该忽略的噪声样本"
+    ],
+    "correct": 1,
+    "explanation": "当 y * f(x) >= 1 时，该点被正确分类，并且位于 margin boundary 上或更远处。只有 margin 内部或被误分类的点（y * f(x) < 1）才会贡献 hinge loss。"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "question": "PyTorch 和 JAX 的根本设计差异是什么？",
+    "options": [
+      "PyTorch 更快",
+      "PyTorch 以 eager 方式修改 tensors，而 JAX 编译无副作用的 pure functions",
+      "JAX 不支持 GPUs",
+      "PyTorch 不支持 automatic differentiation"
+    ],
+    "correct": 1,
+    "explanation": "PyTorch 使用 eager execution 和 mutable state，例如 tensor.grad 会被原地修改。JAX 则拥抱 functional programming：functions 是 pure 的，state 显式传递，jit compilation 会优化整个 computation graphs。",
+    "stage": "pre"
+  },
+  {
+    "question": "jax.jit 做什么？",
+    "options": [
+      "添加 dropout regularization",
+      "把 Python function 编译成优化过的 XLA code，运行速度远快于解释执行的 Python",
+      "初始化 model weights",
+      "计算 gradients"
+    ],
+    "correct": 1,
+    "explanation": "jax.jit 会 trace 一个 function，并把它编译为 XLA（Accelerated Linear Algebra）机器码。第一次调用较慢（需要编译），后续调用会运行优化后的编译版本。",
+    "stage": "pre"
+  },
+  {
+    "question": "jax.vmap 做什么？",
+    "options": [
+      "把一个 function 向量化，让它在 batch dimension 上运行，而不需要手写显式 loops",
+      "验证 model architecture",
+      "管理 GPU memory",
+      "计算 second-order gradients"
+    ],
+    "correct": 0,
+    "explanation": "jax.vmap 会自动把为单个样本编写的 function 向量化，使其处理整个 batch。你只需要写单样本代码，vmap 会处理 batching，通常比手写 batch loops 更高效。",
+    "stage": "post"
+  },
+  {
+    "question": "JAX 处理 model state（weights）的方式与 PyTorch 有什么不同？",
+    "options": [
+      "JAX 只在 CPU 上存储 weights",
+      "JAX 要求显式传递 state，weights 是 function arguments，而不是 mutable object attributes",
+      "JAX 不支持 trainable weights",
+      "JAX 和 PyTorch 完全相同地处理 state"
+    ],
+    "correct": 1,
+    "explanation": "在 PyTorch 中，weights 存在 nn.Module objects 内部，并被原地修改。在 JAX 中，weights 会作为 function arguments 显式传入，并作为新值返回。没有 mutation，也没有 hidden state。",
+    "stage": "post"
+  },
+  {
+    "question": "什么时候会选择 JAX，而不是 PyTorch？",
+    "options": [
+      "快速原型开发小模型时",
+      "在 TPU pods 上进行超大规模训练时，compilation 和 functional transforms 能带来显著加速",
+      "当你需要最大规模 pretrained models 生态时",
+      "在移动设备上部署时"
+    ],
+    "correct": 1,
+    "explanation": "JAX 擅长大规模场景：jit compilation 消除 Python 开销，pmap 自然处理多设备并行，XLA 对完整 computation graph 的优化在 TPU clusters 上能带来显著加速。",
+    "stage": "post"
+  }
+]

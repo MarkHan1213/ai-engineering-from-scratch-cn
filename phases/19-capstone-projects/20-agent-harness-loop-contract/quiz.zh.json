@@ -1,0 +1,90 @@
+{
+  "lesson": "20-agent-harness-loop-contract",
+  "title": "Agent Harness Loop Contract",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么要把 harness loop 建模为显式状态机，而不是带 flag 的 while loop？",
+      "options": [
+        "它让 harness 可以在一个地方拒绝非法状态转移，并从 event log replay session",
+        "它在 CPython 上更快",
+        "它避免了测试需求",
+        "这是模型唯一能调用的形态"
+      ],
+      "correct": 0,
+      "explanation": "状态机会把合法性规则集中放在一个 transition function 中。同一段输入序列会重现同一状态，这正是 session replay 成立的原因。"
+    },
+    {
+      "stage": "pre",
+      "question": "loop 中的 pull point 表示什么？",
+      "options": [
+        "loop 让出控制权，等待 caller 提供输入的点",
+        "返回 tool name 的 model call",
+        "每 N 秒触发一次的 timer",
+        "会修改 payload 的 hook subscriber"
+      ],
+      "correct": 0,
+      "explanation": "pull point 是返回值，不是异常。caller 获取 harness 请求的内容，然后调用 resume()。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个状态是 tool call 唯一合法的 pull point？",
+      "options": [
+        "EXECUTING",
+        "AWAITING_TOOL",
+        "REFLECTING",
+        "PLANNING"
+      ],
+      "correct": 1,
+      "explanation": "只有 AWAITING_TOOL 会产出 tool pull point。当某个 step 需要工具时，EXECUTING 会转入这个状态。"
+    },
+    {
+      "stage": "check",
+      "question": "当 hook 在 before_tool_call 中抛出 HookAbort 时会发生什么？",
+      "options": [
+        "session 立即转到 DONE",
+        "tool call 被跳过，触发 on_error，然后 loop 进入 REFLECTING",
+        "hook 被注销",
+        "budget 被重置"
+      ],
+      "correct": 1,
+      "explanation": "HookAbort 会取消正在进行的工具分发，用 abort reason 触发 on_error，然后继续执行。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 hooks 和 events 要保持为两个独立关注点？",
+      "options": [
+        "因为 event type 是 bytes，而 hook 是 string",
+        "hook 是命令式的，可以 mutate 或 abort。event 是观察性的、append-only 的。",
+        "因为 audit script 禁止 subscriber",
+        "因为 event log 不能存储 dict"
+      ],
+      "correct": 1,
+      "explanation": "hook 会改变行为。event 描述行为。把二者混在一起会耦合 policy 和 telemetry，这正是要避免的 bug。"
+    },
+    {
+      "stage": "post",
+      "question": "当 wall-clock budget 超出时，下一个状态是什么？",
+      "options": [
+        "DONE — session 被终止",
+        "EXECUTING — loop 重试",
+        "IDLE — 返回一个带 budget_exceeded reason 的 pull point",
+        "PLANNING — 起草一个新 plan"
+      ],
+      "correct": 2,
+      "explanation": "budget 耗尽是一次 yield。harness 转到 IDLE，触发 on_budget_exceeded，并返回 PullRequest，让 caller 决定扩展预算还是关闭。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么这一课 stub 掉 planner，而不是调用模型？",
+      "options": [
+        "因为本地调用模型很慢",
+        "为了在绑定任何模型之前，让 loop contract 可测试且确定",
+        "因为模型不能返回 tool call",
+        "为了节省 token"
+      ],
+      "correct": 1,
+      "explanation": "先固定 loop contract，后续课程就能换入真实 planner、registry 和 dispatcher，而不需要重新协商状态机。"
+    }
+  ]
+}

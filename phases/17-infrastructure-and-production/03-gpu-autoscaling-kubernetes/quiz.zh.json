@@ -1,0 +1,78 @@
+{
+  "lesson": "03-gpu-autoscaling-kubernetes",
+  "title": "Kubernetes 上的 GPU Autoscaling：Karpenter、KAI Scheduler、Gang Scheduling",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "HPA 默认通常按哪个信号扩缩容，而课程认为它对 vLLM 风格 serving 是坏信号？",
+      "options": [
+        "Queue depth",
+        "P99 TTFT",
+        "KV cache utilization",
+        "DCGM_FI_DEV_GPU_UTIL duty cycle"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "KAI Scheduler 中的 gang scheduling 主要防止哪个问题？",
+      "options": [
+        "GPU memory fragmentation",
+        "Tokenizer GIL contention",
+        "7 块 GPU 已分配却闲置等待第 8 块的 partial-allocation trap",
+        "Cold-start latency"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 Karpenter 默认的 consolidationPolicy WhenEmptyOrUnderutilized 对推理 GPU pools 很危险？",
+      "options": [
+        "它在 burst 下拒绝 scale up",
+        "它只 consolidation spot instances",
+        "它会终止正在运行的 GPU nodes 来迁移 pods，从而驱逐正在运行的 requests 并重新加载 weights",
+        "它会阻止 Karpenter provision 新 nodes"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Karpenter provision GPU node 相比 Cluster Autoscaler 大约快多少？",
+      "options": [
+        "大约快 40%（~45-60s vs ~90-120s）",
+        "大约慢 10 倍",
+        "相同",
+        "大约快 5%"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "对 disaggregated prefill / decode pods（Phase 17 · 17），课程建议使用哪些 scaling signals？",
+      "options": [
+        "只能 manual scaling",
+        "一个覆盖两类 pod 的 duty cycle HPA",
+        "prefill pods 用 queue depth，decode pods 用 KV cache pressure，作为按角色拆分的 HPAs",
+        "两者都使用 Cluster Autoscaler"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为了避免驱逐运行中的 jobs，课程建议推理 GPU pool 使用哪个 Karpenter disruption setting？",
+      "options": [
+        "consolidationPolicy: WhenEmptyOrUnderutilized with consolidateAfter: 0s",
+        "consolidationPolicy: WhenEmpty with consolidateAfter: 1h",
+        "总是使用 spot instances 且不 consolidation",
+        "完全禁用 Karpenter"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

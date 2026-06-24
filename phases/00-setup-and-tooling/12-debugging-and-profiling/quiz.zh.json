@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "调试 AI/ML 代码和调试普通 Web 应用相比，根本区别是什么？",
+      "options": [
+        "AI 代码使用不同的编程语言",
+        "AI bug 经常不会崩溃，而是静默地产生错误结果，没有错误信息",
+        "AI 代码不能用 print statement 等标准工具调试",
+        "AI 代码调试总是需要 GPU"
+      ],
+      "correct": 1,
+      "explanation": "最糟糕的 AI bug 会产生看起来合理的输出。一个配置错误的训练循环可能运行数小时不报错，但模型什么有用的东西也没学到；普通 Web 应用通常会带着 stack trace 崩溃。"
+    },
+    {
+      "stage": "pre",
+      "question": "profiler 会测量什么？",
+      "options": [
+        "代码是否产生正确输出",
+        "代码各部分消耗多少时间和内存",
+        "代码库中有多少 bug",
+        "单元测试的代码覆盖率"
+      ],
+      "correct": 1,
+      "explanation": "profiler 会测量资源消耗，包括每个函数的执行时间、内存分配和 GPU 利用率，帮助你找到瓶颈并优化性能。"
+    },
+    {
+      "stage": "post",
+      "question": "你的模型在 test set 上达到 99% accuracy。首先应该怀疑哪类 AI 特有 bug？",
+      "options": [
+        "模型参数太多",
+        "data leakage，也就是测试样本可能泄漏进了训练集",
+        "learning rate 太高",
+        "batch size 太大"
+      ],
+      "correct": 1,
+      "explanation": "异常高的 accuracy 通常意味着 data leakage，例如训练数据和测试数据有重叠，或特征中包含目标标签。一定要检查 train/test 是否重叠。"
+    },
+    {
+      "stage": "post",
+      "question": "profile 一个训练循环的时间分布时，最常见的发现是什么？",
+      "options": [
+        "backward pass 占用了 90% 的时间",
+        "数据加载耗时超过 forward 和 backward pass 的总和",
+        "写日志耗时最多",
+        "GPU memory allocation 是瓶颈"
+      ],
+      "correct": 1,
+      "explanation": "当 DataLoader 中 num_workers=0 时，数据加载常常占训练时间的 60% 以上。修复方式是设置 num_workers > 0，让数据加载与 GPU 计算并行。"
+    },
+    {
+      "stage": "post",
+      "question": "你在 step 500 看到了 NaN loss。哪种方法有助于找到根因？",
+      "options": [
+        "换一个 random seed，从头重新训练",
+        "使用 detect_nan 检查 gradients 中的 NaN/Inf，并在失败点添加 breakpoint()",
+        "增大 batch size 以稳定 gradients",
+        "把 Adam optimizer 换成 SGD"
+      ],
+      "correct": 1,
+      "explanation": "首先要找出 NaN 从哪里产生：逐个参数检查 gradients。在出现 NaN 的 step 加条件断点，可以交互式检查 tensor 值。常见原因包括 learning rate 太高、log(0) 或除以零。"
+    }
+  ]
+}

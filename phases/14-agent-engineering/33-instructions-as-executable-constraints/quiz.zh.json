@@ -1,0 +1,90 @@
+{
+  "lesson": "33-instructions-as-executable-constraints",
+  "title": "把 Agent Instructions 变成可执行约束",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "aspirational rule 和 operational rule 有什么区别？",
+      "options": [
+        "aspirational rules 是付费的；operational rules 免费",
+        "aspirational rules 没有检查方式（如“be careful”）；operational rules 带有 workbench 可运行的机器可检查函数",
+        "operational rules 更长",
+        "aspirational rules 需要 manager"
+      ],
+      "correct": 1,
+      "explanation": "operational rules 可测试；aspirational rules 只是愿望。"
+    },
+    {
+      "stage": "pre",
+      "question": "课程用哪五个类别覆盖大多数 rules？",
+      "options": [
+        "Startup, forbidden, definition of done, uncertainty, approval",
+        "Read, write, exec, fork, exit",
+        "Plan, act, reflect, refine, ship",
+        "Low, medium, high, critical, fatal"
+      ],
+      "correct": 0,
+      "explanation": "五类是 startup、forbidden、definition of done、uncertainty handling、approval boundaries。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个 severity tag 会停止执行并要求 operator override？",
+      "options": [
+        "info",
+        "warn",
+        "block",
+        "soft"
+      ],
+      "correct": 2,
+      "explanation": "block 是硬失败；warn 负责注释；info 负责报告。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么课程建议在写 rule 时就标注 severity？",
+      "options": [
+        "markdown 里看起来更漂亮",
+        "团队早期会夸大 severity，deadline 压力下又会弱化它；提前写 severity 会强制校准",
+        "linter 要求这样做",
+        "节省 tokens"
+      ],
+      "correct": 1,
+      "explanation": "severity 校准必须是有意的，而不是在压力下临时补上的。"
+    },
+    {
+      "stage": "check",
+      "question": "markdown-as-source、JSON-as-cache 模式做了什么？",
+      "options": [
+        "替代 markdown",
+        "agent-rules.md 是作者编辑的文件；agent-rules.lock.json 是由 pre-commit hook 重新生成的热路径缓存（形态类似 package.json + lock）",
+        "加密 rules",
+        "禁用 review"
+      ],
+      "correct": 1,
+      "explanation": "Markdown 保持可 review；JSON 解析不会进入 hot path。"
+    },
+    {
+      "stage": "post",
+      "question": "rule expiry 作为 forcing function 是什么？",
+      "options": [
+        "超过 24 小时的 rules fail closed",
+        "每条 rule 都带 expires_at（默认 90 天）；未触发的 rules 会触发季度 review，以决定保留、弱化或删除",
+        "cache 满时 rules 过期",
+        "rules 自动过期，不需要 review"
+      ],
+      "correct": 1,
+      "explanation": "Cloudflare 的数据显示，带 expiry 的规则集能保持在 30 条以内；不带 expiry 的会增长到 80+ 条未使用规则。"
+    },
+    {
+      "stage": "post",
+      "question": "rules 与 framework guardrails 的关系是什么？",
+      "options": [
+        "rules 替代 guardrails",
+        "guardrails 在 runtime 执行 rules；rule set 是这些 guardrails 实现的人类可读 contract",
+        "guardrails 是 rules 的替代品",
+        "两者只需要一个"
+      ],
+      "correct": 1,
+      "explanation": "两者都需要：runtime 捕捉违规；rule set 证明 runtime 做的是正确的事。"
+    }
+  ]
+}

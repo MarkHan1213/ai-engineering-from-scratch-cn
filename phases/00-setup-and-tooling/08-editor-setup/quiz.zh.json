@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Language Server Protocol（LSP）是什么？",
+      "options": [
+        "编辑器之间传输文件的协议",
+        "一种标准，让编辑器从特定语言的 server 获取类型信息、补全和诊断",
+        "源代码文件的压缩格式",
+        "远程结对编程使用的网络协议"
+      ],
+      "correct": 1,
+      "explanation": "LSP 是一种标准化协议，让编辑器可以和 language server 通信，获得自动补全、类型检查、错误诊断等能力，并且不依赖具体编辑器。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 format-on-save 对团队项目有用？",
+      "options": [
+        "通过删除空白字符减少文件大小",
+        "自动保证所有贡献者的代码风格一致，不需要手动格式化",
+        "在代码执行前捕获运行时 bug",
+        "压缩代码以加快 git 操作"
+      ],
+      "correct": 1,
+      "explanation": "format-on-save 会在每次保存时运行 formatter（如 Black 或 Ruff），确保所有代码都遵循同一套风格约定，不受作者差异影响。"
+    },
+    {
+      "stage": "post",
+      "question": "哪个 VS Code extension 可以像编辑本地代码一样编辑远程 GPU 机器上的代码？",
+      "options": [
+        "GitLens",
+        "Pylance",
+        "Remote SSH",
+        "Debugpy"
+      ],
+      "correct": 2,
+      "explanation": "Remote SSH 会在远程机器上安装轻量级 VS Code server，并把 UI 流式传回本地编辑器，让你可以远程编辑文件、运行终端和调试。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 AI 工作中应该在 VS Code settings 中启用 'notebook.output.scrolling'？",
+      "options": [
+        "它会为很宽的 dataframe 启用水平滚动",
+        "它能防止训练循环输出（成千上万行）把输出面板撑爆",
+        "它允许用鼠标滚轮在 notebook cell 之间滚动",
+        "它会在编辑器中启用平滑滚动动画"
+      ],
+      "correct": 1,
+      "explanation": "训练循环可能打印成千上万行输出。如果不启用 output scrolling，notebook 输出面板会无限增长，最终变得无法使用。"
+    },
+    {
+      "stage": "post",
+      "question": "在 VS Code 中把 'python.analysis.typeCheckingMode' 设置为 'basic' 有什么作用？",
+      "options": [
+        "为 Python 文件启用语法高亮",
+        "在运行代码前发现错误的参数类型和 tensor shape mismatch",
+        "按 PEP 8 标准格式化 Python 代码",
+        "启用 Python 3.12 语言特性"
+      ],
+      "correct": 1,
+      "explanation": "Pylance 的 basic type checking 会在编辑阶段标出类型不匹配、错误参数类型和不正确的 API 参数，帮助你在运行昂贵训练脚本前发现 bug。"
+    }
+  ]
+}

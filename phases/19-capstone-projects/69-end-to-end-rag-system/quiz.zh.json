@@ -1,0 +1,78 @@
+{
+  "lesson": "69-end-to-end-rag-system",
+  "title": "端到端 RAG System",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 integration test 才是六组件 RAG pipeline 唯一诚实的评分？",
+      "options": [
+        "chunker 是唯一重要组件",
+        "每个阶段的孤立 metric 无法预测系统 metric，因为每个阶段都会与下一阶段交互；唯一有效评分是用同一组 qrels 端到端运行整个 pipeline",
+        "生产服务器无法运行单个阶段测试",
+        "组件运行在不同机器上"
+      ],
+      "correct": 1,
+      "explanation": "孤立的阶段收益不会自动组合；pipeline 要按 joint output 评分。"
+    },
+    {
+      "stage": "pre",
+      "question": "answer generator 中 refuse-on-low-confidence 的作用是什么？",
+      "options": [
+        "把每次 refusal 记录到磁盘",
+        "当 reranker top-1 score 低于 corpus-specific threshold 时返回 'I do not know'，防止 retrieved context 没有回答 query 时产生幻觉答案",
+        "阻止超过 100 tokens 的 queries",
+        "用不同 chunker 触发 re-retrieval"
+      ],
+      "correct": 1,
+      "explanation": "持续较低的 rank-1 score 是模型在告诉你 corpus 中没有任何内容回答这个 query；此时应该 refuse，而不是 hallucinate。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 rerank training triples 要与 eval queries 保持不相交？",
+      "options": [
+        "为了节省 GPU memory",
+        "为了防止 train-test leakage；如果 eval queries 与 rerank training set 重叠，eval 会看起来很神奇，但 regression test 抓不到真实 drift",
+        "因为 cross-encoder 要求不同 vocabularies",
+        "因为 RRF 不能融合 overlapping lists"
+      ],
+      "correct": 1,
+      "explanation": "严格分离是基本卫生要求；否则 rerank metric 无法预测生产行为。"
+    },
+    {
+      "stage": "check",
+      "question": "self-terminating demo 的 exit code 有什么目的？",
+      "options": [
+        "只是装饰",
+        "它根据 metric thresholds 编码 pass/fail；CI smoke test 可以把 demo 接入 pipeline，并用非零 exit 阻止 merge",
+        "Python 要求它",
+        "reranker 把它当作 training signal"
+      ],
+      "correct": 1,
+      "explanation": "Exit code 0 表示 thresholds 达标；非零表示 regression。这就是 CI gate 会消费的契约。"
+    },
+    {
+      "stage": "check",
+      "question": "这个 pipeline 中的 citation anchor 长什么样？",
+      "options": [
+        "[doc_id:chunk_index]",
+        "带 source URL 的 Markdown link",
+        "JSON-RPC envelope",
+        "字面的 embedding vector"
+      ],
+      "correct": 0,
+      "explanation": "generator 会把 (doc_id, chunk_index) tuple 作为 anchor 输出，让下游 UI 或 auditor 可以把每条 claim 映射回 source chunk。"
+    },
+    {
+      "stage": "post",
+      "question": "哪种 failure mode 对 mock generator 不可见，必须在发布前用真实 LLM 测试？",
+      "options": [
+        "Latency",
+        "Hallucination：mock generator 只会输出 retrieved chunks 中的文本，无法发明内容；真实 LLM 可能忽略 chunks 并生成无依据答案",
+        "Tokenization",
+        "Vector index size"
+      ],
+      "correct": 1,
+      "explanation": "mock 无法测试 generator 对幻觉内容的安全性；只有换成真实模型才能测到。"
+    }
+  ]
+}

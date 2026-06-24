@@ -1,0 +1,67 @@
+[
+  {
+    "id": "linreg-pre-1",
+    "stage": "pre",
+    "question": "gradient descent 中的 learning rate 控制什么？",
+    "options": [
+      "模型使用的特征数量",
+      "模型训练的 epoch 数",
+      "每次参数更新步子的大小",
+      "训练数据和测试数据的比例"
+    ],
+    "correct": 2,
+    "explanation": "learning rate 是一个标量，控制每一步 gradient descent 中权重变化多少。太大会导致发散，太小会导致收敛缓慢。"
+  },
+  {
+    "id": "linreg-pre-2",
+    "stage": "pre",
+    "question": "对回归模型来说，R-squared = 0 表示什么？",
+    "options": [
+      "模型预测完全正确",
+      "模型并不比每次都预测目标均值更好",
+      "模型误差为负",
+      "模型还没有训练"
+    ],
+    "correct": 1,
+    "explanation": "R-squared = 0 表示模型没有解释目标变量中的任何方差。它的表现与每次简单预测均值完全一样。"
+  },
+  {
+    "id": "linreg-post-1",
+    "stage": "post",
+    "question": "为什么 feature scaling 对 multiple linear regression 中的 gradient descent 很重要？",
+    "options": [
+      "它让模型更可解释",
+      "它避免 cost surface 被拉得很长，从而让收敛更快",
+      "它减少所需特征数量",
+      "它保证模型会找到全局最小值"
+    ],
+    "correct": 1,
+    "explanation": "当特征尺度差异很大时，cost surface 会变得狭长，gradient descent 需要更多步才能收敛。标准化特征会让曲面更接近球形。"
+  },
+  {
+    "id": "linreg-post-2",
+    "stage": "post",
+    "question": "normal equation 可以直接给出最优权重。为什么仍然会选择 gradient descent？",
+    "options": [
+      "Gradient descent 总是给出更准确的结果",
+      "normal equation 不适用于 linear regression",
+      "normal equation 中的矩阵求逆对特征数是 O(n^3)，当有数千个特征时太慢",
+      "Gradient descent 比存储数据需要更少内存"
+    ],
+    "correct": 2,
+    "explanation": "normal equation 需要求逆 X^T * X，复杂度相对于特征数是 O(n^3)。当特征数量很大时，gradient descent 更高效。"
+  },
+  {
+    "id": "linreg-post-3",
+    "stage": "post",
+    "question": "一个 10 次 polynomial regression 模型完美拟合训练数据（R^2 = 1.0），但测试数据上 R^2 = 0.3。你应该怎么做？",
+    "options": [
+      "把多项式次数提高到 20，让训练拟合更好",
+      "降低模型复杂度（降低次数）或加入 regularization（Ridge）来防止 overfitting",
+      "减少训练数据，让模型无法记忆",
+      "移除 test set，只报告训练 R^2"
+    ],
+    "correct": 1,
+    "explanation": "训练集完美拟合但测试集表现差，这是 overfitting。修复方式是降低复杂度（更低多项式次数）或加入 regularization 来惩罚大权重。"
+  }
+]

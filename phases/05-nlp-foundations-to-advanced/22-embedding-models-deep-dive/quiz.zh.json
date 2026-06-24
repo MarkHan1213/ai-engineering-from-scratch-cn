@@ -1,0 +1,102 @@
+{
+  "lesson": "22-embedding-models-deep-dive",
+  "title": "Embedding Models：2026 深入解析",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "什么是 dense embedding？",
+      "options": [
+        "文档上的图",
+        "每个词表 token 的稀疏权重",
+        "Token-level alignment matrix",
+        "每段文本一个固定大小向量，通过 cosine similarity 按语义接近度排序 passages"
+      ],
+      "correct": 3,
+      "explanation": "Dense embeddings 为每段文本生成一个向量（通常 384-3072 维）；cosine 用于排序相似度。"
+    },
+    {
+      "stage": "pre",
+      "question": "Matryoshka Representation Learning 支持什么能力？",
+      "options": [
+        "多语言训练",
+        "更快的 softmax",
+        "把训练好的 embedding 截断到前 N 维，仍得到可用的更小 embedding",
+        "Cross-encoder rescoring"
+      ],
+      "correct": 2,
+      "explanation": "Matryoshka training 让向量前 N 维也能独立工作，从而支持低成本截断。"
+    },
+    {
+      "stage": "check",
+      "question": "multi-vector（ColBERT）embeddings 如何给 query-doc pair 打分？",
+      "options": [
+        "Mean-pooled token vectors 的 cosine",
+        "Cross-entropy",
+        "Earth-mover's distance",
+        "MaxSim：对每个 query token 找最相似的 document token，再把这些最大值求和"
+      ],
+      "correct": 3,
+      "explanation": "ColBERT 风格 late interaction 使用每个 token 向量之间的 MaxSim。"
+    },
+    {
+      "stage": "check",
+      "question": "BGE-M3 会同时输出什么？",
+      "options": [
+        "只有 sparse vector",
+        "只有 dense vector",
+        "一次 inference 输出 dense、sparse 和 multi-vector（colbert）三种表示",
+        "只有 colbert vector"
+      ],
+      "correct": 2,
+      "explanation": "BGE-M3 从一个模型输出三种 retrieval modes，便于做 fused hybrid scoring。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 Matryoshka-truncated vector 在做 cosine similarity 前必须重新 normalize？",
+      "options": [
+        "Truncation 会破坏训练",
+        "Truncation 改变了向量 norm；不重新 normalize，dot product 就不再等于 cosine",
+        "Cosine 会忽略 normalization",
+        "只有 FAISS 要求如此"
+      ],
+      "correct": 1,
+      "explanation": "截断后重新归一化会恢复 unit norm，使 dot product 再次等价于 cosine。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 BGE models 往往需要 query-side prefix string？",
+      "options": [
+        "为了压缩 queries",
+        "FAISS 要求如此",
+        "BGE 是带显式 query prompt 训练的；省略它会损失 3-5 points recall",
+        "Prefixes 会改变 tokenizer 行为"
+      ],
+      "correct": 2,
+      "explanation": "BGE models 期望 query 上带有 'Represent this sentence for searching...' 这样的前缀。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 MTEB 对选择 embedding model 必要但不充分？",
+      "options": [
+        "MTEB 只覆盖英语",
+        "MTEB 忽略 latency",
+        "Leaderboard rank 是多个任务的平均；你的具体领域可能不同，因此必须在自己的数据上 benchmark",
+        "MTEB 奖励更大的模型"
+      ],
+      "correct": 2,
+      "explanation": "MTEB 跨任务取平均；领域特定 evaluation 可能完全翻转排名。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候应该在 dense embeddings 旁边加入 SPLADE sparse retrieval？",
+      "options": [
+        "只要 encoder 是多语言的",
+        "只要使用 Matryoshka",
+        "当 query 偏关键词，或包含 dense embeddings 容易模糊的 identifiers/codes 时",
+        "只在小语料上"
+      ],
+      "correct": 2,
+      "explanation": "SPLADE 能捕捉 dense models 可能错过的词面/关键词匹配；可以通过 RRF 与 dense 融合。"
+    }
+  ]
+}

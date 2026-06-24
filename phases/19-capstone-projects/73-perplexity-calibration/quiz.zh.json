@@ -1,0 +1,78 @@
+{
+  "lesson": "73-perplexity-calibration",
+  "title": "Perplexity 与 Calibration",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "对于 test corpus，language model 的 perplexity 为 1.0 意味着什么？",
+      "options": [
+        "模型给每个实际 token 都分配了概率 1；它是完美模型",
+        "模型在 vocabulary 上是均匀分布",
+        "corpus 为空",
+        "模型坏了"
+      ],
+      "correct": 0,
+      "explanation": "perplexity 等于 exp(avg negative log-likelihood)。当每个 token 的概率都是 1 时，NLL 是 0，而 exp(0) 是 1。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 harness 要求 adapter 返回非负 log-probabilities？",
+      "options": [
+        "perplexity 对负值未定义",
+        "negative log-probabilities 按定义非负；收到负值说明 adapter 发来的是 log p，而不是 -log p",
+        "numpy 遇到负数会崩溃",
+        "ECE 中的 bin edges 假设正数"
+      ],
+      "correct": 1,
+      "explanation": "概率的 -log p 是非负的。负值违反契约，并会静默给出 perplexity < 1，这是不可能的。"
+    },
+    {
+      "stage": "check",
+      "question": "expected calibration error 衡量什么？",
+      "options": [
+        "predicted labels 和 true labels 之间的 mean absolute distance",
+        "按 bin size 加权的 bin-level confidence 与 bin-level accuracy 之间的平均差距",
+        "softmax output 的 variance",
+        "predictions 的 cross-entropy"
+      ],
+      "correct": 1,
+      "explanation": "ECE 会按 confidence 对 predictions 分 bin，测量每个 bin 的平均 confidence 与平均 accuracy 之间的差距，并按 bin size 加权。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么实现除了 ECE value 之外，还返回 populated_bins？",
+      "options": [
+        "reliability diagrams 要求它",
+        "它用于提示 populated bins 太少时，单个数值不可信",
+        "它是 Brier score 的分母",
+        "numpy 需要它"
+      ],
+      "correct": 1,
+      "explanation": "populated bins 很少时，ECE 会被噪声主导。报告 populated count 可以让 runner 拒绝发布误导性的单一数字。"
+    },
+    {
+      "stage": "check",
+      "question": "Brier score 捕捉了 ECE 捕捉不到的什么？",
+      "options": [
+        "它计算更快",
+        "它会直接惩罚局部 miscalibration，因为它是 per-prediction squared error",
+        "它不需要 ground-truth labels",
+        "它只适用于 binary outcomes"
+      ],
+      "correct": 1,
+      "explanation": "ECE 只看每个 bin 的平均值。Brier 会对每个 prediction 的 error 平方，因此能捕捉 bins 平均后互相抵消、但单个 prediction 仍 miscalibrated 的情况。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 calibration 是 per-model report，而不是 per-task metric？",
+      "options": [
+        "tasks 没有 probabilities",
+        "单个 task 的 predictions 太少，无法估计 bin statistics；report 会在整个 eval 上聚合",
+        "calibration 按 task 计算太慢",
+        "ECE 要求 runner 知道 model architecture"
+      ],
+      "correct": 1,
+      "explanation": "per-task calibration 会被噪声主导。runner 会先汇总所有 tasks 的 confidence/correctness pairs，再计算 ECE、Brier 和 reliability diagram。"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "lesson": "78-zero-parameter-sharding",
+  "title": "ZeRO Optimizer State Sharding",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 ZeRO 先 shard optimiser state，而不是 parameters？",
+      "options": [
+        "optimiser 更重要",
+        "optimiser state 是最大的内存项，而且只在 step 时触碰，不在 forward 或 backward 中触碰",
+        "parameters 更容易",
+        "DeepSpeed 强制要求这样"
+      ],
+      "correct": 1,
+      "explanation": "对 mixed precision 下的 Adam 来说，fp32 master 加两个 moments 是每 rank 12P bytes，而 fp16 params + grads 是 4P。先 shard 最大项可以用最小复杂度换最多内存收益。"
+    },
+    {
+      "stage": "pre",
+      "question": "ZeRO stage 1 每个 step 的 wire pattern 是什么？",
+      "options": [
+        "一次 allreduce",
+        "一次 gradients 上的 reduce_scatter，加一次 updated parameters 上的 allgather",
+        "一次 broadcast",
+        "什么也没有"
+      ],
+      "correct": 1,
+      "explanation": "reduce_scatter 只把属于每个 rank 的 gradient shard 交给它；allgather 再把 updated parameter shards 分发回去。总 bytes 等于 allreduce，但内存除以 N。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 per-step bandwidth 与 DDP 相同？",
+      "options": [
+        "魔法",
+        "allreduce 在 bandwidth 上等于 reduce_scatter 加 allgather；ZeRO 只是把它拆成作用于不同数据的两半",
+        "ZeRO 使用 compression",
+        "它并不相同"
+      ],
+      "correct": 1,
+      "explanation": "Ring allreduce 实现为 reduce_scatter 后接 allgather。ZeRO 做同样两个操作，但 allgather 轮转的是 updated parameters，而不是 summed gradient。"
+    },
+    {
+      "stage": "check",
+      "question": "对一个使用 mixed precision Adam、跑在 8 ranks 上的 7B model，相比 vanilla DDP，内存下降多少？",
+      "options": [
+        "10%",
+        "约 65%（vanilla 16P vs ZeRO-1 4P + 12P/N = 5.5P）",
+        "99%",
+        "0%"
+      ],
+      "correct": 1,
+      "explanation": "Vanilla：2P + 2P + 4P + 4P + 4P = 16P。ZeRO-1：2P + 2P + (4P+4P+4P)/8 = 5.5P。下降比例是 (16-5.5)/16 = 65.6%。"
+    },
+    {
+      "stage": "check",
+      "question": "ZeRO-2 在 ZeRO-1 之上增加了什么？",
+      "options": [
+        "没有增加",
+        "也会在 reduce_scatter 后丢弃非本 shard 的 gradients，释放每 rank 的 gradient memory；bandwidth 保持相同",
+        "把 backend 切到 NCCL",
+        "移除 optimiser"
+      ],
+      "correct": 1,
+      "explanation": "ZeRO-2 会在 reduce_scatter 后清零非本 shard 的 gradient 部分；bandwidth 与 ZeRO-1 相同，但 gradient memory 更低。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 ZeRO 要求 optimiser state checkpoint 记录哪个 rank 拥有哪个 shard？",
+      "options": [
+        "只是装饰",
+        "没有 per-rank ownership，保存的 state 在 restart 时不可读；在相同 world size 上 resume 时，需要把正确 shard 放回正确 rank",
+        "它不需要",
+        "为了压缩"
+      ],
+      "correct": 1,
+      "explanation": "lesson 80 会构建 sharded checkpoint manifest，正是为了让 ZeRO run 可以在相同 topology 上恢复。"
+    }
+  ]
+}

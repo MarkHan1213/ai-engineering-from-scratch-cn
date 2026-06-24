@@ -1,0 +1,78 @@
+{
+  "lesson": "29-moderation-systems-openai-perspective-llamaguard",
+  "title": "Moderation Systems：OpenAI、Perspective、Llama Guard",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "OpenAI 的 omni-moderation-latest（2024）是什么？",
+      "options": [
+        "一个 RLHF reward model",
+        "一个专注 reasoning 的 frontier model",
+        "一个 C2PA watermarking endpoint",
+        "一个基于 GPT-4o 的 moderation classifier，可以一次调用处理文本和图像，并返回 13 类 response schema（harassment、hate、self-harm、sexual、violence、illicit 及其子类），对多数开发者免费"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是 OpenAI Moderation 的主要顶层类别？",
+      "options": [
+        "violence",
+        "election-interference",
+        "self-harm",
+        "harassment"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "标准 2026 moderation pattern 的三层是什么？",
+      "options": [
+        "Probe / detector / harness",
+        "Tokenizer / model / detokenizer",
+        "Telescopic / periscopic / microscopic",
+        "Input moderation（pre-generation）、Output moderation（post-generation）、Custom moderation（domain rules）"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Perspective API（Google Jigsaw）主要用于评分什么？",
+      "options": [
+        "watermark strength",
+        "Toxicity（包括 severe-toxicity、insult、profanity、threat、identity-attack 子维度），作为 pre-LLM-era 内容审核基线",
+        "reasoning quality",
+        "相对于用户满意度的 reward"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "input-only moderation 的一种失败模式是什么？",
+      "options": [
+        "它不能在 GPU 上运行",
+        "它无法捕捉模型输出失败或 hallucination；encoding attack（Lessons 12-14）可以完全绕过 input classifier",
+        "它总会阻断合法内容",
+        "它消除了对 output classifier 的需求"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Azure Content Moderator 的弃用时间和迁移目标是什么？",
+      "options": [
+        "2024 年 2 月弃用，2027 年 3 月 15 日退役；迁移目标是 Azure AI Content Safety（基于 LLM，并与 Azure OpenAI 集成）",
+        "被 Perspective API 取代",
+        "并入 Llama Guard 4",
+        "立即弃用且没有替代品"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

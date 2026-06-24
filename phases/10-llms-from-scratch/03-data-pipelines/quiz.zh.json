@@ -1,0 +1,37 @@
+[
+  {
+    "question": "为什么不能简单地把所有 pre-training data 加载到内存中？",
+    "options": ["Python 不支持大数组", "Pre-training corpora 往往有 TB 级，远超可用 RAM，因此需要 streaming pipelines", "把数据加载到内存更慢", "内存只用于 model weights"],
+    "correct": 1,
+    "explanation": "LLM pre-training data 通常是 1-15 TB 文本。即使用 256GB RAM，也装不下完整数据集。Streaming pipelines 会按需在线处理数据，只加载当前 batch 需要的部分。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 data deduplication 对 pre-training 很重要？",
+    "options": ["它节省磁盘空间", "重复文档会让模型逐字记住特定文本，并把训练 compute 浪费在重复内容上", "它加速 tokenization", "它减小词表"],
+    "correct": 1,
+    "explanation": "近重复内容（样板文本、重复抓取）会让模型记忆而不是泛化。Deduplication 减少训练计算浪费，并通过保证训练信号多样性提升模型质量。",
+    "stage": "pre"
+  },
+  {
+    "question": "把可变长度文档变成固定长度 training sequences 的目的是什么？",
+    "options": ["让文本更容易阅读", "GPU 训练需要统一 tensor shapes，因此文档必须 packed 或 padded 成固定长度序列", "固定长度序列更准确", "减少 token 总数"],
+    "correct": 1,
+    "explanation": "GPU 处理的是形状相同的 tensor batches。可变长度文档必须切成固定长度序列（如 2048 或 4096 tokens），并在文档边界使用正确 attention masks。",
+    "stage": "post"
+  },
+  {
+    "question": "如果 data pipeline 比 GPU 训练速度慢，会发生什么？",
+    "options": ["训练会自动降速匹配", "GPU 会空等 batches，浪费昂贵 compute 时间", "模型会反复训练同一个 batch", "没有影响，pipeline 会异步运行"],
+    "correct": 1,
+    "explanation": "如果 dataloader 无法足够快地提供 batches，GPU 会在 steps 之间停顿。A100 集群每小时 $30+ 时，pipeline bottleneck 会直接浪费钱。必须 profile pipeline throughput。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么 data quality filtering（language detection、content filtering）要在 tokenization 前进行？",
+    "options": ["Tokenizers 不能处理低质量文本", "低质量数据（spam、boilerplate、有害内容）会按其训练占比损害模型能力", "Tokenization 后无法过滤", "它会减少 tokenization 时间"],
+    "correct": 1,
+    "explanation": "模型会学习它看到的任何数据。如果 10% 训练数据是 spam 或低质量内容，模型就会把 10% 容量用于复现这些模式。早过滤能保证只有高质量信号进入模型。",
+    "stage": "post"
+  }
+]

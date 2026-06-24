@@ -1,0 +1,90 @@
+{
+  "lesson": "03-reflexion-verbal-rl",
+  "title": "Reflexion：语言形式的强化学习",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Reflexion 替代了标准强化学习中的什么？",
+      "options": [
+        "用常数 reward 替代 reward shaping",
+        "用跨试验保存的自然语言反思替代梯度更新",
+        "用随机搜索替代 policy network",
+        "用参数记忆替代情节记忆"
+      ],
+      "correct": 1,
+      "explanation": "Reflexion 使用保存在 episodic memory 中的自然语言反思，而不是更新模型权重。"
+    },
+    {
+      "stage": "pre",
+      "question": "Reflexion 系统由哪三个组件定义？",
+      "options": [
+        "Planner, Worker, Solver",
+        "Actor, Evaluator, Self-Reflector",
+        "Generator, Critic, Optimizer",
+        "Selector, Expander, Backpropagator"
+      ],
+      "correct": 1,
+      "explanation": "Reflexion 将 Agent 分解为运行轨迹的 Actor、评分的 Evaluator，以及写入经验教训的 Self-Reflector。"
+    },
+    {
+      "stage": "check",
+      "question": "哪类 evaluator 使用单元测试或已知正确答案这类外部二值信号？",
+      "options": [
+        "Heuristic",
+        "Scalar",
+        "Self-evaluated",
+        "Vote-based"
+      ],
+      "correct": 1,
+      "explanation": "Scalar evaluator 从 ground truth 读取 pass/fail 信号，例如 ALFWorld 成功与否或 HumanEval 测试。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 self-evaluation 比 scalar feedback 更弱？",
+      "options": [
+        "它计算更慢",
+        "模型自己评判自己没有外部依据，因此可能给自己的答案盖章放行",
+        "它总是需要更大的模型",
+        "它不能在工具上运行"
+      ],
+      "correct": 1,
+      "explanation": "self-eval 缺少外部校验，所以自信的幻觉也可能拿到高分；应与工具落地的验证配合使用。"
+    },
+    {
+      "stage": "check",
+      "question": "课程列出的哪种情况是 Reflexion 不会带来帮助的场景？",
+      "options": [
+        "可以用测试评分的代码生成",
+        "网络中断这类外部瞬时故障",
+        "ALFWorld 导航任务",
+        "HotpotQA 多跳问题"
+      ],
+      "correct": 1,
+      "explanation": "对瞬时外部故障做反思，只会生成对未来运行没有帮助的反思记录。"
+    },
+    {
+      "stage": "post",
+      "question": "Reflexion 模式中的 memory rot 是什么？",
+      "options": [
+        "进程重启时丢失反思",
+        "episodic buffer 被过时或错误的反思填满，拖慢或偏置后续试验",
+        "反思被 provider 加密",
+        "反思 prompt 超过上下文窗口"
+      ],
+      "correct": 1,
+      "explanation": "累积的陈旧或错误反思会降低行为质量；可以用压缩或 TTL 缓解。"
+    },
+    {
+      "stage": "post",
+      "question": "课程中哪个生产模式最明显对应 Reflexion？",
+      "options": [
+        "Cursor 的 apply-edits 流程",
+        "Claude Code 将 CLAUDE.md 中的 learnings 预置到后续 session",
+        "OpenAI 的 batch API",
+        "Anthropic 的 prompt caching"
+      ],
+      "correct": 1,
+      "explanation": "CLAUDE.md learnings、pro-workflow 的 learn-rule，以及 Letta 的 sleep-time compute 都是在外部承载 episodic reflection buffer。"
+    }
+  ]
+}

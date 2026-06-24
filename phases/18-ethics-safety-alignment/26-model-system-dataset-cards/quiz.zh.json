@@ -1,0 +1,78 @@
+{
+  "lesson": "26-model-system-dataset-cards",
+  "title": "Model Card、System Card 与 Dataset Card",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "下面哪一项最准确地描述 Mitchell 等人（2019）最初提出的 Model Card？",
+      "options": [
+        "一份 OpenAPI specification",
+        "ML model 的“营养标签”：训练数据、预期用途、因素、指标、评估数据、定量分组分析、伦理考虑和注意事项",
+        "仅仅是一份 model checkpoint manifest",
+        "一份监管法律合同"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Oreamuno 等人（2023）发现 Hugging Face model card 中 ethical-considerations 的采用情况如何？",
+      "options": [
+        "约 0.3% 记录 ethical considerations",
+        "约 80% 记录 ethical considerations",
+        "没有任何 model card 含有文本",
+        "所有 model card 都记录了它们"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Pushkarna 等人（Google 2022）Data Cards 的 telescopic / periscopic / microscopic 分层提供了什么？",
+      "options": [
+        "一种 boundary-object framing：同一份文档通过三种细节缩放层级服务不同读者（非专家、ML practitioner、auditor）",
+        "一份 pre-RLHF audit checklist",
+        "一个望远镜主题的可视化库",
+        "一个 privacy-preserving query interface"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "System Card 覆盖了 Model Card 不覆盖的什么范围？",
+      "options": [
+        "端到端 AI system：model + safety stack + deployment context，包括 security capability、prompt-injection protection、data-exfiltration detection、alignment 和 incident response",
+        "只有 dataset",
+        "只有 prompt template",
+        "只有 tokenizer"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Liang 等人（2024）关于 model-card 详细程度和 Hugging Face 下载率报告了什么？",
+      "options": [
+        "详细 model card 会让 HF treatment group 相比 control 的每周下载量提升 +29.0%（diff-in-diff）；采用压力现在不仅来自合规，也来自市场",
+        "只有 ethical-considerations section 会影响下载",
+        "详细程度对下载没有影响",
+        "详细程度会降低下载率"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Laminator（Duddu 等，2024）对文档化有什么贡献？",
+      "options": [
+        "一个自动化 benchmarking harness",
+        "通过 hardware TEE / cryptographic signature 提供可验证 attestation，让 card 携带 proof-of-claim，而不只是 claim",
+        "Datasheets 标准的替代品",
+        "一个基于 LLM 的摘要生成器"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

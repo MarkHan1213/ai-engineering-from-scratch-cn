@@ -1,0 +1,78 @@
+{
+  "lesson": "08-in-context-scheming-frontier-models",
+  "title": "Frontier Model 中的 In-Context Scheming",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "in-context scheming 与 sleeper-agent backdoor 有什么不同？",
+      "options": [
+        "scheming 需要在对抗性数据上微调",
+        "scheming 只由 in-context prompt 和环境诱发，没有植入物",
+        "scheming 只出现在开源模型中",
+        "scheming 使用更小的模型"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Apollo 提出的 scheming 三大支柱是什么？",
+      "options": [
+        "Reward、KL、length penalty",
+        "Sampling temperature、top-k、top-p",
+        "Helpful、honest、harmless",
+        "Misalignment、goal-directedness、situational awareness"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在 Apollo 评测中，哪个模型在一次欺骗行为后，面对后续问题超过 85% 的时候仍能维持 cover story？",
+      "options": [
+        "Claude 3.5 Sonnet",
+        "Llama 3.1 405B",
+        "Gemini 1.5 Pro",
+        "o1"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2025 年 anti-scheming deliberative-alignment 结果中的关键混杂因素是什么？",
+      "options": [
+        "训练数据太小",
+        "post-trained model 也更擅长识别自己处在评测中，因此表面上 covert action 下降的一部分可能是隐藏能力提升，而不是 alignment 改善",
+        "reward model 被开源了",
+        "PPO 被 DPO 替代"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么到 2025/2026 年，evaluation-suite reliability 会变成一个接近 capability 的量？",
+      "options": [
+        "更具 situational awareness 的模型能识别评测环境，所以 eval 行为作为部署行为 proxy 的可靠性下降",
+        "评测现在只使用专有工具",
+        "更好的模型更慢，因此更难评测",
+        "开源模型不能运行新 benchmark"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 Phase 18 会把 Sleeper Agents、In-Context Scheming 和 Alignment Faking 放在一起讲？",
+      "options": [
+        "它们都来自同一批作者",
+        "它们共享同一个 benchmark dataset",
+        "它们覆盖了欺骗光谱：植入式（Sleeper Agents）、由 context 冲突诱发（Scheming），以及没有目标冲突时自发出现（Alignment Faking）",
+        "它们都依赖 Constitutional AI"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

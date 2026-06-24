@@ -1,0 +1,78 @@
+{
+  "lesson": "16-model-routing",
+  "title": "Model Routing 作为降本 Primitive",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "model cascading 的核心思想是什么？",
+      "options": [
+        "并行运行两个模型并平均输出",
+        "总是按随机权重路由",
+        "每个 request 都先跑最贵模型",
+        "先跑便宜模型，只有低置信或 refusal 时才升级到 frontier model"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程列出了哪四种 routing decision 信号？",
+      "options": [
+        "task classification、prompt length、embedding similarity to known-hard set、first-pass self-confidence",
+        "只有 token count",
+        "只有 user tier",
+        "GPU temperature、fan speed、room humidity、time of day"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "cascade router 的预期 latency profile 是什么？",
+      "options": [
+        "总是慢 10 倍",
+        "与 frontier model 相同",
+        "median latency 约 1.2x（cheap run 加 verify），升级请求约 2x（约 10% traffic）",
+        "总是比 pre-route 更快"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "哪种 routing pattern 前置增加 5-10ms latency，但整体最快？",
+      "options": [
+        "Pre-route with a classifier",
+        "Ensemble route",
+        "Cascade",
+        "Random round-robin"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "routing 中的 cheap-model drift 是什么？",
+      "options": [
+        "便宜模型变贵",
+        "cascade 100% 落到 frontier",
+        "任务分布发生变化，但训练好的 router 仍把 requests 发给便宜模型，悄悄降低质量",
+        "便宜模型的 latency drift"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程建议用哪个 guard 捕捉 routing drift？",
+      "options": [
+        "只用 offline eval sets",
+        "在生产中禁用 routing",
+        "只做季度工程 review",
+        "online quality metrics：每条 route 的 thumbs-up/down、held-out samples 上的 LLM-judge、escalation rate、refusal rate"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "lesson": "05-eagle3-speculative-decoding",
+  "title": "生产中的 EAGLE-3 Speculative Decoding",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 speculative decoding 能利用 plain decode 中存在的空隙？",
+      "options": [
+        "decode 是 compute-bound，因此增加更多计算是免费的",
+        "decode 无法从 batching 中受益",
+        "decode 比 prefill 需要更多网络带宽",
+        "decode 是 memory-bound，因此 GPU 大多在等待从 HBM 读取 weights"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "acceptance rate alpha 衡量什么？",
+      "options": [
+        "decode 期间使用的 GPU memory 比例",
+        "draft 提议的 tokens 中被 target model 接受的比例",
+        "draft model 的 latency overhead",
+        "KV cache 的 cache hit rate"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "EAGLE-3 相比 EAGLE-2 有什么变化，使 general chat 上的 alpha 提升到约 0.6-0.8？",
+      "options": [
+        "它使用同一模型家族的 full-sized draft model",
+        "它在 CPU 而不是 GPU 上运行",
+        "它完全移除了 verify 步骤",
+        "draft head 在多个 target layers 上训练，而不只是最后一层"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程说，在多数 2026 硬件上，高并发时 alpha 大约低于多少，speculative decoding 会变成净负收益？",
+      "options": [
+        "0.95",
+        "0.05",
+        "0.55",
+        "0.85"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "开启 EAGLE-3 后，即使 mean ITL 下降，也最应该密切关注哪个 metric？",
+      "options": [
+        "Cold-start time",
+        "GPU memory utilization",
+        "P99 ITL，因为 rejected-draft two-passes 在满 batch 下可能串行化",
+        "Mean E2E latency"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "根据课程，为什么 vLLM 2026 中 speculative decoding 是 opt-in，而不是默认开启？",
+      "options": [
+        "acceptance rate 依赖 workload，不测 alpha 就直接开启是生产反模式",
+        "它只在 Blackwell GPUs 上工作",
+        "它与 PagedAttention 不兼容",
+        "它需要单独 license"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

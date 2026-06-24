@@ -1,0 +1,67 @@
+[
+  {
+    "id": "imbalanced-pre-1",
+    "stage": "pre",
+    "question": "一个 fraud detection 数据集有 99.9% 合法交易和 0.1% 欺诈。模型对每笔交易都预测 legitimate。它的 accuracy 是多少？",
+    "options": [
+      "50%",
+      "0.1%",
+      "99.9%",
+      "100%"
+    ],
+    "correct": 2,
+    "explanation": "Accuracy = 999/1000 = 99.9%。模型抓不到任何欺诈，但按 accuracy 看起来很好。这正是 imbalanced datasets 中 accuracy 危险的原因。"
+  },
+  {
+    "id": "imbalanced-pre-2",
+    "stage": "pre",
+    "question": "哪个指标能正确指出 always-predict-negative 模型是无用的？",
+    "options": [
+      "Accuracy（99.9%）",
+      "Recall（0%）或 F1 score（0%）",
+      "Specificity（100%）",
+      "True negative rate（100%）"
+    ],
+    "correct": 1,
+    "explanation": "Recall = TP/(TP+FN) = 0/total_positives = 0%。F1 = 2*0*0/(0+0) = 0。两者都会正确显示模型没有抓住任何 positive class。Accuracy 会掩盖这个失败。"
+  },
+  {
+    "id": "imbalanced-post-1",
+    "stage": "post",
+    "question": "SMOTE 如何生成合成的 minority samples？",
+    "options": [
+      "精确复制已有 minority samples",
+      "在 feature space 的任意位置随机生成点",
+      "在一个 minority sample 和它的 K 个最近 minority neighbors 之一之间插值",
+      "翻转 majority class samples 的标签"
+    ],
+    "correct": 2,
+    "explanation": "SMOTE 会选择一个 minority point，再选取它的 K 个最近 minority neighbors 中的一个，并在线段之间创建新点：new = x + rand(0,1) * (neighbor - x)。这会生成合理且非重复的样本。"
+  },
+  {
+    "id": "imbalanced-post-2",
+    "stage": "post",
+    "question": "在 imbalanced dataset 上，你把 classification threshold 从 0.5 降到 0.3。precision 和 recall 会怎样变化？",
+    "options": [
+      "precision 和 recall 都增加",
+      "recall 增加（抓到更多 positives），但 precision 降低（更多 false positives）",
+      "precision 增加，但 recall 降低",
+      "两者都不变，因为 threshold 只影响速度"
+    ],
+    "correct": 1,
+    "explanation": "降低 threshold 表示更多样本会被预测为 positive。这会抓到更多 true positives（recall 上升），但也引入更多 false positives（precision 下降）。Threshold tuning 是在 precision 和 recall 之间权衡。"
+  },
+  {
+    "id": "imbalanced-post-3",
+    "stage": "post",
+    "question": "为什么在高度 imbalanced datasets 上，AUPRC（Area Under Precision-Recall Curve）比 AUC-ROC 更有信息量？",
+    "options": [
+      "AUPRC 总是高于 AUC-ROC",
+      "随机分类器的 AUPRC 等于 positive class rate（例如 0.001），改进更明显；而 AUC-ROC 无论 imbalance 如何都从 0.5 起步",
+      "AUPRC 不需要 threshold",
+      "AUC-ROC 无法在 imbalanced data 上计算"
+    ],
+    "correct": 1,
+    "explanation": "对 imbalanced data，AUC-ROC 可能显得虚高，因为大量 true negatives 会抬高 true negative rate。AUPRC 的 baseline 等于 positive rate，因此检测 minority class 的真实提升会更明显。"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "question": "prompt engineering 和 context engineering 有什么区别？",
+    "options": ["它们是同一件事", "Prompt 是用户 query；context 是模型窗口中的所有内容：system prompt、tools、retrieved docs、history 以及 prompt 本身", "Context engineering 是数据库设计", "Prompt engineering 更高级"],
+    "correct": 1,
+    "explanation": "Prompt engineering 关注编写用户指令。Context engineering 管理模型的完整输入：放什么、不放什么、按什么顺序放，以及如何分配有限 context window。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 context window 中的顺序会影响 LLM performance？",
+    "options": ["不会影响，LLM 平等处理所有 tokens", "LLM 有 recency 和 primacy biases，更关注 context window 的开头和结尾", "字母顺序能帮助模型更快搜索", "顺序只对代码重要"],
+    "correct": 1,
+    "explanation": "研究显示 LLM 更关注 context window 的开头和结尾（'lost in the middle' phenomenon）。把最重要信息放在开头或结尾能提升利用率。",
+    "stage": "pre"
+  },
+  {
+    "question": "一个 coding assistant 使用 128K context window 中的 22,700 tokens。为什么 budget management 仍然重要？",
+    "options": ["128K 对任何 use case 都够用", "长对话、大代码文件和检索文档会很快填满窗口；没有预算管理，关键 context 会被截断", "Token counting 不准确", "只有 prompt 重要"],
+    "correct": 1,
+    "explanation": "22,700 tokens 只是 baseline。50 轮对话会再增加 30K+ tokens。检索大型代码库会增加 50K+。Tool call results 还会继续增加。没有主动管理，窗口会填满，最旧 context 会丢失。",
+    "stage": "post"
+  },
+  {
+    "question": "Conversation history 的 sliding window strategy 是什么？",
+    "options": ["把模型移动到另一台 server", "只保留最近 N 轮在 context 中，丢弃更旧轮次，或先把它们总结", "把对话按固定大小 chunks 处理", "动态扩展 context window"],
+    "correct": 1,
+    "explanation": "Sliding window 会完整保留最近 K 轮对话。更旧轮次要么丢弃，要么替换成摘要。这能限制内存使用，同时保留最相关的近期上下文。",
+    "stage": "post"
+  },
+  {
+    "question": "Context assembler 应该如何在各组件之间分配 tokens？",
+    "options": ["每个组件平均分配", "根据 query type 动态分配：简单问题需要较少 retrieval context，复杂问题需要更多，同时始终预留 generation headroom", "始终最大化 retrieval context", "最小化 system prompt tokens"],
+    "correct": 1,
+    "explanation": "简单事实问题可能只需要 500 tokens 检索上下文。复杂分析可能需要 10,000。好的 context assembler 会动态调整分配，同时始终给模型回答预留空间。",
+    "stage": "post"
+  }
+]

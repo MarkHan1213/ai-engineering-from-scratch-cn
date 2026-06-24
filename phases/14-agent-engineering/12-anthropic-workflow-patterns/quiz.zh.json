@@ -1,0 +1,90 @@
+{
+  "lesson": "12-anthropic-workflow-patterns",
+  "title": "Anthropic 的 Workflow Patterns：简单优先",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Anthropic 如何区分 workflow 和 agent？",
+      "options": [
+        "workflow 使用 embeddings；agent 使用工具",
+        "workflow 是工程师拥有的预定义图；agent 是模型拥有的动态工具调度",
+        "workflow 在 CPU 上运行；agent 需要 GPU",
+        "workflow 无状态；agent 有状态"
+      ],
+      "correct": 1,
+      "explanation": "Workflow 是工程师掌控的预定义代码路径；agent 则由模型掌控图结构。"
+    },
+    {
+      "stage": "pre",
+      "question": "支撑全部五种模式的 augmented LLM 具备哪三种能力？",
+      "options": [
+        "Search（retrieval）、tools（actions）、memory（persistence）",
+        "Embeddings、fine-tuning、RAG",
+        "Vector、KV、graph",
+        "Plan、execute、reflect"
+      ],
+      "correct": 0,
+      "explanation": "原子单元是一个接好 retrieval、tools 和 memory 的 LLM。"
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是 Anthropic 的五种 workflow patterns 之一？",
+      "options": [
+        "Prompt chaining",
+        "Routing",
+        "Evaluator-optimizer",
+        "Gradient distillation"
+      ],
+      "correct": 3,
+      "explanation": "五种模式是 prompt chaining、routing、parallelization、orchestrator-workers 和 evaluator-optimizer。Gradient distillation 是训练概念。"
+    },
+    {
+      "stage": "check",
+      "question": "parallelization 有哪两种形态？",
+      "options": [
+        "Sync 和 async",
+        "Sectioning（不同 chunk）和 voting（同一 prompt 跑 N 次再聚合）",
+        "Hot 和 cold",
+        "Stateful 和 stateless"
+      ],
+      "correct": 1,
+      "explanation": "Parallelization 分为 sectioning 或 voting；两者都会扇出 N 次调用再聚合。"
+    },
+    {
+      "stage": "check",
+      "question": "Self-Refine 泛化后对应哪种 workflow pattern？",
+      "options": [
+        "Prompt chaining",
+        "Routing",
+        "Orchestrator-workers",
+        "Evaluator-optimizer"
+      ],
+      "correct": 3,
+      "explanation": "Evaluator-optimizer 是 Anthropic 对 Self-Refine / CRITIC 迭代模式的命名。"
+    },
+    {
+      "stage": "post",
+      "question": "根据课程，什么时候 workflow 会胜过 agent？",
+      "options": [
+        "总是如此",
+        "在可预测、成本受限或合规受限，并且图可枚举、可审计的任务上",
+        "只适用于聊天",
+        "只在 GPU 上"
+      ],
+      "correct": 1,
+      "explanation": "workflow 更便宜、更容易调试、也更可审计；当步骤可预先知道时应优先选择。"
+    },
+    {
+      "stage": "post",
+      "question": "课程推荐的默认起点是什么？",
+      "options": [
+        "多 Agent 框架",
+        "直接 API 调用；只有当 durable state、actor concurrency 或 role templating 值得付出成本时再加框架",
+        "微调模型",
+        "构建自定义 MCTS"
+      ],
+      "correct": 1,
+      "explanation": "Schluntz 和 Zhang 的建议是从简单开始；只有复杂度有明确收益时才引入框架。"
+    }
+  ]
+}

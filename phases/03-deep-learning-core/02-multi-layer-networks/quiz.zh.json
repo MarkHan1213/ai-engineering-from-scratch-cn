@@ -1,0 +1,62 @@
+[
+  {
+    "question": "multi-layer network 中 hidden layer 的目的是什么？",
+    "options": [
+      "存储训练数据",
+      "把输入转换成新的特征表示，从而支持非线性决策边界",
+      "减少参数数量",
+      "应用 loss function"
+    ],
+    "correct": 1,
+    "explanation": "Hidden layers 会应用 weights、biases 和 activation functions，创建新的特征表示。这些中间特征让网络能学习单层无法表达的非线性映射。",
+    "stage": "pre"
+  },
+  {
+    "question": "neural network 中 forward pass 做什么？",
+    "options": [
+      "使用 gradients 更新 weights",
+      "为 backpropagation 计算 gradients",
+      "把输入推过每一层以产生输出",
+      "打乱训练数据"
+    ],
+    "correct": 2,
+    "explanation": "forward pass 是纯计算：每层都乘以 weights、加 bias、应用 activation，并把结果传给下一层。forward pass 中不会发生学习。",
+    "stage": "pre"
+  },
+  {
+    "question": "一个 layer 有 3 个 neurons，并接收来自 2 个 neurons 的输入。它的 weight matrix 形状是什么？",
+    "options": [
+      "(2, 3)",
+      "(3, 2)",
+      "(3, 3)",
+      "(2, 2)"
+    ],
+    "correct": 1,
+    "explanation": "weight matrix 的形状是 (neurons_in_current_layer, neurons_in_previous_layer) = (3, 2)。每一行包含一个 neuron 对所有输入的权重。",
+    "stage": "post"
+  },
+  {
+    "question": "Universal Approximation Theorem 保证了什么？",
+    "options": [
+      "任意网络都能在多项式时间内训练完成",
+      "一个包含足够 neurons 的单 hidden layer 可以近似任意连续函数",
+      "更深的网络总是优于浅层网络",
+      "神经网络可以解决任意计算问题"
+    ],
+    "correct": 1,
+    "explanation": "Cybenko（1989）证明，一个有一层 hidden layer 且 neurons 足够多的网络，可以以任意期望精度近似任意连续函数。实践中，更深网络通常能用更少总参数达到同样效果。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么 sigmoid activation function 让学习成为可能，而 perceptrons 中的 step function 不行？",
+    "options": [
+      "Sigmoid 输出更大的值",
+      "Sigmoid 计算更快",
+      "Sigmoid 平滑且处处可微，因此 backpropagation 有 gradients 可用",
+      "Sigmoid 输出负值"
+    ],
+    "correct": 2,
+    "explanation": "step function 几乎处处梯度为零，并且在阈值处梯度未定义。Sigmoid 是平滑的，并且每一点都有明确定义的导数 s*(1-s)，这对基于梯度的学习至关重要。",
+    "stage": "post"
+  }
+]

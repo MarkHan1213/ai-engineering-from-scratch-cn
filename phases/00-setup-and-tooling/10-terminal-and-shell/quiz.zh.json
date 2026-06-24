@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "shell 命令中的 pipe operator '|' 会做什么？",
+      "options": [
+        "并行运行两个命令",
+        "把一个命令的标准输出作为下一个命令的标准输入",
+        "把命令输出保存到文件",
+        "把两个文件合并成一个"
+      ],
+      "correct": 1,
+      "explanation": "pipe operator 会把命令连接成 pipeline。例如，'cat log.txt | grep error' 会把 log.txt 的内容作为输入传给 grep，再过滤包含 'error' 的行。"
+    },
+    {
+      "stage": "pre",
+      "question": "关闭启动某个进程的终端后，正在运行的进程通常会怎样？",
+      "options": [
+        "进程会继续在后台运行",
+        "进程会收到 hangup signal（SIGHUP），通常会终止",
+        "进程会暂停，直到你打开新终端",
+        "进程会自动迁移为 system service"
+      ],
+      "correct": 1,
+      "explanation": "关闭终端会向子进程发送 SIGHUP，默认会导致它们终止。tmux、nohup 或 screen 等工具可以避免这种情况。"
+    },
+    {
+      "stage": "post",
+      "question": "相比使用 'nohup command &' 跑长时间训练任务，tmux 的关键优势是什么？",
+      "options": [
+        "tmux 比 nohup 使用更少 CPU",
+        "tmux 可以 detach、reattach，并通过多个 pane 查看实时输出",
+        "tmux 会自动重启失败的进程",
+        "tmux 会压缩进程输出以节省磁盘空间"
+      ],
+      "correct": 1,
+      "explanation": "tmux 会创建持久 session，你可以 detach 后稍后 reattach，并且能在多个 pane 中看到实时输出。nohup 只能写日志文件，无法交互或重新接入。"
+    },
+    {
+      "stage": "post",
+      "question": "'python train.py > output.log 2>&1' 实现了什么？",
+      "options": [
+        "运行 train.py，并只把错误保存到 output.log",
+        "运行 train.py，并把标准输出和标准错误都重定向到 output.log",
+        "运行 train.py 两次，并记录第二次运行",
+        "用两倍内存运行 train.py"
+      ],
+      "correct": 1,
+      "explanation": "'> output.log' 会把 stdout 重定向到文件。'2>&1' 会把 stderr 发送到和 stdout 相同的位置。结果是普通输出和错误都会被收集到同一个文件。"
+    },
+    {
+      "stage": "post",
+      "question": "哪个命令能让你从本地浏览器访问远程 GPU 机器上运行在 8888 端口的 Jupyter notebook？",
+      "options": [
+        "scp -P 8888 user@gpu-box:~/notebook.ipynb",
+        "ssh -L 8888:localhost:8888 user@gpu-box",
+        "rsync -avz user@gpu-box:8888 localhost:8888",
+        "ssh user@gpu-box --forward-port 8888"
+      ],
+      "correct": 1,
+      "explanation": "SSH local port forwarding（-L）会把远程端口映射到本地机器。执行该命令后，在浏览器打开 localhost:8888 就能访问远程 Jupyter server。"
+    }
+  ]
+}

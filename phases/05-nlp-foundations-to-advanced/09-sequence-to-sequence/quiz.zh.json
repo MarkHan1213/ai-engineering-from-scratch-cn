@@ -1,0 +1,102 @@
+{
+  "lesson": "09-sequence-to-sequence",
+  "title": "Sequence-to-Sequence 模型",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 2014 风格的 seq2seq 模型中，encoder 的作用是什么？",
+      "options": [
+        "计算 attention weights",
+        "执行 beam search",
+        "读取 source，并生成一个固定大小的 context vector 来总结它",
+        "生成 target tokens"
+      ],
+      "correct": 2,
+      "explanation": "Encoder RNN 会把 source 压缩成最终 hidden state，供 decoder 使用。"
+    },
+    {
+      "stage": "pre",
+      "question": "seq2seq 训练中的 teacher forcing 是什么？",
+      "options": [
+        "推理时加入一个 teacher network",
+        "把 batch size 翻倍",
+        "把真实的上一个 token（而不是模型预测）作为 decoder 输入",
+        "手工标注每个 decoder step"
+      ],
+      "correct": 2,
+      "explanation": "Teacher forcing 用真实前序 token 稳定训练；否则早期错误会级联。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么固定 context-vector 的 seq2seq 在输入变长时准确率会下降？",
+      "options": [
+        "Padding tokens 会累积",
+        "Cross-entropy 会发散",
+        "source 的所有信息都必须塞进一个固定大小的 encoder hidden state，长输入会丢细节",
+        "词表变得太大"
+      ],
+      "correct": 2,
+      "explanation": "固定 context-vector 是瓶颈，长输入无法被无损总结。"
+    },
+    {
+      "stage": "check",
+      "question": "什么是 exposure bias？",
+      "options": [
+        "类别不均衡带来的偏差",
+        "Encoder embeddings 中的偏差",
+        "标注者分歧",
+        "训练时使用 ground-truth tokens，但推理时从模型自己的预测继续生成，由此产生的 train/inference gap"
+      ],
+      "correct": 3,
+      "explanation": "训练时模型没有练习从自身错误中恢复，所以推理时错误会级联。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么生成时 beam search 往往优于 greedy decoding？",
+      "options": [
+        "Beam search 每一步保留 top-k 个部分序列，而不是不可逆地提交给一个 token",
+        "Beam search 避免 exposure bias",
+        "Beam search 更快",
+        "Beam search 会降低 loss"
+      ],
+      "correct": 0,
+      "explanation": "Greedy 每步立即提交；beam search 探索多个假设，再选择最好的完整序列。"
+    },
+    {
+      "stage": "post",
+      "question": "哪类架构取代了通用生成任务中的 RNN seq2seq？",
+      "options": [
+        "Transformer encoder-decoder models（BART、T5、mBART、NLLB）",
+        "Graph neural networks",
+        "Naive Bayes",
+        "1D CNNs"
+      ],
+      "correct": 0,
+      "explanation": "Transformer encoder-decoders 去掉了 recurrence，如今主导生成任务。"
+    },
+    {
+      "stage": "post",
+      "question": "Scheduled sampling 会做什么？",
+      "options": [
+        "训练时逐步降低 teacher-forcing ratio，让模型学会从自己的预测中恢复",
+        "调度 learning-rate decay",
+        "重排训练集",
+        "向 embeddings 加随机噪声"
+      ],
+      "correct": 0,
+      "explanation": "Scheduled sampling 逐渐混入模型预测，缩小 train/inference gap。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么单独使用 greedy decoding 往往不适合面向用户的生成？",
+      "options": [
+        "它不能使用 embeddings",
+        "它总是先选择 <EOS>",
+        "Greedy 可能重复或循环，也无法从局部看似好但全局很差的 token 选择中回退",
+        "它需要更多内存"
+      ],
+      "correct": 2,
+      "explanation": "Greedy decoding 每一步都不可回退，容易产生循环和重复，需要 beam search 或 sampling 缓解。"
+    }
+  ]
+}

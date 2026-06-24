@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "你 benchmark 一个模型并报告“4090 上平均每张图 12ms”。缺了什么？",
+      "options": [
+        "什么都不缺，这是完整 benchmark",
+        "Percentiles（p50/p95/p99）、warmup discipline 和 CUDA synchronisation；只有 mean 会隐藏 tail latency，并且可能测到 kernel dispatch 而不是 kernel execution",
+        "模型大小",
+        "数据集名称"
+      ],
+      "correct": 1,
+      "explanation": "生产延迟用 percentiles 衡量，因为 real-time systems 失败在 tails，而不是 averages。没有 warmup 时，JIT compilation 会抬高前几次测量。没有 torch.cuda.synchronize 时，GPU kernel launch 会在 kernel 完成前返回，因此测到的是 dispatch，不是 execution。这三点都正确，数字才有意义。"
+    },
+    {
+      "stage": "pre",
+      "question": "FLOPs 与 on-device latency 为什么不完全相关？",
+      "options": [
+        "FLOPs counters 是坏的",
+        "不同 operations 的硬件友好程度不同；depthwise convolutions 可能 FLOPs 更低，但在 GPUs 上受 memory-bound 限制，而 dense convolutions 能高效使用 Tensor Cores。Memory bandwidth、kernel launch overhead 和 cache behaviour 也会影响 latency",
+        "FLOPs 忽略 batch size",
+        "PyTorch 错误统计 FLOPs"
+      ],
+      "correct": 1,
+      "explanation": "FLOPs 是廉价 proxy。wall-clock latency 取决于 operation 与硬件优势的匹配程度：dense matmuls 能吃满 Tensor Cores；depthwise convs 卡在 memory bandwidth；attention 卡在 sequence-length^2 的 memory reads。做 architecture search 时 FLOPs 有用；做部署决策时必须在目标设备上测。"
+    },
+    {
+      "stage": "post",
+      "question": "Post-training static INT8 quantisation 通常会让 ImageNet-class vision models 损失多少 accuracy？",
+      "options": [
+        "5-10 percentage points",
+        "正确校准时损失 0.1-1 percentage points；batch-norm-fused conv models 在 INT8 下尤其稳定",
+        "始终为 0，因为它是无损的",
+        "20+ points，无法使用"
+      ],
+      "correct": 1,
+      "explanation": "校准良好的 vision models 做 static PTQ，通常只损失零点几到约 1 个点。更大的损失模式包括：(a) calibration data 不足，(b) quantising activations 时存在 extreme outliers（可用 per-channel quantisation 或 clipping 修复），(c) 未 fused 的 BatchNorm layers。处理好这些后，INT8 几乎是免费的。"
+    },
+    {
+      "stage": "post",
+      "question": "你的 mobile app 需要小于 10MB 且 sub-10ms latency 的 vision model。应该选哪个 backbone？",
+      "options": [
+        "ResNet-50",
+        "MobileNetV3-Small 或 EfficientNet-Lite-B0，并 quantise 到 INT8；两者都面向这个预算，并能干净编译到 TFLite / Core ML",
+        "ViT-Base",
+        "ConvNeXt-Large"
+      ],
+      "correct": 1,
+      "explanation": "2026 年移动端 vision 仍主要由 MobileNetV3 和 EfficientNet-Lite variants 主导，因为它们就是为这个预算设计的：depthwise convs、h-swish、squeeze-excite，并从第一天起考虑 quantisation。ResNet-50 和 ViT-Base 在 FP32 下超过 100MB，INT8 下也超过 25MB，还没测 latency 就已超出大小预算。"
+    },
+    {
+      "stage": "post",
+      "question": "你用 opset 17 把 PyTorch model 导出到 ONNX，却因 Unsupported operator 失败。最可能的原因是什么？",
+      "options": [
+        "ONNX library 过时",
+        "(1) custom op 没有 ONNX mapping；(2) tracing 捕捉不到 non-deterministic control-flow path；(3) Python 中隐式的 tensor-scalar interaction 没有 ONNX 等价物。修复：替换 op、对 control flow 使用 `torch.jit.script`，或升级 opset",
+        "模型参数太多",
+        "input shape 错了"
+      ],
+      "correct": 1,
+      "explanation": "ONNX export 默认是 tracing，因此 tracing 捕捉不到的东西都会失败，例如 runtime control flow、Python-level branches、custom CUDA ops。多数失败来自单个没有 ONNX 等价物的 node，通常是一个很小的 custom op 或 torch.special.* 调用。修复方式是替换该 op、切换到 `torch.jit.script`，或升级到包含该 op 的新 opset。"
+    }
+  ]
+}

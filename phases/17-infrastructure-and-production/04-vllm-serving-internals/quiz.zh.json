@@ -1,0 +1,78 @@
+{
+  "lesson": "04-vllm-serving-internals",
+  "title": "vLLM Serving Internals：PagedAttention、Continuous Batching、Chunked Prefill",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "经典 static batching 面对混合长度请求时的主要问题是什么？",
+      "options": [
+        "它只适用于 FP4",
+        "它要求每块 GPU 之间都有 NVLink",
+        "它根本无法使用 GPU",
+        "按最长 prompt 和最长 output 做 padding 会浪费内存，并让整个 batch 卡在最慢 sequence 上"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "PagedAttention 如何将 KV cache fragmentation 从 60-80% 降到 4% 以下？",
+      "options": [
+        "完全禁用 KV cache",
+        "将 weights 压缩到 INT4",
+        "将 KV cache 分配为固定大小 blocks（默认 16 tokens），并通过每个 sequence 的 block table 引用",
+        "把完整 prompt 放在 CPU RAM 中"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "vLLM V1 scheduler 中 continuous batching 的不变量是什么？",
+      "options": [
+        "scheduler 每个 request 只运行一次，batch 永不变化",
+        "每个 request 拥有独立 GPU stream",
+        "scheduler 等待 10 ms 窗口填满 batch 后再运行",
+        "scheduler 每个 decode iteration 运行一次，让完成的 sequences 退出，让等待的 sequences 进入"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "chunked prefill 在混合负载下主要保护哪个 latency metric？",
+      "options": [
+        "Mean throughput",
+        "Cold-start time",
+        "Network RTT",
+        "P99 inter-token latency（ITL）"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "在 vLLM v0.18.0 中，哪个 speculative-decoding 变体仍与 --enable-chunked-prefill 兼容？",
+      "options": [
+        "仅 EAGLE-1",
+        "V1 scheduler 中的 N-gram GPU speculative decoding",
+        "没有任何 speculative decoding 兼容",
+        "Draft-model speculative decoding"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 chunked prefill 单独并不会提高 mean throughput？",
+      "options": [
+        "它运行在与 decode 不同的 GPU 上",
+        "它底层使用 speculative decoding",
+        "它更激进地压缩 weights",
+        "它只减少 decode-time jitter；实践中的 throughput 收益来自在长 prefill 期间保持 decode sequences 存活，而不是改变完成的工作量"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

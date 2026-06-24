@@ -1,0 +1,37 @@
+[
+  {
+    "question": "RAG 代表什么，它解决什么问题？",
+    "options": ["Random Augmented Generation，用于生成随机输出", "Retrieval-Augmented Generation，让 LLM 访问训练时没有见过的外部知识", "Recurrent Attention Generation，用于改进 attention mechanisms", "Reduced Architecture Generation，用于缩小模型"],
+    "correct": 1,
+    "explanation": "RAG 从外部知识库检索相关文档，并把它们加入 prompt。这让 LLM 不需要 retraining 就能访问最新的、领域特定的信息。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么大多数 knowledge-grounded applications 更偏好 RAG，而不是 fine-tuning？",
+    "options": ["RAG 产出更好的模型", "RAG 更便宜、文档变化时可即时更新，并提供 source attribution；fine-tuning 昂贵且会过期", "Fine-tuning 不起作用", "RAG 使用更少内存"],
+    "correct": 1,
+    "explanation": "Fine-tuning 成本可能上千美元，产出的是静态模型，会随着文档变化变旧，也没有 source attribution。RAG 可以即时更新（只更新 document store），只花 embedding + storage 成本，并能引用来源。",
+    "stage": "pre"
+  },
+  {
+    "question": "Basic RAG pipeline 的正确步骤顺序是什么？",
+    "options": ["Generate、retrieve、embed、chunk", "Chunk documents、embed chunks、存入 vector DB、embed query、retrieve similar chunks、带 context 生成答案", "Embed query、generate answer、retrieve documents", "Store documents、query the LLM、把 documents 加到 response"],
+    "correct": 1,
+    "explanation": "Ingestion：chunk documents -> embed chunks -> store in vector DB。Query time：embed 用户 query -> retrieve top-K similar chunks -> add chunks to prompt -> generate grounded answer。",
+    "stage": "post"
+  },
+  {
+    "question": "Basic RAG systems 的常见失败模式是什么？",
+    "options": ["LLM 拒绝回答", "检索到的 chunks 与 query 语义相似，但不包含真正答案（例如问 'Q3 revenue numbers' 却返回 'revenue strategy'）", "Vector database 崩溃", "Embeddings 太大"],
+    "correct": 1,
+    "explanation": "Semantic search 找到的是听起来像 query 的文本，不一定是能回答 query 的文本。关于 revenue 的 query 可能检索到讨论 revenue strategy 的 chunks，而不是包含具体数字的 chunk。",
+    "stage": "post"
+  },
+  {
+    "question": "如何评估 RAG quality？",
+    "options": ["检查 LLM 是否产生任何输出", "同时使用 retrieval metrics（是否找到正确 chunks）和 generation metrics（答案是否忠实于检索 context）", "只测 response time", "数 retrieved documents 的数量"],
+    "correct": 1,
+    "explanation": "RAG evaluation 有两部分：retrieval quality（检索 chunks 相对 ground truth 的 precision/recall）和 generation quality（是否忠实于 context、是否回答 query、是否没有超出检索信息 hallucinate）。",
+    "stage": "post"
+  }
+]

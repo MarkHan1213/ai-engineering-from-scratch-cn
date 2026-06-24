@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/41-eval-pipeline",
+  "title": "完整评测流水线",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "阅读前：同事说他们的模型在 held-out set 上 perplexity 是 4.2，并问这个模型好不好。最站得住脚的回答是什么？",
+      "options": [
+        "好：perplexity 低于 5 就说明模型好。",
+        "Perplexity 只能说明模型拟合语言分布的程度。它并不能说明模型是否遵循指令或返回正确答案。",
+        "没有显式 prompt 时，perplexity 没有意义。",
+        "只有 judge model 才能回答这个问题。"
+      ],
+      "correct": 1,
+      "explanation": "Perplexity 只是一个维度。模型可能 perplexity 很低却在事实任务上答错，也可能 perplexity 尚可但答案质量很差。你需要多个 eval，每个评测不同维度。"
+    },
+    {
+      "stage": "check",
+      "question": "perplexity eval 会在非 pad 位置上累计每个 token 的 negative log-likelihood，并除以非 pad token 总数。为什么不能改成平均每个 batch 的 perplexity？",
+      "options": [
+        "平均每个 batch 的 perplexity 在数学上完全等价。",
+        "平均每个 batch 的 perplexity 会低估短序列的权重（它们的 per-batch ppl 方差更大），从而产生有偏聚合。",
+        "Batch 里包含 padded tokens，所以必须始终取平均。",
+        "Batched data 上的 perplexity 没有定义。"
+      ],
+      "correct": 1,
+      "explanation": "按 token 聚合是教科书定义，也能避免 batch size 和长度偏置。按 batch 平均是常见 bug；在序列长度不同的 fixture 上，它会得到与正确值不同的数字。"
+    },
+    {
+      "stage": "check",
+      "question": "当 prediction 和 reference 都为空时，Token F1 返回 1.0。还有哪种情况必须返回一个明确值？",
+      "options": [
+        "当 pred 为空但 reference 非空时，F1 必须是 1.0。",
+        "当 pred 非空但 reference 为空时，F1 必须是 undefined。",
+        "当 pred 和 reference 中只有一方为空时，F1 必须是 0.0。",
+        "当 pred 恰好包含一个匹配 token 时，F1 必须是 0.5。"
+      ],
+      "correct": 2,
+      "explanation": "空对空是一个 vacuous match。空与非空混合则是明确的未命中：一边有内容，另一边没有。SQuAD 约定在这种情况下 F1 = 0。"
+    },
+    {
+      "stage": "check",
+      "question": "aggregator 用 `1 / (1 + log(max(ppl, 1.0)))` 归一化 perplexity。这对归一化分数保证了什么？",
+      "options": [
+        "它始终在 [0, 1] 内，并且随着原始 perplexity 增大而单调下降。",
+        "它始终在 [0, 1] 内，并且随着原始 perplexity 增大而单调上升。",
+        "它没有上界。",
+        "它只会返回 0 或 1（二值）。"
+      ],
+      "correct": 0,
+      "explanation": "Perplexity 1（理论下界）会映射到 1.0，无穷大会映射到 0。分数位于 [0, 1]，并且 perplexity 越低越好，这与其他归一化指标的方向一致。"
+    },
+    {
+      "stage": "post",
+      "question": "你把 mock judge 换成真实 frontier-model judge。对流水线来说最小改动是什么？",
+      "options": [
+        "重写 aggregator，让它接受不同的分数范围。",
+        "把传给 `judge_eval` 的 `judge_fn` 参数替换成具有相同签名的函数：(instruction, prediction, reference) -> JudgeVerdict。",
+        "向 DEFAULT_WEIGHTS 添加一个新条目。",
+        "把整个 eval suite 迁移到 async I/O。"
+      ],
+      "correct": 1,
+      "explanation": "judge 接口是 `(instruction, prediction, reference) -> JudgeVerdict`。任何符合这个签名的函数都可以直接替换。流水线通过这个边界与 judge 实现解耦，这正是设计目的。"
+    },
+    {
+      "stage": "post",
+      "question": "你的 aggregate score 是 0.72，但 exact-match 是 0.40，judge 是 4.5/5。这个模型在做什么取舍？",
+      "options": [
+        "模型较少精确命中 gold string，但 judge 认为开放式答案质量不错。",
+        "模型过拟合了 LM corpus。",
+        "aggregate 计算错了。",
+        "judge 按定义就与 exact-match 不对齐。"
+      ],
+      "correct": 0,
+      "explanation": "低 EM 但高 judge 通常说明答案是 paraphrase：实质正确，但没有逐字符匹配 gold。这正是 EM 漏掉、judge 能捕捉的维度。这个取舍有信息量，不是 bug。"
+    }
+  ]
+}

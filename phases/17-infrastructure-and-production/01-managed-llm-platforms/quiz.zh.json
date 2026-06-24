@@ -1,0 +1,90 @@
+{
+  "lesson": "01-managed-llm-platforms",
+  "title": "托管 LLM 平台：Bedrock、Vertex AI、Azure OpenAI",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "学习本课之前，如果客户需要在一个 API 后面同时接入 Claude、Llama 和 Cohere，你会优先选择哪个平台？",
+      "options": [
+        "Vertex AI",
+        "AWS Bedrock",
+        "Azure OpenAI Service",
+        "Direct Anthropic API"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "哪家 hyperscaler 的下注方式被描述为独家合作，而不是 marketplace？",
+      "options": [
+        "Azure OpenAI",
+        "Vertex AI",
+        "AWS Bedrock",
+        "OCI Generative AI"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在 Llama 3.1 405B 等价 workload 上，Azure OpenAI（带 PTUs）和 Bedrock on-demand 的实测 median TTFT 差距大约是多少？",
+      "options": [
+        "~100 ms",
+        "~5 ms",
+        "~250 ms",
+        "~25 ms"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Bedrock 2025 的哪个功能在 CloudWatch 中原生提供最干净的按产品成本归因？",
+      "options": [
+        "Bedrock Knowledge Bases",
+        "Application Inference Profiles",
+        "Bedrock Guardrails",
+        "Bedrock Agents"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Azure PTUs 相比 on-demand 通常在哪个持续利用率区间达到盈亏平衡？",
+      "options": [
+        "5-10%",
+        "80-95%",
+        "20-30%",
+        "40-60%"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么课程建议 2026 年对产品关键 LLM 调用采用至少两家 provider 的策略？",
+      "options": [
+        "SOC 2 Type II 要求这样做",
+        "frontier model 领先地位按月轮换，单 vendor lock-in 会让你错过三分之二的 frontier",
+        "hyperscaler 不会签 BAA，除非你也使用竞争对手",
+        "单 vendor 定价总是更贵"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪句话最准确描述三个平台的 FinOps surface？",
+      "options": [
+        "Azure 原生最干净，Bedrock 最不透明",
+        "Vertex 完全没有 attribution surface",
+        "三者都暴露完全相同的 per-request attribution",
+        "Bedrock 原生最干净，Vertex 通过 BigQuery 最灵活，Azure 在没有 instrumentation 时最不透明"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

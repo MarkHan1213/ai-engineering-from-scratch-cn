@@ -1,0 +1,102 @@
+{
+  "lesson": "21-nli-textual-entailment",
+  "title": "自然语言推理：Textual Entailment",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "NLI 会给 (premise, hypothesis) pair 分配哪三个标签？",
+      "options": [
+        "Positive / negative / neutral",
+        "True / false / unknown",
+        "Entailment / contradiction / neutral",
+        "Cause / effect / unrelated"
+      ],
+      "correct": 2,
+      "explanation": "NLI 是 entailment、contradiction 和 neutral 三分类任务。"
+    },
+    {
+      "stage": "pre",
+      "question": "NLI 如何作为 zero-shot text classifier 使用？",
+      "options": [
+        "把每个候选标签写成 hypothesis（例如 'This text is about sports'），选择 entailment score 最高的标签",
+        "通过平均 embeddings",
+        "通过计算 TF-IDF",
+        "通过 prompting an LLM"
+      ],
+      "correct": 0,
+      "explanation": "NLI-as-classifier 会把标签变成 hypotheses；模型选择 entailment 分最高的标签。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 NLI 可以作为 RAG 输出的 faithfulness check？",
+      "options": [
+        "它使用 tokenizers",
+        "检查检索上下文是否蕴含每个答案声明，正是 NLI 训练时学习的问题形式",
+        "它很便宜",
+        "它是多语言的"
+      ],
+      "correct": 1,
+      "explanation": "Hallucination 就是答案声明没有被检索上下文蕴含；NLI 直接衡量 entailment。"
+    },
+    {
+      "stage": "check",
+      "question": "Hypothesis-only baseline 暴露了什么？",
+      "options": [
+        "多语言缺口",
+        "推理很慢",
+        "只看 hypothesis（不看 premise）也能预测标签的数据集，说明存在 label leakage",
+        "Tokenizer drift"
+      ],
+      "correct": 2,
+      "explanation": "SNLI 上较高的 hypothesis-only 分数暴露了标注 artifact；这对调试数据很有用。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个 NLI model family 是 2026 年 leaderboard 上的标准主力？",
+      "options": [
+        "fastText",
+        "Plain Word2Vec",
+        "在 MNLI/FEVER/ANLI 上 fine-tuned 的 DeBERTa-v3 variants",
+        "GPT-2"
+      ],
+      "correct": 2,
+      "explanation": "在 MNLI 及相关语料上 fine-tuned 的 DeBERTa-v3 是 2026 年开放 NLI 的主力。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 sentence-level NLI models 在 document-length premises 上准确率会下降？",
+      "options": [
+        "它们训练在短 premise 上，难以处理多句和 multi-hop inference；DocNLI-tuned models 更适合长输入",
+        "更长输入运行更慢",
+        "文档会触发 tokenizer drift",
+        "Cosine similarity 会衰减"
+      ],
+      "correct": 0,
+      "explanation": "这是训练分布不匹配：单句 NLI 模型在文档长度输入上可能损失 20+ F1。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 zero-shot accuracy 会因为 hypothesis template 不同而波动 10+ points？",
+      "options": [
+        "模型对措辞敏感，例如 'This text is about {label}' 与单独 '{label}' 会改变 entailment probabilities",
+        "Templates 改变 tokenizer 行为",
+        "Templates 影响 model weights",
+        "Templates 改变 label set"
+      ],
+      "correct": 0,
+      "explanation": "Template wording 会实质性改变 entailment scores；需要在小的 held-out set 上调优。"
+    },
+    {
+      "stage": "post",
+      "question": "关于用 NLI 检测 hallucination，安全的能力边界是什么？",
+      "options": [
+        "它只适用于英语",
+        "它作为 faithfulness signal 能减少 hallucination，但无法消除；应结合 retrieval recall 和 human review",
+        "它可以消除 hallucination",
+        "它必须使用 LLM"
+      ],
+      "correct": 1,
+      "explanation": "NLI 是有用信号，但不是完整解法；应与检索指标和人工抽查配合。"
+    }
+  ]
+}

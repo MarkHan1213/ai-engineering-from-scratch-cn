@@ -1,0 +1,78 @@
+{
+  "lesson": "50-hypothesis-generator",
+  "title": "Hypothesis Generator",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 generator 要生成一个排序队列，而不是单个 hypothesis？",
+      "options": [
+        "因为 parser 不能读取单个 block",
+        "因为 runner 需要深度：第一个 hypothesis 失败时，可以弹出下一个继续",
+        "因为 mock model 只会输出列表",
+        "因为 embedding 需要多个输入"
+      ],
+      "correct": 1,
+      "explanation": "生成队列的目的，是把一次 sampling 的成本摊到整个 loop 上。第一个 hypothesis 失败时，runner 可以直接弹出下一个，而不需要重新 sampling。"
+    },
+    {
+      "stage": "pre",
+      "question": "每一轮 pass 中 temperature ramp 起什么作用？",
+      "options": [
+        "提高 parser tolerance",
+        "放宽 sampling distribution，让后续 draft 能离 seed 更远",
+        "增加 embedding dimension",
+        "把 seed value 变成三倍"
+      ],
+      "correct": 1,
+      "explanation": "更高 temperature 会放宽 sampling distribution。ramp 鼓励每一轮漂移得更远，让 novelty filter 有事可做。"
+    },
+    {
+      "stage": "check",
+      "question": "novelty filter 什么时候会拒绝一个 draft？",
+      "options": [
+        "当它的 rank score 低于阈值时",
+        "当它到任何先前 survivor 的最小 cosine distance 低于 novelty threshold 时",
+        "当它通过 parser 但 tag count 错误时",
+        "当它的 draft pass 大于 queue length 时"
+      ],
+      "correct": 1,
+      "explanation": "novelty 是到先前 survivors 的最小距离。如果这个距离低于阈值，draft 就是近重复项，会被丢弃。"
+    },
+    {
+      "stage": "check",
+      "question": "rank score 由哪三个组件组合而成？",
+      "options": [
+        "Latency、throughput、cost",
+        "Novelty、specificity、testability",
+        "Temperature、seed、pass index",
+        "Variables、metric、baseline length"
+      ],
+      "correct": 1,
+      "explanation": "rank score 是 novelty、specificity 和 testability 的加权和。每个 sub score 都位于 0 到 1 之间。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 mock language model 以 temperature bucket 为 key，而不是直接用 raw float？",
+      "options": [
+        "因为 floats 不能被 hash",
+        "因为 buckets 会把 schedule 离散化，让一个小的 temperature 变化也能选到不同的 scripted draft",
+        "因为 parser 需要 integer",
+        "因为 embedding 要求这样"
+      ],
+      "correct": 1,
+      "explanation": "Buckets 会把连续 schedule 离散化。相邻的两个 temperature 可能映射到不同 bucket，并从 scripted bank 中取出不同 draft，这就是 mock 模拟多样化 sampling 的方式。"
+    },
+    {
+      "stage": "check",
+      "question": "如果 mock model 生成的每个 draft 都无法通过 parser，会发生什么？",
+      "options": [
+        "generator 抛出 hard error",
+        "queue 为空，并且每个 pass 都会记录 parse rejection，让失败模式可以被审计",
+        "runner 使用新 prompt 重试",
+        "novelty threshold 会自动降低"
+      ],
+      "correct": 1,
+      "explanation": "Parser failures 会以带有 parse reject reason 的日志记录下来。queue 可以空着返回而不让 loop 崩溃，并且日志会解释原因。"
+    }
+  ]
+}

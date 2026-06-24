@@ -1,0 +1,90 @@
+{
+  "lesson": "37-runtime-feedback-loops",
+  "title": "Runtime Feedback Loops",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "feedback runner 强制 Agent 做什么？",
+      "options": [
+        "响应想象出来的输出",
+        "响应事实：每条命令都会把结构化 stdout/stderr/exit/duration 记录捕获进循环",
+        "跳过 verification",
+        "使用不同模型"
+      ],
+      "correct": 1,
+      "explanation": "runner 弥合“tests passed”（想象）和“tests actually ran and exited zero”（记录）之间的差距。"
+    },
+    {
+      "stage": "pre",
+      "question": "feedback 与 telemetry 有什么区别？",
+      "options": [
+        "telemetry 是付费的",
+        "feedback 供本次 run 的下一轮使用；telemetry 供 operators 跨时间审查 runs（不同文件、不同保留策略）",
+        "telemetry 使用 OTel；feedback 使用 GraphQL",
+        "它们是同一件事"
+      ],
+      "correct": 1,
+      "explanation": "两者字段类似，但位于不同文件、拥有不同保留策略；feedback 是 run 内部的，telemetry 是跨 run 的。"
+    },
+    {
+      "stage": "check",
+      "question": "每条 feedback record 必须出现哪个字段？",
+      "options": [
+        "model_id",
+        "exit_code（且 null exit 必须拒绝推进循环）",
+        "embedding_vector",
+        "prompt_cache_token"
+      ],
+      "correct": 1,
+      "explanation": "exit_code 是明确的成功信号；null exit 表示没有进展。"
+    },
+    {
+      "stage": "check",
+      "question": "runner 如何截断大型输出？",
+      "options": [
+        "随机采样",
+        "确定性的 head + tail，并带有 'truncated N lines' marker，让同一输出总是生成同一记录",
+        "只保留前 10 行",
+        "用 gzip 压缩"
+      ],
+      "correct": 1,
+      "explanation": "确定性截断既让记录可 replay，又限制 token 成本；tail 会保留失败摘要。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么要在写入时 redact，而不是读取时 redact？",
+      "options": [
+        "为了压缩",
+        "磁盘上的文件才是攻击者能触达的对象；只在读取时 redact 会把 secrets 留在 JSONL 文件里",
+        "读取时 redact 会破坏 JSON",
+        "它更快"
+      ],
+      "correct": 1,
+      "explanation": "append 前应 redact 匹配 Bearer、password=、api_key=、AKIA...、xox[baprs]- 的行，并按季度审计这些 patterns。"
+    },
+    {
+      "stage": "post",
+      "question": "parent_command_id 给 workbench 带来什么？",
+      "options": [
+        "更便宜的推理",
+        "retry 会关联到父尝试，让 reviewer 和 audit 看到失败链；没有它，retry 看起来像独立成功",
+        "更快文件 I/O",
+        "更低内存"
+      ],
+      "correct": 1,
+      "explanation": "父级关联让 retry chain 对 reviewer（第 39 课）和 verification gate 可见。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么要将 feedback_record.jsonl 限制在 1 MB 并做 rotation？",
+      "options": [
+        "JSON 不能处理更大文件",
+        "Agent 只读取当前文件；rotation 让 runtime 成本有界，同时 CI artifacts 保留完整集合",
+        "磁盘太慢",
+        "provider 按字节收费"
+      ],
+      "correct": 1,
+      "explanation": "有界当前文件 + 轮转历史，是 logrotate 使用的同类模式；hot loop 成本可预测。"
+    }
+  ]
+}

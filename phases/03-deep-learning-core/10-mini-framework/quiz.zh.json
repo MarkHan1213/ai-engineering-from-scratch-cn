@@ -1,0 +1,62 @@
+[
+  {
+    "question": "deep learning framework 中 Module abstraction 有哪三个职责？",
+    "options": [
+      "加载数据、预处理数据、增强数据",
+      "forward() 负责计算，backward() 负责 gradients，parameters() 暴露可训练 weights",
+      "编译、优化、部署",
+      "Tokenize、embed、decode"
+    ],
+    "correct": 1,
+    "explanation": "每个 Module 都实现 forward() 来计算输出，backward() 来传播 gradients，并通过 parameters() 暴露可训练 weights。这个统一接口让任意 module 都能与其他 module 组合。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 Sequential 在 backward pass 中按反向顺序处理 modules？",
+    "options": [
+      "这是任意选择，两个方向都可以",
+      "Gradients 从 loss 开始反向流过网络，因此最后一层最先计算 gradients",
+      "反向顺序使用更少内存",
+      "它防止 gradient explosion"
+    ],
+    "correct": 1,
+    "explanation": "backward pass 从 loss 开始，把 gradients 朝输入方向传播。最后一层先收到 loss gradient，计算自己的 local gradients，再传给前一层。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 optimizer.zero_grad() 是一个单独调用，而不是自动完成？",
+    "options": [
+      "这是 PyTorch 设计错误",
+      "它允许跨多个 batches 累积 gradients，然后再执行一次 optimizer step",
+      "它节省内存",
+      "它让调试更容易"
+    ],
+    "correct": 1,
+    "explanation": "把 zero_grad 和 step 分开可以实现 gradient accumulation：你可以多次运行 backward()（跨 mini-batches）并累加 gradients，然后再调用 step()。这可以模拟更大的 batch size。",
+    "stage": "post"
+  },
+  {
+    "question": "training loop 中正确的操作顺序是什么？",
+    "options": [
+      "backward, forward, zero_grad, step",
+      "forward, loss, zero_grad, backward, step",
+      "zero_grad, forward, loss, backward, step",
+      "forward, zero_grad, backward, loss, step"
+    ],
+    "correct": 2,
+    "explanation": "标准模式是：zero_grad（清除旧 gradients）、forward（计算预测）、loss（计算标量 loss）、backward（计算 gradients）、step（更新 parameters）。顺序错误会造成隐蔽 bug。",
+    "stage": "post"
+  },
+  {
+    "question": "framework 中 DataLoader 的作用是什么？",
+    "options": [
+      "训练模型",
+      "把数据拆成 batches，并可选择在 epochs 之间 shuffle，用于 mini-batch gradient descent",
+      "计算 loss function",
+      "初始化 weights"
+    ],
+    "correct": 1,
+    "explanation": "DataLoader 处理两个实际问题：batching（内存放不下所有数据）和 shuffling（随机顺序防止模型记住数据顺序）。",
+    "stage": "post"
+  }
+]

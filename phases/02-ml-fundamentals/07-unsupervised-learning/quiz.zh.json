@@ -1,0 +1,67 @@
+[
+  {
+    "id": "unsupervised-pre-1",
+    "stage": "pre",
+    "question": "unsupervised learning 与 supervised learning 的区别是什么？",
+    "options": [
+      "Unsupervised learning 使用更多数据",
+      "Unsupervised learning 没有标注输出，算法自己寻找结构",
+      "Unsupervised learning 只适用于文本数据",
+      "Unsupervised learning 总是产生更好结果"
+    ],
+    "correct": 1,
+    "explanation": "在 unsupervised learning 中没有标签。算法在没有被告知正确输出的情况下，从数据中发现模式、分组或结构。"
+  },
+  {
+    "id": "unsupervised-pre-2",
+    "stage": "pre",
+    "question": "K-Means 在训练前需要你指定什么？",
+    "options": [
+      "精确的 cluster centers",
+      "clusters 的数量 K",
+      "每个数据点的标签",
+      "要使用的 distance metric"
+    ],
+    "correct": 1,
+    "explanation": "K-Means 需要把 cluster 数量 K 作为输入。之后它会迭代地把点分配给最近的 centroid，并重新计算 centroids，直到收敛。"
+  },
+  {
+    "id": "unsupervised-post-1",
+    "stage": "post",
+    "question": "K-Means 在两个互锁半月形数据上失败，但 DBSCAN 成功。为什么？",
+    "options": [
+      "DBSCAN 使用的数据比 K-Means 更多",
+      "DBSCAN 基于密度寻找 clusters，因此可以发现任意形状；而 K-Means 假设 clusters 是球形的",
+      "DBSCAN 在所有数据集上都优于 K-Means",
+      "K-Means 无法处理 2D 数据"
+    ],
+    "correct": 1,
+    "explanation": "K-Means 会把点分给最近的 centroid，因此产生球形（凸）clusters。DBSCAN 从高密度区域生长 clusters，只要 cluster 能通过密度连接，就能发现任意形状。"
+  },
+  {
+    "id": "unsupervised-post-2",
+    "stage": "post",
+    "question": "silhouette score 衡量什么？",
+    "options": [
+      "找到的 clusters 总数",
+      "每个点与自身 cluster 的相似程度，相比于它与最近其他 cluster 的相似程度",
+      "clustering algorithm 的速度",
+      "数据中 outliers 的百分比"
+    ],
+    "correct": 1,
+    "explanation": "Silhouette score = (b - a) / max(a, b)，其中 a 是 cluster 内平均距离，b 是最近其他 cluster 的平均距离。它的范围从 -1（分错 cluster）到 +1（聚类良好）。"
+  },
+  {
+    "id": "unsupervised-post-3",
+    "stage": "post",
+    "question": "Gaussian Mixture Model 和 K-Means 在 cluster assignment 上有什么不同？",
+    "options": [
+      "GMM 使用 hard assignments，每个点恰好属于一个 cluster",
+      "GMM 给出 soft（probabilistic）assignments，每个点都有属于每个 cluster 的概率",
+      "GMM 完全不使用 centroids",
+      "GMM 只适用于一维数据"
+    ],
+    "correct": 1,
+    "explanation": "K-Means 会把每个点分配给恰好一个 cluster（hard）。GMM 会计算每个点属于每个 Gaussian component 的概率（soft），并能建模椭圆形、相互重叠的 clusters。"
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "MCP (Model Context Protocol) 为 AI agents 解决什么问题？",
+      "options": ["它提供训练数据的标准格式", "它让 agents 能以标准方式发现和使用外部 servers 暴露的工具，而不需要硬编码工具实现", "它加密 agents 之间的通信", "它压缩大 context windows，使其适配小模型"],
+      "correct": 1,
+      "explanation": "MCP 标准化工具访问：server 用 JSON schemas 暴露 tools，任何兼容 MCP 的 agent 都可以发现并调用它们。这把工具实现与 agent 代码解耦。"
+    },
+    {
+      "stage": "pre",
+      "question": "MCP 和 A2A 的区别是什么？",
+      "options": ["MCP 用于 Python agents，A2A 用于 JavaScript agents", "MCP 连接 agent 与 tools（agent-to-tool），A2A 连接 agent 与其他 agents（agent-to-agent）以完成任务委派", "MCP 是同步的，A2A 是异步的", "MCP 是开源的，A2A 是专有的"],
+      "correct": 1,
+      "explanation": "MCP 是工具访问协议（agent 调用 tool）。A2A 是 agent 协作协议（agent 把任务委派给另一个 agent）。它们解决通信问题的不同层。"
+    },
+    {
+      "stage": "post",
+      "question": "在 A2A 中，什么是 'agent card'，为什么重要？",
+      "options": ["展示 agent 性能指标的可视化 dashboard", "位于 well-known URL 的 JSON document，描述 agent 的 capabilities、skills 和 endpoint，让其他 agents 能发现它并委派任务", "认证 agent 身份的安全凭证", "设置 agent system prompt 的配置文件"],
+      "correct": 1,
+      "explanation": "Agent card（托管在 /.well-known/agent.json）是 agents 发布自身能力的方式。它列出 skills、支持的输入/输出格式和 task endpoint。其他 agents 会读取这张卡来决定是否以及如何委派工作。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 multi-agent systems 需要结构化通信协议，而不是只在 agents 之间传字符串？",
+      "options": ["字符串太大，无法通过 HTTP 发送", "结构化协议提供 type safety、discoverability、error handling 和跨团队/跨框架 agents 的 interoperability", "LLM 解析字符串的计算成本太高", "所有云厂商都要求结构化协议"],
+      "correct": 1,
+      "explanation": "没有结构化 contract，不同团队的 agents 容易误解彼此输出，error handling 也会变成临时拼凑，而且无法发现另一个 agent 能做什么。协议提供了让 multi-agent systems 可靠运行的共同语言。"
+    },
+    {
+      "stage": "post",
+      "question": "ACP (Agent Communication Protocol) 在设计目标上与 A2A 有什么不同？",
+      "options": ["ACP 比 A2A 更适合实时应用，速度更快", "ACP 关注带完整消息历史和合规追踪的企业审计能力，而 A2A 关注轻量任务委派", "ACP 只能在单个组织内工作，而 A2A 可以跨组织工作", "ACP 使用 WebSockets，而 A2A 使用 HTTP"],
+      "correct": 1,
+      "explanation": "ACP 面向企业环境设计，因为每次 agent interaction 都必须可审计、可追踪并满足合规要求。A2A 更简单，关注把任务完成。ACP 增加了受监管行业所需的治理层。"
+    }
+  ]
+}

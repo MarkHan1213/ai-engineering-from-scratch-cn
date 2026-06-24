@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "从几何上看，线性系统 Ax = b 没有精确解是什么意思？",
+      "options": [
+        "矩阵 A 所有元素都是 0",
+        "向量 b 不在 A 的 column space 中",
+        "系统的未知数多于方程数",
+        "矩阵 A 是对称的"
+      ],
+      "correct": 1,
+      "explanation": "在列空间视角下，Ax = b 在问：A 的列向量经过什么线性组合能得到 b？如果 b 不在 column space（A 的列张成空间）中，就不存在精确解。这常发生在超定系统中，也就是方程数多于未知数。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 Gaussian elimination 中要使用 partial pivoting？",
+      "options": [
+        "把时间复杂度从 O(n^3) 降到 O(n^2)",
+        "选择可用的最大 pivot，减少除以小数带来的误差放大",
+        "确保结果总是整数",
+        "省去 back substitution"
+      ],
+      "correct": 1,
+      "explanation": "如果不做 pivoting，除以很小的 pivot 会放大舍入误差。partial pivoting 会交换行，把绝对值最大的元素放到 pivot 位置，让乘子保持较小，使计算更数值稳定。"
+    },
+    {
+      "stage": "post",
+      "question": "在 ridge regression 中求解 (X^T X + lambda I) w = X^T y 时，为什么 Cholesky decomposition 优于 LU？",
+      "options": [
+        "Cholesky 可用于任意矩阵，而 LU 需要方阵",
+        "矩阵 X^T X + lambda I 是对称正定的，因此 Cholesky 比 LU 快两倍，并且只需一半存储",
+        "Cholesky 给出的答案比 LU 更准确",
+        "LU decomposition 无法处理 regularization terms"
+      ],
+      "correct": 1,
+      "explanation": "当 lambda > 0 时，X^T X + lambda I 总是对称正定。Cholesky 把 A 分解为 A = LL^T，操作量是 O(n^3/3)，大约是 LU 的 O(2n^3/3) 的一半，而且只需要下三角。它利用了 LU 不利用的对称性。"
+    },
+    {
+      "stage": "post",
+      "question": "一个矩阵的 condition number kappa = 10^8。你使用 float64（约 15 位有效精度）。解中大约有多少位数字可信？",
+      "options": [
+        "约 15 位",
+        "约 7 位（15 - log10(10^8) = 15 - 8）",
+        "约 8 位",
+        "0 位，解没有意义"
+      ],
+      "correct": 1,
+      "explanation": "你大约会损失 log10(kappa) 位精度。kappa = 10^8 时，会从 float64 约 15 位精度中损失约 8 位，剩下约 7 位可信数字。如果 kappa 接近 10^16，float64 中的解就基本失去意义。"
+    },
+    {
+      "stage": "post",
+      "question": "当你需要为许多不同的 b 向量求解 Ax = b 时，LU decomposition 相比 Gaussian elimination 的主要优势是什么？",
+      "options": [
+        "LU decomposition 数值上更稳定",
+        "O(n^3) 的分解只做一次；之后每个新 b 的求解只需 O(n^2)",
+        "LU decomposition 适用于矩形矩阵",
+        "LU 总是产生唯一解"
+      ],
+      "correct": 1,
+      "explanation": "LU 会先用 O(n^3) 一次性分解 A = LU。之后每个新的 b，只需解 Ly = b（forward substitution）和 Ux = y（back substitution），每步都是 O(n^2)。Gaussian elimination 则会对每个新 b 重新做完整的 O(n^3) 消元。"
+    }
+  ]
+}

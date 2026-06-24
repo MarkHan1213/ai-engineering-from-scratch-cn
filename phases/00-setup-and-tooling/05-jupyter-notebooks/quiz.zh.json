@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Jupyter notebook 是什么？",
+      "options": [
+        "用于编写 Python 脚本的文本编辑器",
+        "一种交互式文档，可以混合可执行代码单元、Markdown 文本和内联输出",
+        "用于数据科学项目的版本控制系统",
+        "用于 Python 库的包管理器"
+      ],
+      "correct": 1,
+      "explanation": "Jupyter notebook（.ipynb）是一种交互式环境，你可以在 cell 中编写和执行代码，直接看到内联输出，并把代码和格式化文本说明混在一起。"
+    },
+    {
+      "stage": "pre",
+      "question": "Jupyter kernel 负责什么？",
+      "options": [
+        "把 Markdown cell 格式化成 HTML",
+        "运行 cell 中的代码，并在多次执行之间把变量保存在内存中",
+        "管理 notebook 的文件存储",
+        "把 notebook 连接到 GitHub 做版本控制"
+      ],
+      "correct": 1,
+      "explanation": "kernel 是一个独立的 Python 进程，用来执行 cell 代码，并在内存中维护状态（变量、import 等）。同一个 notebook 中的所有 cell 共享同一个 kernel。"
+    },
+    {
+      "stage": "post",
+      "question": "%timeit 和 %%time magic 命令有什么区别？",
+      "options": [
+        "%timeit 测量 wall time，%%time 测量 CPU time",
+        "%timeit 会运行多次并取平均，%%time 只运行一次",
+        "%timeit 只作用于单行，%%time 作用于整个 notebook",
+        "没有区别，它们是别名"
+      ],
+      "correct": 1,
+      "explanation": "%timeit 会多次运行语句并给出统计平均值，适合 microbenchmark。%%time 运行整个 cell 一次并报告 wall time，适合训练任务。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 notebook 在你机器上能跑，但别人从头到尾运行时失败？最常见原因是什么？",
+      "options": [
+        "使用了不同的 Python 版本",
+        "cell 执行顺序混乱，产生了隐藏的顺序依赖",
+        "缺少 %matplotlib inline magic 命令",
+        "Markdown cell 太多"
+      ],
+      "correct": 1,
+      "explanation": "乱序执行 cell 会制造隐藏状态依赖。某个变量可能只是因为你先运行了 cell 5 再运行 cell 2 才存在。Kernel > Restart & Run All 可以验证线性执行是否成立。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候应该把 notebook 中的代码移到 .py 脚本里？",
+      "options": [
+        "一旦代码超过 10 行",
+        "当代码是可复用工具、训练 pipeline 或生产代码时",
+        "永远不要，notebook 对 AI 工作总是更好",
+        "只有需要在 GPU 上运行时"
+      ],
+      "correct": 1,
+      "explanation": "经验规则是“在 notebook 中探索，在脚本中交付”。可复用工具、训练 pipeline 和任何生产运行的代码都应该放进 .py 文件。notebook 更适合探索和原型验证。"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "question": "在 neural networks 语境下，chain rule 是什么？",
+    "options": [
+      "一种把 layers 串起来的规则",
+      "如果 y = f(g(x))，那么 dy/dx = f'(g(x)) * g'(x)，也就是沿路径相乘导数",
+      "一种初始化 weights 的方法",
+      "一种 batching data 的技术"
+    ],
+    "correct": 1,
+    "explanation": "chain rule 让你通过相乘每一步的局部导数来计算复合函数的导数。Backpropagation 会在 computational graph 中系统地应用它。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 backpropagation 比独立计算每个 gradient 更高效？",
+    "options": [
+      "它使用更少内存",
+      "它在一次 backward pass 中计算所有 gradients，而不是每个 parameter 都跑一次 forward pass",
+      "它只适用于小网络",
+      "它避免使用 chain rule"
+    ],
+    "correct": 1,
+    "explanation": "独立计算 gradients 需要每个 parameter 一次 forward pass；大网络可能要跑数百万次。Backpropagation 复用 forward pass 中存储的中间值，只需一次 backward pass 就能计算所有 gradients。",
+    "stage": "pre"
+  },
+  {
+    "question": "在 backward pass 中，为什么累积 gradients 时使用 += 而不是 =？",
+    "options": [
+      "这是 Python 惯例",
+      "一个值可能被多个 operations 使用，所以它的 gradient 是所有路径传回 gradients 的和",
+      "它防止 overflow",
+      "它让代码运行更快"
+    ],
+    "correct": 1,
+    "explanation": "当一个 Value 作为多个 operations 的输入时，例如 x 同时用于 x*w1 和 x*w2，它的总 gradient 是每个 operation 反传回来的 gradients 之和。使用 += 才能正确累积这些贡献。",
+    "stage": "post"
+  },
+  {
+    "question": "deep sigmoid networks 中的 vanishing gradient problem 是什么造成的？",
+    "options": [
+      "learning rate 太小",
+      "Sigmoid 的导数最大只有 0.25，所以 gradients 会跨层指数级缩小",
+      "网络参数太多",
+      "loss function 选择不当"
+    ],
+    "correct": 1,
+    "explanation": "sigmoid derivative 的峰值是 0.25（当 z=0）。每一层最多把 gradient 乘以 0.25，因此经过 10 层后，gradient 最多只有原始信号的 0.25^10，约 0.000001。",
+    "stage": "post"
+  },
+  {
+    "question": "topological sort 在 backward pass 中为什么重要？",
+    "options": [
+      "它让代码更整洁",
+      "它确保每个节点的 gradient 在传播给子节点前已经完全累积",
+      "它加速 forward pass",
+      "它减少内存使用"
+    ],
+    "correct": 1,
+    "explanation": "Topological sort 确保我们按正确顺序处理节点：一个节点的 gradient 必须先从所有下游路径完全累积，之后才能继续通过它传播。没有这种顺序，gradients 会不完整。",
+    "stage": "post"
+  }
+]

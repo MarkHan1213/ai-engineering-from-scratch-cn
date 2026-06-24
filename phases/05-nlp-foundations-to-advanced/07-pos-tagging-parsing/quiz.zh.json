@@ -1,0 +1,102 @@
+{
+  "lesson": "07-pos-tagging-parsing",
+  "title": "POS Tagging 与句法解析",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "POS tagging 的目标是什么？",
+      "options": [
+        "检测情感",
+        "翻译句子",
+        "抽取命名实体",
+        "为每个 token 分配语法类别（名词、动词等）"
+      ],
+      "correct": 3,
+      "explanation": "POS tagging 会给每个 token 标注它的词性。"
+    },
+    {
+      "stage": "pre",
+      "question": "做跨语言任务时默认使用哪个 tagset？",
+      "options": [
+        "Penn Treebank",
+        "Stanford Dependencies",
+        "Universal Dependencies",
+        "CoNLL-2003"
+      ],
+      "correct": 2,
+      "explanation": "Universal Dependencies 提供更粗粒度、语言无关的 17-tag 集合。"
+    },
+    {
+      "stage": "check",
+      "question": "bigram HMM POS tagger 建模的是什么？",
+      "options": [
+        "只建模 P(tags)",
+        "Dependency parses",
+        "Embedding similarities",
+        "P(tag | previous tag) transitions 加上 P(word | tag) emissions，并用 Viterbi 解码"
+      ],
+      "correct": 3,
+      "explanation": "Bigram HMM 使用 tag transitions 和 word emissions；Viterbi 找到概率最高的标签序列。"
+    },
+    {
+      "stage": "check",
+      "question": "Viterbi algorithm 在 HMM tagger 中计算什么？",
+      "options": [
+        "在 tag lattice 上用动态规划计算单条最高概率 tag 序列",
+        "转移矩阵",
+        "每个 tag 的边缘概率",
+        "只计算 forward probabilities"
+      ],
+      "correct": 0,
+      "explanation": "Viterbi 用 O(n * |T|^2) 的动态规划找到 argmax 序列。"
+    },
+    {
+      "stage": "check",
+      "question": "Dependency parsing 会输出什么？",
+      "options": [
+        "一棵树，其中每个词都有一个 head word 和一个带标签的语法关系",
+        "扁平的 BIO 序列",
+        "由 NP/VP/PP 标签构成的 constituency tree",
+        "Coreference chain"
+      ],
+      "correct": 0,
+      "explanation": "Dependency parse 给出每个词的 (head, relation) 边；constituency parse 给出嵌套短语结构。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 PTB POS tagging 的准确率上限大约在 97-98%？",
+      "options": [
+        "任何任务中模型都不能超过 98%",
+        "Universal Dependencies 上限是 98%",
+        "人工标注者的一致率大约只有 97%，所以超过约 98% 的模型可能是在过拟合测试集",
+        "硬件限制"
+      ],
+      "correct": 2,
+      "explanation": "标注者分歧限制了可达到的准确率；异常高的数字常常意味着过拟合。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 POS tagging 在 2026 年的 LLM pipeline 中仍然重要？",
+      "options": [
+        "LLM 没有它就无法运行",
+        "Lemmatization、aspect-based sentiment、query decomposition、structured-output validation 和跨语言迁移仍会消费 POS 或 dependency parses",
+        "Tokenization 必须依赖它",
+        "它可以替代 transformers"
+      ],
+      "correct": 1,
+      "explanation": "即使由 LLM 生成文本，POS 和 dependency parse 仍会服务很多结构化下游任务。"
+    },
+    {
+      "stage": "post",
+      "question": "大多数生产 POS / parse 任务应该优先使用哪个库？",
+      "options": [
+        "scikit-learn",
+        "NumPy",
+        "spaCy（若追求最高准确率或更广语言覆盖，可用 stanza/trankit）",
+        "自己手写 parser"
+      ],
+      "correct": 2,
+      "explanation": "spaCy 提供快速、生产级 POS + dependency parsers；stanza/trankit 覆盖更广语言。"
+    }
+  ]
+}

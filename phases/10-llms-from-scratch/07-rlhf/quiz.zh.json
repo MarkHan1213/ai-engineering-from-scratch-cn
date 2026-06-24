@@ -1,0 +1,37 @@
+[
+  {
+    "question": "RLHF 中的 reward model 从什么数据中学习？",
+    "options": ["原始文本文档", "Human preference pairs：给定两个回答，人类偏好哪一个", "Benchmark scores", "Model loss curves"],
+    "correct": 1,
+    "explanation": "Reward model 在偏好数据上训练：同一个 prompt 的两条回答，由人类标注哪条更好。它学习给符合人类偏好的回答更高分。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 RLHF 的 PPO training 中要使用 KL divergence penalty？",
+    "options": ["为了加速训练", "为了防止 policy 偏离 SFT model 太远，从而导致 reward hacking", "为了减少内存使用", "为了改进 tokenization"],
+    "correct": 1,
+    "explanation": "没有 KL penalty 时，模型会找到退化方式最大化 reward score（例如生成重复文本来利用 reward model 弱点）。KL 让模型保持接近行为良好的 SFT baseline。",
+    "stage": "pre"
+  },
+  {
+    "question": "完整 RLHF pipeline 需要多少个独立模型？",
+    "options": ["一个", "两个", "三个：SFT model、reward model，以及正在优化的 policy model", "四个"],
+    "correct": 2,
+    "explanation": "RLHF 需要：(1) 作为起点和 KL reference 的 SFT model，(2) 在偏好数据上训练的 reward model，(3) 用 PPO 优化的 policy model。正因为复杂，才出现了 DPO（lesson 08）。",
+    "stage": "post"
+  },
+  {
+    "question": "RLHF 中的 'reward hacking' 是什么？",
+    "options": ["Reward model 被对手攻击", "Policy 找到提高 reward score 的方式，但实际回答质量并没有变好", "训练数据被污染", "Learning rate 太高"],
+    "correct": 1,
+    "explanation": "Reward model 只是人类判断的不完美代理。Policy 可能发现一些高 reward 模式（如冗长回答、过度 hedging），但并不真正更有帮助。KL penalty 会限制这种情况。",
+    "stage": "post"
+  },
+  {
+    "question": "PPO 的 clipping mechanism 防止什么？",
+    "options": ["Gradient overflow", "过大的 policy updates 导致训练不稳定", "Memory overflow", "Data leakage"],
+    "correct": 1,
+    "explanation": "PPO 会把新旧 policy 的 probability ratio clip 到类似 [0.8, 1.2] 的范围。这样可以防止单次更新过度改变 policy，使训练比 vanilla policy gradient 更稳定。",
+    "stage": "post"
+  }
+]

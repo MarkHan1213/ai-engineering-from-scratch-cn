@@ -1,0 +1,90 @@
+{
+  "lesson": "04-tree-of-thoughts-lats",
+  "title": "Tree of Thoughts 与 LATS：刻意搜索",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 chain-of-thought 在 Game of 24 上表现吃力？",
+      "options": [
+        "模型不会做整数乘法",
+        "线性推理路径在早期步骤出错时无法回溯，后续步骤会放大错误",
+        "prompt 太短",
+        "CoT 需要 GPT-4 没有的计算器工具"
+      ],
+      "correct": 1,
+      "explanation": "没有分支时，早期错误的子表达式会污染后续整条链；论文测得 CoT 只有 4% 左右。"
+    },
+    {
+      "stage": "pre",
+      "question": "Tree of Thoughts 搜索中的一个节点是什么？",
+      "options": [
+        "模型生成的一个 token",
+        "一个连贯的中间步骤或 thought，并且可以有 K 个子扩展",
+        "微调期间的一次权重更新",
+        "注册到 runtime 的一个工具"
+      ],
+      "correct": 1,
+      "explanation": "ToT 将推理视为一棵树，每个节点是可扩展出 K 个子节点的中间 thought。"
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是 LATS 中 LLM 扮演的三种角色之一？",
+      "options": [
+        "提出下一步行动的 policy",
+        "为部分轨迹打分的 value function",
+        "在失败时写反思的 self-reflector",
+        "在 rollout 之间更新模型权重的 optimizer"
+      ],
+      "correct": 3,
+      "explanation": "LATS 是无梯度的；LLM 的三种角色是 policy、value 和 self-reflector，没有权重更新。"
+    },
+    {
+      "stage": "check",
+      "question": "说出课程列出的四个 MCTS 阶段。",
+      "options": [
+        "Sample, Score, Sort, Submit",
+        "Select, Expand, Simulate, Backpropagate",
+        "Plan, Execute, Reflect, Stop",
+        "Search, Synthesize, Synthesize-Again, Stop"
+      ],
+      "correct": 1,
+      "explanation": "MCTS 每轮迭代按 select、expand、simulate、backpropagate 进行。"
+    },
+    {
+      "stage": "check",
+      "question": "在 UCT 中，探索常数 c 的作用是什么？",
+      "options": [
+        "缩放价值估计 Q",
+        "在 exploitation 项 Q 和 exploration 项 sqrt(ln N / n) 之间调权重",
+        "设置最大树深",
+        "控制 rollout 数量"
+      ],
+      "correct": 1,
+      "explanation": "c 用来平衡 exploitation（Q）和 exploration 项；需要按任务调参。"
+    },
+    {
+      "stage": "post",
+      "question": "什么时候搜索相比单条轨迹会主动伤害效果？",
+      "options": [
+        "evaluator 噪声很大且只有一个正确答案时，搜索会收敛到高分但错误的答案",
+        "任务有多个正确答案时",
+        "只要 token 很便宜",
+        "任务是代码生成时"
+      ],
+      "correct": 0,
+      "explanation": "噪声大的 value function 加上单一正确答案，正是搜索会过拟合噪声的场景。"
+    },
+    {
+      "stage": "post",
+      "question": "在 Game of 24 上，与 CoT 相比，ToT 大致需要预留多少倍 token？",
+      "options": [
+        "约 2 倍",
+        "约 10 倍",
+        "100 到 1000 倍",
+        "因为剪枝所以少于 CoT"
+      ],
+      "correct": 2,
+      "explanation": "课程引用 ToT 在 Game of 24 上相对 CoT 的 token 成本约为 100 到 1000 倍。"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "question": "neural network training 中，loss function 表示什么？",
+    "options": [
+      "错误预测的数量",
+      "一个可微的度量，用来衡量模型预测有多错，并由 optimizer 最小化",
+      "训练数据集的大小",
+      "learning rate schedule"
+    ],
+    "correct": 1,
+    "explanation": "loss function 会把预测和目标映射到一个标量，optimizer 通过 gradient descent 最小化它。它必须可微，才能计算 gradients。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么分类任务中 cross-entropy 优于 MSE？",
+    "options": [
+      "Cross-entropy 计算更快",
+      "Cross-entropy 通过 -log(p) 对自信但错误的预测施加指数级惩罚，而 MSE 在接近 0 和 1 时 gradients 很弱",
+      "MSE 只能用于回归",
+      "Cross-entropy 不需要标签"
+    ],
+    "correct": 1,
+    "explanation": "当模型对错误类别很自信时（真实类别的 p 接近 0），-log(p) 会产生巨大 loss 和强 gradient。MSE 在相同情况下 gradient 很弱，因为 sigmoid 在接近 0 和 1 时很平坦。",
+    "stage": "pre"
+  },
+  {
+    "question": "如果把 MSE loss 用于 binary classification，会发生什么？",
+    "options": [
+      "训练立即发散",
+      "模型可能通过对所有样本预测 0.5 来最小化 loss，达到 MSE=0.25，却没有真正学习",
+      "模型正常训练",
+      "Gradients 爆炸"
+    ],
+    "correct": 1,
+    "explanation": "在平衡的二分类数据上使用 MSE 时，对每个输入都预测 0.5 会得到 MSE=0.25，这是不区分样本时可达到的最小值。模型满足了 loss，却没有学到有用模式。",
+    "stage": "post"
+  },
+  {
+    "question": "label smoothing 做什么，为什么有用？",
+    "options": [
+      "从数据集中移除 noisy labels",
+      "把硬 0/1 targets 替换为 0.1/0.9 这样的软值，防止过度自信预测并改善泛化",
+      "对 loss 应用 moving average",
+      "平滑 learning rate schedule"
+    ],
+    "correct": 1,
+    "explanation": "Label smoothing 会把 targets 从 [0,0,1,0] 改为 [0.025,0.025,0.925,0.025]（alpha=0.1）。这样可以防止模型为了满足硬标签而把 logits 推到无穷大，从而减少过度自信。",
+    "stage": "post"
+  },
+  {
+    "question": "在 contrastive loss（InfoNCE）中，temperature parameter 起什么作用？",
+    "options": [
+      "控制 learning rate",
+      "控制 similarity distribution 的尖锐程度；temperature 越低，positives 和 negatives 之间的分离要求越硬",
+      "设置 negative samples 的数量",
+      "决定 embedding dimension"
+    ],
+    "correct": 1,
+    "explanation": "Temperature 会在 softmax 前除以 similarity scores。较低的 temperature（如 0.07）会产生更尖锐的分布，要求模型清晰地区分 positives 和 negatives。较高的 temperature 更宽容。",
+    "stage": "post"
+  }
+]

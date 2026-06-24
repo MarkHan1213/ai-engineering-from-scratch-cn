@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "一个 YOLO detector 使用 13x13 grid、每个 cell 3 个 anchors、20 个 classes，head output 形状为 (N, 13, 13, 3, 25)。为什么最后一维是 25？",
+      "options": [
+        "4 个 box coords + 1 个 bias + 20 个 classes",
+        "4 个 box coords + 1 个 objectness + 20 个 classes = 5 + C",
+        "25 是 COCO 中的类别数",
+        "它是补齐到下一个 2 的幂"
+      ],
+      "correct": 1,
+      "explanation": "每个 anchor 输出四个 box regression targets（tx、ty、tw、th）、一个 objectness score 和 C 个 class logits。对 YOLO-style detectors，每个 anchor 的维度始终是 5 + C。在 COCO 80 类上是 85；在 PASCAL VOC 20 类上是 25。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 YOLO 会在加上 grid cell 前，对 tx、ty 先通过 sigmoid？",
+      "options": [
+        "把它们归一化到 [0, 1]，让中心点留在 cell 内，不能逃到相邻 cell 的区域",
+        "convolution 要求使用 sigmoid",
+        "为了防止训练中出现 NaN",
+        "为了让 box 更大"
+      ],
+      "correct": 0,
+      "explanation": "sigmoid(tx) 位于 [0, 1]，因此 (sigmoid(tx) + cell_x) * stride 会把中心放在列 cell_x 对应 cell 内的某处。这个约束让每个 cell 只负责中心落在自己区域内的 objects，这是让 grid-based training 稳定的假设。"
+    },
+    {
+      "stage": "post",
+      "question": "detector head 后，模型围绕一个对象预测了 15 个 boxes。你应用 iou_threshold=0.45 的 NMS 后只剩 1 个 box。NMS 做了什么？",
+      "options": [
+        "它平均了所有 15 个 predictions",
+        "它按 score 排序 15 个 boxes，保留最高分，并删除所有与它 IoU 超过 0.45 的 boxes；其余 14 个都与胜者重叠超过阈值，所以只剩一个",
+        "它随机选择一个 survivor",
+        "它在几何上合并 boxes"
+      ],
+      "correct": 1,
+      "explanation": "NMS 是贪心去重：按 score 排序，保留最高分，移除所有与它足够接近的 boxes（IoU > threshold），然后重复。它不会 merge 或 average。这也是为什么 detection latency benchmarks 会包含 NMS 时间，以及 RT-DETR 等现代模型用 learned alternative 替代它。"
+    },
+    {
+      "stage": "post",
+      "question": "你的模型 mAP@0.5 = 0.75，但 mAP@0.5:0.95 = 0.32。最准确的解释是什么？",
+      "options": [
+        "模型坏了；mAP@0.5 必须等于 mAP@0.5:0.95",
+        "模型找到了正确 objects，但 boxes 定位不够紧；在 IoU 0.5 下可以，在 IoU 0.7+ 下失败",
+        "数据集类别太多",
+        "inference threshold 太高"
+      ],
+      "correct": 1,
+      "explanation": "mAP@0.5 对定位比较宽松；mAP@0.5:0.95 会平均到严格的 0.95 阈值。两者差距大，说明 boxes 大致在正确位置，但不够紧。常见修复包括 CIoU/DIoU box loss、更高分辨率 features，以及更贴合数据集的 anchor sets。"
+    },
+    {
+      "stage": "post",
+      "question": "YOLO loss weights lambda_coord=5.0 和 lambda_noobj=0.5 大致沿用原论文。这些比例表达了什么？",
+      "options": [
+        "GPU memory trade-offs",
+        "多数 cells 没有 object，所以 no-object cells 必须降权，否则会主导总 loss；同时 box regression 是尺度较小的 loss，需要上调权重才能产生可比 gradients",
+        "作者没有解释的随机选择",
+        "每个 cell 的 anchors 数量"
+      ],
+      "correct": 1,
+      "explanation": "在 13x13 grid 中有 169 个 cells，通常只有 1 到 5 个 objects。160 多个空 cells 都会贡献 objectness loss；如果 lambda_noobj 不小，它们会淹没有效正样本信号。另一方面，MSE box loss 数值上小于 cross-entropy，因此 lambda_coord > 1 用来保持 gradients 可比。两个比例都是在平衡各组件的 gradient magnitudes。"
+    }
+  ]
+}

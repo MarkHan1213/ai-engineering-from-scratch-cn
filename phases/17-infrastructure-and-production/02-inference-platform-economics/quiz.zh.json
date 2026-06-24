@@ -1,0 +1,78 @@
+{
+  "lesson": "02-inference-platform-economics",
+  "title": "推理平台经济学：Fireworks、Together、Baseten、Modal、Replicate、Anyscale",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "课程用哪三个市场分段来组织 2026 年推理 vendor？",
+      "options": [
+        "免费、付费、企业",
+        "单租户、多租户、本地部署",
+        "自研芯片、GPU platforms、API-first marketplaces",
+        "开源、商业、混合"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "持续 GPU 利用率大约达到多少时，按分钟计费（Baseten、Modal）开始优于按 token 计费（Fireworks、Together）？",
+      "options": [
+        "60%",
+        "90%",
+        "30%",
+        "5%"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "哪个平台被描述为 Python-native serverless、按秒计费，并且 pre-warming 后 cold start 为 2-4s？",
+      "options": [
+        "Baseten",
+        "Modal",
+        "Fireworks",
+        "Anyscale"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Fireworks 在 LoRA 定价上的显著差异点是什么？",
+      "options": [
+        "LoRA-served requests 比 base model 更贵",
+        "完全不支持 LoRA",
+        "LoRA requests 需要单独的 dedicated GPU contract",
+        "LoRA-served requests 按 base model 的 per-token rate 收费"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪个平台适合需要 SOC 2 Type II、HIPAA-ready posture 和 dedicated GPUs 的受监管医疗客户？",
+      "options": [
+        "Baseten",
+        "Together",
+        "Anyscale",
+        "Replicate"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么课程认为，在平台层面 custom-engine 声称大多只是营销烟雾？",
+      "options": [
+        "per-token pricing 是唯一真实差异点",
+        "vLLM 和 SGLang 约占生产开源推理的 80%，因此平台差异更多来自 DX、归因和 SLAs，而不是 engine",
+        "所有 custom engines 都是 TensorRT-LLM forks",
+        "custom engines 从不比 vLLM 快"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

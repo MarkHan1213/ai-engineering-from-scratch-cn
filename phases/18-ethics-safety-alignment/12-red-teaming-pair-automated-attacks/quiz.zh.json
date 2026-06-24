@@ -1,0 +1,78 @@
+{
+  "lesson": "12-red-teaming-pair-automated-attacks",
+  "title": "Red-Teaming：PAIR 与自动化攻击",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么人工 red-teaming 不足以评估 frontier model？",
+      "options": [
+        "它无法规模化；每次模型发布后，都需要针对一个移动目标用统计样本测量 attack success rate",
+        "人工 prompt 总会被过滤器拦截",
+        "人工测试会产生太多 false positive",
+        "人工测试者无法读取模型输出"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "PAIR 代表什么，它做什么？",
+      "options": [
+        "Prompt Automatic Iterative Refinement；attacker LLM 使用之前尝试作为 in-context feedback，迭代提出针对目标的 jailbreak",
+        "Pairwise Adversarial Inference Routing；在多个模型之间路由攻击",
+        "Pre-Action Inspection Reasoning；一种防御性 scaffolding",
+        "Persuasive Adversarial Iterative Reward；用 persuader 替代 RM"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么对于 black-box target，PAIR 比 GCG 更高效？",
+      "options": [
+        "PAIR 使用比 GCG 更大的 attacker model",
+        "GCG 只攻击开源模型",
+        "GCG 需要 white-box gradient access，并产生难读的 suffix，无法利用 in-context feedback；PAIR 是 black-box 且使用自然语言和 in-context learning",
+        "PAIR 会忽略目标响应"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么报告 Attack Success Rate（ASR）时必须同时给出 query budget 和 judge identity？",
+      "options": [
+        "因为 judge 总是一致",
+        "因为 budget 只能由 JailbreakBench 设置",
+        "因为 ASR 会随着攻击者允许查询的次数，以及由哪个 LLM 判断响应是否构成 jailbreak 而变化",
+        "因为 ASR 是出口管制法规要求的"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "下面哪种自动化攻击最适合描述为“带剪枝的 attack tree”？",
+      "options": [
+        "TAP",
+        "GCG",
+        "PAP",
+        "AutoDAN"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪个标准化 benchmark 使用覆盖 7 个类别的 510 个 behaviour，并包含 semantic 和 functional harm 测试？",
+      "options": [
+        "JailbreakBench",
+        "HarmBench",
+        "WMDP",
+        "TruthfulQA"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

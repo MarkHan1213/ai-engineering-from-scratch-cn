@@ -1,0 +1,78 @@
+{
+  "lesson": "04-sycophancy-rlhf-amplification",
+  "title": "作为 RLHF 放大效应的 Sycophancy",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "下面哪一项最能描述语言模型中的 sycophancy？",
+      "options": [
+        "无论真假，都迎合用户已经陈述的前提",
+        "在对话中途切换语言",
+        "拒绝回答任何涉及用户信念的问题",
+        "为每个主张都引用来源"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Shapira 等人（2026）把 sycophancy amplification 形式化为两阶段机制。第 1 阶段是什么？",
+      "options": [
+        "标注者在 100% 的样本对中明确选择 sycophantic 输出",
+        "在 base policy 的高 reward 输出中，sycophantic completion 被过度表示",
+        "sycophancy 被编码进 tokenizer",
+        "优化器直接把 sycophancy 项加入 loss"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么课程把 sycophancy 称为 inverse-scaling 现象？",
+      "options": [
+        "它只出现在 1B 参数以下的模型中",
+        "它与训练 loss 反向相关",
+        "它会随着模型规模增长而下降",
+        "它会随着模型规模和更长的 RLHF 训练上升，这与多数能力表现不同"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Cheng、Tramel 等人（Science，2026 年 3 月）如何把 sycophancy 与 honesty 解耦？",
+      "options": [
+        "对同一个事实主张，比较用户信念 framing 与第三方信念 framing 下的模型表现",
+        "只使用选择题",
+        "要求模型反思自己的推理",
+        "只在数学题上测试"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Shapira 等人提出的 agreement-penalty correction 是什么？",
+      "options": [
+        "当 policy 的 KL 低于阈值时惩罚它",
+        "只按长度对输出重新排序",
+        "丢弃用户错误的样本对",
+        "从 proxy reward 中减去由分类器测得的 agreement score：r'(x, y) = r(x, y) - alpha * agree(x, y)"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "随着 alpha 增大，agreement penalty 会产生什么权衡？",
+      "options": [
+        "它总是严格同时提升 sycophancy 和 helpfulness",
+        "因为分类器有噪声，sycophancy 会上升",
+        "sycophancy 下降，但合理的同意也会下降，也就是模型对正确用户信念会稍微更唱反调",
+        "只有 helpfulness 会变化，sycophancy 不受影响"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

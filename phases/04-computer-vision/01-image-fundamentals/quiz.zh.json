@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "磁盘上的文件被解码成一个形状为 (224, 224, 3)、dtype 为 uint8 的 NumPy array。每个数字代表什么？",
+      "options": [
+        "某个像素是这种颜色的概率，范围在 0 到 1 之间",
+        "每个检测器的光子计数，并按传感器完整动态范围归一化",
+        "某个网格位置上的光强样本，并在每个通道上量化为 256 个等级之一",
+        "一个可以直接输入 convolutional network 的浮点亮度值"
+      ],
+      "correct": 2,
+      "explanation": "uint8 图像存储 [0, 255] 范围内的 8-bit 整数。每个整数都是一个 (row, column, channel) 位置上的量化光强样本。它既不是概率，也不是 float；输入 pretrained model 前需要除以 255 并做标准化。"
+    },
+    {
+      "stage": "pre",
+      "question": "你用 Pillow 加载图像，得到形状为 (480, 640, 3) 的 array。你把它作为 batched tensor (1, 480, 640, 3) 传给 in_channels=3 的 PyTorch Conv2d。会发生什么？",
+      "options": [
+        "没问题，PyTorch 会自动检测 layout",
+        "第一层 conv 会把 height 当成 channel axis，产生无意义的 feature maps",
+        "PyTorch 抛出 RuntimeError：Conv2d 期望 NCHW，却看到 480 个 channels，而权重只期望 3 个，因此拒绝运行",
+        "准确率下降几个百分点，但 inference 仍然能工作"
+      ],
+      "correct": 2,
+      "explanation": "PyTorch Conv2d 会严格根据 weight tensor 检查 channel 数。batched HWC 输入 (1, 480, 640, 3) 会被解释为 NCHW，C=480，与权重期望的 3 channels 不匹配，因此 PyTorch 会在任何计算前抛出 RuntimeError。这种明确失败是好事，它迫使你修复 layout。送入 PyTorch 前必须 permute 到 NCHW（`.permute(0, 3, 1, 2)`）。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 ImageNet pretrained models 期望输入用 mean=[0.485, 0.456, 0.406] 和 std=[0.229, 0.224, 0.225] 标准化？",
+      "options": [
+        "这些是平均自然场景的 RGB 值",
+        "这些是 ImageNet 训练集在 [0, 1] 空间中的每通道均值和标准差，减去它们能把输入中心化到模型训练时看到的分布",
+        "它们能让任意图像严格变成零均值、单位方差",
+        "它们是 ReLU activation function 要求的"
+      ],
+      "correct": 1,
+      "explanation": "这些数字是在像素除以 255 后，对 ImageNet 训练语料计算得到的统计量。使用它们可以让你的输入分布与网络训练时看到的分布对齐。如果模型是在其他数据集上训练的，就应该在那个数据集上重新计算统计量。"
+    },
+    {
+      "stage": "post",
+      "question": "你把一个 segmentation mask（整数 class IDs 0..20）从 500x500 resize 到 224x224。哪种 interpolation method 正确？",
+      "options": [
+        "Bilinear，它会平滑类别边界",
+        "Bicubic，它能保留锐度",
+        "Lanczos，质量最高",
+        "Nearest neighbour，它会保留有效的整数 class IDs，而不是制造小数标签"
+      ],
+      "correct": 3,
+      "explanation": "Bilinear、bicubic 和 lanczos 都会平均相邻值。对 class-ID mask 来说，这会在 class 4 和 class 5 之间产生 4.7 这类非整数值，而它们不是有效类别。Nearest neighbour 会选择最接近的原始像素，保持标签空间不变。这个规则也适用于任何编码 IDs 或 indices 的通道。"
+    },
+    {
+      "stage": "post",
+      "question": "RGB 转灰度使用 0.299 R + 0.587 G + 0.114 B，而不是 0.333 R + 0.333 G + 0.333 B。为什么？",
+      "options": [
+        "为了补偿每个通道中的 JPEG compression artifacts",
+        "因为绿色光子比红色或蓝色光子携带更多能量",
+        "因为人眼对绿色最敏感、对蓝色最不敏感，所以加权和更匹配感知亮度",
+        "为了匹配相机传感器上 Bayer filter 的行为"
+      ],
+      "correct": 2,
+      "explanation": "ITU-R BT.601 权重 0.299/0.587/0.114 来自人眼的 luminous efficiency。等权平均会让偏绿图像在人眼看来太暗、偏红图像太亮。大多数经典 computer-vision 灰度代码都使用这些权重；BT.709（0.2126/0.7152/0.0722）是面向 linear-light inputs 的现代 HDTV 变体。"
+    }
+  ]
+}

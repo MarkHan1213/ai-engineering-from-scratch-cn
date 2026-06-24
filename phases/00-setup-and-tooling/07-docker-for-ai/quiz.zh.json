@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Docker container 和 virtual machine 的主要区别是什么？",
+      "options": [
+        "container 更慢但比 VM 更安全",
+        "container 共享宿主机 OS kernel，而 VM 运行自己的完整 OS",
+        "container 只能运行 Linux，而 VM 支持任意 OS",
+        "两者没有实际区别"
+      ],
+      "correct": 1,
+      "explanation": "container 共享宿主机 kernel，并在进程级别做隔离，因此可以在几秒内启动。VM 运行完整 guest OS 和自己的 kernel，需要更多资源，启动也更慢。"
+    },
+    {
+      "stage": "pre",
+      "question": "Dockerfile 是什么？",
+      "options": [
+        "Docker daemon 的配置文件",
+        "一组用于逐层构建 Docker image 的指令",
+        "记录 container 活动的日志文件",
+        "列出正在运行 container 的文件"
+      ],
+      "correct": 1,
+      "explanation": "Dockerfile 包含顺序执行的指令（FROM、RUN、COPY 等），Docker 会根据这些指令构建 image。每条指令都会创建一个可缓存的 layer。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 volume mount 对使用 Docker 做 AI 开发很关键？",
+      "options": [
+        "volume 使用宿主机磁盘速度，让 container 运行更快",
+        "volume 能在 container 重建之间持久化数据（模型、数据集、代码），避免每次重新下载数 GB 内容",
+        "volume 是 Python 包正确安装的必要条件",
+        "volume 允许多个 container 共享同一块 GPU"
+      ],
+      "correct": 1,
+      "explanation": "如果没有 volume，container 停止后内部所有内容都会丢失。volume mount 会把宿主机目录映射进 container，因此 14 GB 以上的模型权重和数据集可以在重建后继续保留。"
+    },
+    {
+      "stage": "post",
+      "question": "NVIDIA Container Toolkit 提供了什么能力？",
+      "options": [
+        "在 container 内安装 CUDA driver",
+        "通过 --gpus 标志把宿主机 GPU 暴露给 Docker container",
+        "在 AMD 硬件上运行 NVIDIA GPU container",
+        "在 Docker build 过程中编译 CUDA 代码"
+      ],
+      "correct": 1,
+      "explanation": "NVIDIA Container Toolkit 是一个 runtime hook，会把宿主机 GPU 暴露给 container。CUDA toolkit 位于 container 内，但 GPU driver 来自宿主机共享。"
+    },
+    {
+      "stage": "post",
+      "question": "在用于 AI 的 Docker Compose 文件中，'ai-dev' service 如何访问 'qdrant' 向量数据库？",
+      "options": [
+        "使用宿主机的 IP 地址和端口",
+        "使用 service name 'qdrant' 作为 hostname，因为 Compose 会创建共享网络",
+        "在两个 container 之间挂载共享 volume",
+        "在 container 之间配置 VPN"
+      ],
+      "correct": 1,
+      "explanation": "Docker Compose 会自动创建共享网络，service 可以通过名字互相访问。ai-dev container 会使用 service name 作为 hostname，连接到 'http://qdrant:6333'。"
+    }
+  ]
+}

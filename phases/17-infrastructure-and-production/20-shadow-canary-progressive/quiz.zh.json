@@ -1,0 +1,78 @@
+{
+  "lesson": "20-shadow-canary-progressive",
+  "title": "LLM 的 Shadow Traffic、Canary Rollout 与 Progressive Deployment",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "LLM rollout 中 shadow、canary 和 A/B testing 的正确顺序是什么？",
+      "options": [
+        "先 shadow（零影响对比），再 canary（带 gates 的 live traffic progressive），稳定性确认后再对不同备选方案做 A/B",
+        "完全跳过 shadow",
+        "先 canary，再 shadow，再 A/B",
+        "先 A/B，再 shadow，再 canary"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程用哪五类 metrics 来 gate canary progressions？",
+      "options": [
+        "GPU temp、fan speed、queue depth、cost、latency",
+        "只有 offline eval accuracy",
+        "latency percentiles、cost per request、error/refusal rate、output length distribution、user-feedback rate",
+        "只有 throughput"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程引用 LLM 对相同输入的 run-to-run accuracy variance 大约有多大？",
+      "options": [
+        "低于 0.1%",
+        "每次 run 输出完全相同",
+        "总是 50%",
+        "最高约 15%，原因是 GPU FP non-associativity 和 batch-size variance"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在课程语境中，shadow mode 用来做什么？",
+      "options": [
+        "替代 rollback",
+        "替代 evals 的完整质量测试",
+        "最终 production rollout 步骤",
+        "smoke test，用于捕捉 cost blow-ups、length regressions、refusal changes 和 hard errors，但不是质量保证"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "根据课程，正确的 rollback 设计是什么？",
+      "options": [
+        "等待下一个 release window",
+        "用新的 model digest 重新部署，耗时数小时",
+        "翻转 policy flag，并在几秒内恢复 pinned model digest，不需要 redeploy",
+        "手动 SSH 到每个 pod"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 cost 会和 latency、quality 一起列为 gate？",
+      "options": [
+        "一个效果好 20% 的模型可能每次调用贵 3 倍；没有 cost gate 就上线会破坏 unit economics",
+        "每个 provider 都会自动封顶 cost",
+        "cost 是 vanity metric",
+        "各 provider 成本相同"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

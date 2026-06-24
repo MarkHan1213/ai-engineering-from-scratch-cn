@@ -1,0 +1,78 @@
+{
+  "lesson": "phase-19/25-verification-gates-observation-budget",
+  "title": "Verification Gates and the Observation Budget",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "阅读本课前：harness 需要确定性 gate chain 而不是 model-as-judge，最强理由是什么？",
+      "options": [
+        "模型在生产中作为 judge 太慢。",
+        "确定性让 deny reason 可审计，并让 chain 可 replay。",
+        "model-as-judge 总会产生 hallucinated allow decision。",
+        "gate chain 让模型写自己的 policy。"
+      ],
+      "correct": 1,
+      "explanation": "审计轨迹和可复现性是实际收益。judge model 也可以接入，但结构性 gate 需要确定性，这样 decision 才能被复现和 review。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么本课在 chain 中先运行 WhitelistGate，再运行 BudgetGate？",
+      "options": [
+        "Whitelist denial 更便宜，先短路它可以避免昂贵的 ledger 求和。",
+        "BudgetGate 必须至少有一次 tool call 后才能运行。",
+        "按照约定 Whitelist 必须永远是最后一个 gate。",
+        "顺序无关紧要，因为 GateChain 会随机化 evaluation order。"
+      ],
+      "correct": 0,
+      "explanation": "廉价 denial 先运行。WhitelistGate 是 O(1) hash lookup。BudgetGate 必须汇总 ledger。当 call 在结构上非法时，先在 whitelist 上短路能避免这项工作。"
+    },
+    {
+      "stage": "check",
+      "question": "ObservationLedger 已记录一个来自 read_file 的 60-token observation。随后 harness 拒绝了一次调用。ledger 会如何记录这次拒绝？",
+      "options": [
+        "记录一条 tagged refused 的零 token Observation row。",
+        "不记录。ledger 只记录成功的 observation。",
+        "记录一条负 token Observation row 表示 refusal cost。",
+        "把 refusal 作为带 refuser name 的 synthetic Observation 追加进去。"
+      ],
+      "correct": 1,
+      "explanation": "ledger 记录模型已经看到的 observation。refusal 产生的是 GateDecision，不是 Observation。refusal count 与 ledger 并列保存，不在 ledger 内部。"
+    },
+    {
+      "stage": "check",
+      "question": "RecencyGate.window 设为 3。ledger.latest_turn 是 5。新的 ToolCall 在 turn 10 到达。会发生什么？",
+      "options": [
+        "gate 允许：call 位于最新 turn。",
+        "gate 拒绝：5 的 gap 超过 3 的 window。",
+        "gate 允许：window 适用于 ledger size，而不是 turn gap。",
+        "gate 抛出异常，因为 ledger 过期。"
+      ],
+      "correct": 1,
+      "explanation": "RecencyGate 会比较 (call.turn - ledger.latest_turn) 和 window。10 - 5 = 5，大于 3，因此 gate 拒绝。"
+    },
+    {
+      "stage": "post",
+      "question": "你想添加一个 per-call output cap（单个 observation 不能超过 8000 token）。这个 gate 在 chain 中逻辑上应该放在哪里？",
+      "options": [
+        "放在 WhitelistGate 之前，因为 size 是最便宜的属性。",
+        "放在 BudgetGate 之后，因为 cumulative budget 总是更重要。",
+        "它不能作为 gate，因为 size 只有 tool 运行后才知道。",
+        "放进 BudgetGate 内部，这样 limit 可以组合。"
+      ],
+      "correct": 2,
+      "explanation": "输出大小在 gate evaluation 时还不知道。harness 会在 tool 运行后、模型看到 observation 前，通过截断 observation 来应用 cap。gate 评估输入，而不是输出。"
+    },
+    {
+      "stage": "post",
+      "question": "reviewer 要你证明 Agent 在一个 session 中从未触发被拒绝的 tool call。你应该指向哪个 artifact？",
+      "options": [
+        "ObservationLedger snapshot，它只包含成功 observation。",
+        "ChainOutcome record 列表，它包含每次 call 的 decision 和 deny reason。",
+        "pytest output，它记录 test pass/fail。",
+        "模型的 chat transcript，它包含模型自己的 self-report。"
+      ],
+      "correct": 1,
+      "explanation": "ChainOutcome record 携带每次 call 的 decision 和 deny reason。ledger 和 transcript 可以支持这个结论，但可审计 artifact 是 chain decision。"
+    }
+  ]
+}

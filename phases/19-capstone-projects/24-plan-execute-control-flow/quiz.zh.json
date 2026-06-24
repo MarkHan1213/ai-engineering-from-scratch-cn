@@ -1,0 +1,90 @@
+{
+  "lesson": "24-plan-execute-control-flow",
+  "title": "Plan-Execute Control Flow",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在 plan-execute agent 中，planner 的职责是什么？",
+      "options": [
+        "对每个 step 调用 dispatcher",
+        "生成 executor 将要运行的有序 typed step 列表",
+        "强制执行 timeout",
+        "处理 JSON-RPC transport"
+      ],
+      "correct": 1,
+      "explanation": "planner 产出结构化 plan。executor 运行它们。混在一起就是这一课要避开的 chain-of-thought 陷阱。"
+    },
+    {
+      "stage": "pre",
+      "question": "即使 executor 不检查 expected_outcome，为什么它仍是 Step 形状的一部分？",
+      "options": [
+        "因为 dispatcher 把它用作 cache key",
+        "因为它给 replanner 和 tracer 提供了可读取的声明式成功条件",
+        "因为 registry 要求它",
+        "因为模型会在它上面训练"
+      ],
+      "correct": 1,
+      "explanation": "replanner 在修订时读取它。tracer 在 timeline 上渲染它。它是 step 上的人类可读 contract。"
+    },
+    {
+      "stage": "check",
+      "question": "当某个 step 失败且 replanner 返回新 plan 时，executor 会在 event stream 上发出什么？",
+      "options": [
+        "什么都没有，replan 是静默的",
+        "session.complete with status=failed",
+        "plan.diff，包含 removed/added/revised step ids",
+        "tool.error 后跟 session.start"
+      ],
+      "correct": 2,
+      "explanation": "plan.diff 让修订可见。静默重写正是我们要避免的 bug。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 max_steps 和 max_replans 是两个独立 budget？",
+      "options": [
+        "因为它们衡量不同单位。steps 限制总执行；replans 限制 planner 被调用的次数。",
+        "因为 asyncio 要求二者都存在",
+        "因为 dispatcher 拒绝无界 plan",
+        "因为 registry 会计数 replan"
+      ],
+      "correct": 0,
+      "explanation": "max_replans 捕捉持续返回同一个坏 plan 的 planner。max_steps 捕捉持续增长的 runaway plan。"
+    },
+    {
+      "stage": "check",
+      "question": "当 planner 第一次调用就返回空列表时，会返回哪个 reason？",
+      "options": [
+        "step_budget",
+        "replan_budget",
+        "goal_met",
+        "no_plan"
+      ],
+      "correct": 3,
+      "explanation": "没有 plan，就没有执行。session 以 reason=no_plan、status=failed 结束。"
+    },
+    {
+      "stage": "post",
+      "question": "PlanDiff.revised 中包含什么？",
+      "options": [
+        "旧 plan 中有但新 plan 中没有的 step id",
+        "新 plan 中有但旧 plan 中没有的 step id",
+        "两次 revision 之间 tool_name 或 args 发生变化的 step id",
+        "planner 要求跳过的 step id"
+      ],
+      "correct": 2,
+      "explanation": "revised 是那些跨 revision 后 (tool_name, args) 签名发生变化的 id 集合。"
+    },
+    {
+      "stage": "post",
+      "question": "当 executor 耗尽 max_replans 时，得到的 SessionResult.reason 是什么？",
+      "options": [
+        "goal_met",
+        "step_budget",
+        "replan_budget",
+        "no_plan"
+      ],
+      "correct": 2,
+      "explanation": "reason 是 replan_budget。status 是 failed。History 保留每个已运行 step，包括触发 replan 的失败。"
+    }
+  ]
+}

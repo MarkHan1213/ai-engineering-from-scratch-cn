@@ -1,0 +1,78 @@
+{
+  "lesson": "27-data-provenance-training-governance",
+  "title": "Data Provenance 与训练数据治理",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么训练数据治理的合规窗口在收集时，而不是训练后？",
+      "options": [
+        "因为监管者不会审计已部署模型",
+        "因为 cookie-consent framework 禁止收集后的使用",
+        "因为 GDPR right-to-erasure 不适用于 AI",
+        "一旦数据进入模型权重，就无法外科手术式抹除；从头重训是唯一完整补救，但成本高到难以承受"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "California AB 2013 大约要求开发者在 dataset summary 中发布多少项法定信息？",
+      "options": [
+        "3",
+        "30",
+        "12",
+        "7"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "相对于 Gebru 等人 2018 datasheet 结构，AB 2013 的哪一项是新的？",
+      "options": [
+        "dataset 的来源或所有者",
+        "系统是否使用或持续使用 synthetic data generation",
+        "清洗、处理或其他修改",
+        "数据收集时间段"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2025 年关于 LLM 在公开可用 first-party content 上训练的收敛 DPA 原则是什么？",
+      "options": [
+        "任何情况下都禁止训练",
+        "只能使用合成数据",
+        "始终需要明确用户同意",
+        "legitimate interest 可以在提供 opt-out 和适当 safeguards 的情况下证明使用公开可用 first-party content 训练的正当性；不需要 consent"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "下面哪一项不是课程列出的不可逆问题的部分补救？",
+      "options": [
+        "Unlearning（用 MIA 衡量近似移除）",
+        "基于 influence function 的定位和选择性更新",
+        "GDPR 强制的自动权重删除",
+        "通过 fine-tune 抑制源自该数据的输出"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Data Provenance Initiative 的《Consent in Crisis》（2024 年 7 月）发现了什么？",
+      "options": [
+        "发布者正在加速添加 robots.txt 限制；可公开训练的 commons 正在快速收缩，2023 到 2024 年约 25% 的顶级训练来源增加了限制",
+        "合成数据已经完全替代网页数据",
+        "所有来源的 consent rate 都保持稳定",
+        "robots.txt 限制逐年减少"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

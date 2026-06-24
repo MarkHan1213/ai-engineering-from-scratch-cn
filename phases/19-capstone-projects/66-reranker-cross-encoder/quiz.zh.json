@@ -1,0 +1,78 @@
+{
+  "lesson": "66-reranker-cross-encoder",
+  "title": "Cross-Encoder Reranker",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "bi-encoder 和 cross-encoder 的架构差异是什么？",
+      "options": [
+        "bi-encoders 使用 cosine；cross-encoders 使用 dot product",
+        "bi-encoders 经过训练；cross-encoders 没有训练",
+        "bi-encoder 独立 embed query 和 document；cross-encoder 读取拼接后的 (query, document) sequence，并在两者之间做 full attention",
+        "cross-encoders 只能在 GPU 上运行"
+      ],
+      "correct": 2,
+      "explanation": "连接处的 cross attention 正是 cross-encoder 精度更高的原因；bi-encoder 从不会同时看到 query 和 document。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么不能把 cross-encoder 作为 10M-document corpus 上的 primary retriever？",
+      "options": [
+        "它需要对每个 (query, document) pair 做一次 forward pass，也就是每个 query 要跑 10M 次",
+        "它不能 embed text",
+        "它不支持 negative scores",
+        "它要求 CLS token 位于序列末尾"
+      ],
+      "correct": 0,
+      "explanation": "在 corpus scale 上吞吐会崩溃；cross-encoder 是每个 pair 跑一次，而不是在 index time 每个 document 跑一次。"
+    },
+    {
+      "stage": "check",
+      "question": "在 two-stage retrieve-then-rerank pipeline 中，N 参数的作用是什么？",
+      "options": [
+        "cross-encoder 的 layers 数量",
+        "bi-encoder 返回给 cross-encoder 重新打分的 candidates 数量",
+        "vocabulary 的大小",
+        "cross-encoder hidden dimension"
+      ],
+      "correct": 1,
+      "explanation": "N 是 rerank pool；它同时限制质量（cross-encoder 无法超过 bi-encoder 在 N 处的 recall）和延迟（cross-encoder 要跑 N 次 forward pass）。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么必须选择严格大于 K 的 N（通常是 3x 或更多）？",
+      "options": [
+        "cross-encoder 要求 N 是 K 的倍数",
+        "如果 N 等于 K，cross-encoder 无法重新排序，只能重新加权；rerank lift 会降为零",
+        "更小的 N 会降低 embedding dimensionality",
+        "BM25 计算 IDF 时要求这样"
+      ],
+      "correct": 1,
+      "explanation": "N = K 时没有东西可重新排序；cross-encoder 的职责是从 N 中选出正确的 K，这需要 N > K。"
+    },
+    {
+      "stage": "check",
+      "question": "本课中的 cross-encoder mean-pooling head 做什么？",
+      "options": [
+        "在非 pad 位置上平均最后一层 outputs，并送入单个 linear head，产生一个 relevance scalar",
+        "对 embedding indices 求和",
+        "在 vocabulary distribution 上 pooling",
+        "计算 document positions 上的 softmax"
+      ],
+      "correct": 0,
+      "explanation": "先对非 pad 位置做 mean-pool，再用一个 linear layer 输出 relevance score；CLS-pooling 是质量相近的替代方案。"
+    },
+    {
+      "stage": "post",
+      "question": "记录 rank-1 cross-encoder score 有助于发现哪种生产 failure mode？",
+      "options": [
+        "out-of-domain queries：当 top-1 reranker score 低于 corpus-specific threshold 时，模型在发出信号，表示 corpus 中没有内容真正回答该 query",
+        "网络中断",
+        "tokenizer 中的 vocabulary drift",
+        "bi-encoder 中的 index corruption"
+      ],
+      "correct": 0,
+      "explanation": "持续很低的 rank-1 score 是 cross-encoder 在告诉你 retrieved pool 里没有答案；应该把它作为 low-confidence 暴露给 LLM。"
+    }
+  ]
+}

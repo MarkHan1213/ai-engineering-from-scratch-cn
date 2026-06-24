@@ -1,0 +1,78 @@
+{
+  "lesson": "21-fairness-criteria-group-individual-counterfactual",
+  "title": "Fairness Criteria：群体、个体与反事实",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "哪一项最符合群体 A=a 与 A=a' 的 demographic parity 定义？",
+      "options": [
+        "各群体的 true-positive rate 和 false-positive rate 相等",
+        "各群体的 predictive value 相等",
+        "各群体的 Lipschitz constant 相等",
+        "接受率相等：P(Y=1 | A=a) = P(Y=1 | A=a')"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Chouldechova / Kleinberg-Mullainathan-Raghavan 2017 的不可能性结果说明了什么？",
+      "options": [
+        "通过重新加权总能实现 group fairness",
+        "在 base rate 不相等时，demographic parity、equalized odds 和 conditional use accuracy equality 不能同时成立",
+        "counterfactual fairness 蕴含 demographic parity",
+        "对于任意 DAG，individual fairness 蕴含 counterfactual fairness"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Dwork 等人（2012）通过什么定义 individual fairness？",
+      "options": [
+        "个体层面的 demographic parity",
+        "受保护群体之间的准确率相等",
+        "相对于特定任务相似度度量，decision map 满足 Lipschitz 条件，因此相似个体得到相似决策",
+        "带有 sensitive-attribute intervention 的 causal DAG"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Counterfactual fairness（Kusner 等，2017）要求什么？",
+      "options": [
+        "不需要任何因果假设",
+        "所有群体的 Lipschitz constant 相等",
+        "只需要 group-level statistics",
+        "需要一个 causal DAG；当个体的 sensitive attribute 被反事实改变时，决策保持不变"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 backtracking counterfactual（arXiv:2401.13935）对法律合规重要？",
+      "options": [
+        "它们不干预受保护属性（这在法律上有问题），而是询问实际特征的哪种组合会产生反事实结果",
+        "它们消除了对任何因果模型的需求",
+        "它们替代 embedding-based bias metric",
+        "它们证明不可能性定理是错的"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "ICLR Blogposts 2024 的哲学调和观点主张什么？",
+      "options": [
+        "不可能性定理可以通过重新加权解决",
+        "在显式 causal graph 下，满足某些 group-fairness measure 会蕴含 counterfactual fairness，因此这些公平性家族之间表面的对立部分来自把因果模型隐含起来",
+        "group fairness 和 counterfactual fairness 毫无关系",
+        "只有 individual fairness 是可辩护的"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

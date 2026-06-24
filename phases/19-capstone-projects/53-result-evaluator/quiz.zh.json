@@ -1,0 +1,78 @@
+{
+  "lesson": "53-result-evaluator",
+  "title": "Result Evaluator",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 evaluator 使用 paired t test，而不是比较两个单独数字？",
+      "options": [
+        "因为 numpy 要求 paired arrays",
+        "因为 candidate 和 baseline 使用同一组 seed 配对，可以把配置变化与随机初始化噪声隔离开",
+        "因为 runner 不能输出单个数字",
+        "因为 IRB 总是要求 t tests"
+      ],
+      "correct": 1,
+      "explanation": "按 seed 配对会抵消随机初始化影响。剩余差异可归因于配置变化，这正是 test 要测量的内容。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 evaluator 要在每个 metric 上携带 direction 字段？",
+      "options": [
+        "因为 accuracy 和 loss 的好坏方向相反；improvement 的符号取决于被比较 metric 哪个方向更好",
+        "因为 runner 要求这样",
+        "因为 numpy 计算 variance 需要 direction",
+        "因为 parser 期望它"
+      ],
+      "correct": 0,
+      "explanation": "higher-is-better metric 上升才是改进；lower-is-better metric 下降才是改进。direction 字段告诉 improvement function 应用哪种符号约定。"
+    },
+    {
+      "stage": "check",
+      "question": "即使 p value 显著，当 |improvement| 低于 threshold 时，verdict path 会返回什么？",
+      "options": [
+        "improved",
+        "regressed",
+        "noise",
+        "failed"
+      ],
+      "correct": 2,
+      "explanation": "统计显著但小到不值得行动的变化，从 loop 角度看仍然是 noise。threshold gate 会先于 significance gate 运行。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 evaluator 在计算 improvement 前要转换 log scaled metrics？",
+      "options": [
+        "因为 numpy logs 更快",
+        "因为 perplexity 等指标会随 loss 指数增长；转换到 log space 后，像 two percent 这样的 threshold 才能在线性和 log metric 之间保持有意义",
+        "因为 p value 依赖它",
+        "因为 runner 只输出 log scaled metrics"
+      ],
+      "correct": 1,
+      "explanation": "Perplexity 是 exp(loss)。很小的 loss 变化会带来很大的 perplexity 变化。取 log 可以让相对改进在同一个 threshold 下与线性指标可比。"
+    },
+    {
+      "stage": "check",
+      "question": "paired t test helper 什么时候会返回 p_value = None？",
+      "options": [
+        "当均值相等时",
+        "当可用 paired samples 少于两个时",
+        "当 variance 为零时",
+        "当 metric scale 是 log 时"
+      ],
+      "correct": 1,
+      "explanation": "t 分布至少需要一个自由度。n 小于 2 时没有 variance estimate，helper 会返回 None，让 verdict path 把 run 标记为 noise。"
+    },
+    {
+      "stage": "check",
+      "question": "如果哪怕一个 candidate result 的 terminal label 不是 ok，会发生什么？",
+      "options": [
+        "evaluator 丢弃这个 seed 并继续",
+        "evaluator 返回 failed verdict，并在 rationale 中记录坏的 terminals",
+        "evaluator 重试该 run",
+        "evaluator 回退到 one sided test"
+      ],
+      "correct": 1,
+      "explanation": "失败的 run 会让 candidate set 失效。evaluator 会短路 verdict path，返回 failed 并列出有问题的 terminals，避免 orchestrator 从崩溃运行中得出结论。"
+    }
+  ]
+}

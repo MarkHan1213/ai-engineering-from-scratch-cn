@@ -1,0 +1,78 @@
+{
+  "lesson": "20-bias-representational-harm",
+  "title": "LLM 中的偏见与 Representational Harm",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "课程如何区分 representational harm 和 allocational harm？",
+      "options": [
+        "representational harm 只对视觉模型重要",
+        "representational harm 是刻板印象、抹除和贬损性呈现；allocational harm 是某个群体面临不平等的物质结果",
+        "representational 是计算性的；allocational 是统计性的",
+        "allocational harm 只发生在线下"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Gallegos 等人（2024）提出的三类评估指标是哪三类？",
+      "options": [
+        "Pre-RLHF、mid-RLHF、post-RLHF",
+        "视觉、音频、文本",
+        "WEAT、BLEU、ROUGE",
+        "embedding-based、probability-based、generated-text-based"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么除了单轴评估，还需要 intersectional fairness evaluation？",
+      "options": [
+        "intersectionality 和 cross-validation 是一回事",
+        "单轴度量的计算成本更低",
+        "单轴是唯一法律允许的方法",
+        "只在交叉身份处出现的偏见（例如 gender x race）会被一次只看一个轴的评估漏掉"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "WinoIdentity（COLM 2025）引入了什么？",
+      "options": [
+        "针对 demographic classifier 的 adversarial attack",
+        "一个用于身份术语的新 tokenizer",
+        "embedding space 中 WEAT 的替代品",
+        "基于不确定性的 intersectional fairness evaluation：比较模型在交叉身份元组上的 outcome uncertainty，而不只是点预测"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "下面哪一项是针对偏见的 mechanistic-interpretability 方法？",
+      "options": [
+        "从 PPO 切换到 DPO",
+        "识别 MLP 层中的 gender neuron，用 SAE 暴露 race-correlated feature，或操纵特定 attention head（UniBias）",
+        "增加更多 KL regularization",
+        "重新标注训练集"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "10 年 meta-critique（arXiv:2508.11067）对偏见文献提出了什么观点？",
+      "options": [
+        "文献过度聚焦二元性别偏见，忽视其他轴（disability、religion、migration status、multi-lingual identity），这可能因忽视而伤害边缘化群体",
+        "文献避免使用定量方法",
+        "文献过度强调 intersectionality",
+        "文献在所有身份轴上都很均衡"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

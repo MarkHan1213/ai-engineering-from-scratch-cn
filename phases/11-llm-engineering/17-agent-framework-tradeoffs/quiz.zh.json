@@ -1,0 +1,65 @@
+{
+  "lesson": "phase-11/17-agent-framework-tradeoffs",
+  "questions": [
+    {
+      "stage": "post",
+      "question": "如果一个 workflow 必须在 crash 后恢复、运行中接受人工批准，并并行 fan out 到三个 retrievers，首选哪个 framework？",
+      "options": [
+        "CrewAI",
+        "AutoGen",
+        "LangGraph",
+        "Agno"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 LLM-selected routing 比 explicit routing 每轮花费更多 tokens？",
+      "options": [
+        "它会并行 pre-fetch next node 来对冲 latency。",
+        "Planner LLM call 每轮选择下一步，每次 decision 都会增加 prompt 和 completion tokens。",
+        "它会为 crew 中每个 agent 复制 tool list。",
+        "它把整个 conversation history 发给 verifier model。"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "代码 review 中的 proposer-critic dialogue 自然映射到哪个 framework 的核心抽象？",
+      "options": [
+        "CrewAI 的 sequential Crew",
+        "LangGraph 的 StateGraph",
+        "AutoGen 的 GroupChat / ConversableAgent pair",
+        "Agno 的 single Agent with tools"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "哪个 framework 在 Agent class 上直接附带内置 storage drivers（SQLite、Postgres、Redis、Mongo、DynamoDB），用于 session 和 memory persistence？",
+      "options": [
+        "LangGraph",
+        "CrewAI",
+        "AutoGen",
+        "Agno"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "你有一个两次调用的 summarizer：fetch text，然后 summarize。正确的 framework 选择是什么？",
+      "options": [
+        "LangGraph StateGraph，一定要为了可靠性使用 framework。",
+        "CrewAI 加 researcher + summarizer roles，roles 会更清楚。",
+        "Plain Python 加 provider SDK，小 pipeline 不用 framework 才是最快的 framework。",
+        "AutoGen GroupChat，两个 agents 可以争论最佳摘要。"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "lesson": "23-chunking-strategies-rag",
+  "title": "RAG 的 Chunking Strategies",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 chunking strategy 在 RAG 中和 embedding model 一样重要？",
+      "options": [
+        "Chunk boundaries 决定答案是否能被检索到；坏 chunks 会让任何 embedding 失效",
+        "Chunking 会缩小模型",
+        "更小 chunks 训练更快",
+        "FAISS 要求 chunking"
+      ],
+      "correct": 0,
+      "explanation": "Vectara 2025 study 显示，chunking 质量对检索质量的影响不低于 embedding model。"
+    },
+    {
+      "stage": "pre",
+      "question": "LangChain 的 RecursiveCharacterTextSplitter 会按什么顺序尝试切分？",
+      "options": [
+        "总是在字符 N 处切分",
+        "按 token IDs 切分",
+        "先段落分隔，再换行，再句子边界，再空格",
+        "只按空白切分"
+      ],
+      "correct": 2,
+      "explanation": "Recursive splitting 会按 paragraph -> newline -> sentence -> space 回退，尽量保留结构。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 parent-document pattern 能提升答案质量？",
+      "options": [
+        "Children 提供精准检索；返回更大的 parent block 保留 reader 所需的周边上下文",
+        "它移除 embeddings",
+        "它避免 tokenization",
+        "它使用更少 GPU cycles"
+      ],
+      "correct": 0,
+      "explanation": "先用小 child chunks 做精确检索，再扩展到 parent 获取上下文。"
+    },
+    {
+      "stage": "check",
+      "question": "Anthropic 的 'contextual retrieval' 在索引前会给每个 chunk 加什么？",
+      "options": [
+        "POS tag",
+        "Language code",
+        "LLM 生成的 50-100 word summary，用来说明该 chunk 在整篇文档中的位置",
+        "随机噪声"
+      ],
+      "correct": 2,
+      "explanation": "Contextual retrieval 会给每个 chunk 前置一段 LLM 写的定位摘要；recall 可提升约 35-50%。"
+    },
+    {
+      "stage": "check",
+      "question": "哪项 2026 年发现反驳了关于 chunk overlap 的传统认知？",
+      "options": [
+        "Overlap 是 BM25 必需的",
+        "2026 年实证 benchmarks 显示 overlap 往往没有可测收益，却会让索引成本翻倍",
+        "Overlap 只改进 contextual retrieval",
+        "Overlap 应该设为 50%"
+      ],
+      "correct": 1,
+      "explanation": "更新的研究（SPLADE+Mistral on NQ）显示 chunk overlap 很少有帮助，且会放大 index size。"
+    },
+    {
+      "stage": "post",
+      "question": "NVIDIA 2026 benchmark 认为 factoid queries 适合哪种 chunk size？",
+      "options": [
+        "64 tokens",
+        "大约 256-512 tokens",
+        "2048-4096 tokens",
+        "8192 tokens"
+      ],
+      "correct": 1,
+      "explanation": "Factoid queries 受益于较小 chunks（256-512 tokens），因为答案信号更集中。"
+    },
+    {
+      "stage": "post",
+      "question": "使用 semantic chunking 时，为什么 min-token floor 很重要？",
+      "options": [
+        "BERT 要求如此",
+        "没有 floor 时，semantic chunking 可能产生 40-token 这种很碎的小片段，伤害检索",
+        "Floors 会加速推理",
+        "Floors 防止 overlap"
+      ],
+      "correct": 1,
+      "explanation": "Semantic chunkers 可能过度切分；设置最小尺寸可以避免低信号碎片。"
+    },
+    {
+      "stage": "post",
+      "question": "'late chunking' 与传统 chunking 有什么不同？",
+      "options": [
+        "完全跳过 chunking",
+        "先在 token level 嵌入整篇文档，再把 token embeddings pool 成 chunk vectors，从而保留跨 chunk 上下文",
+        "检索之后再 chunk",
+        "改用 BM25"
+      ],
+      "correct": 1,
+      "explanation": "Late chunking 先 embedding 再 pooling，保留 chunk boundary 之外的上下文交互。"
+    }
+  ]
+}

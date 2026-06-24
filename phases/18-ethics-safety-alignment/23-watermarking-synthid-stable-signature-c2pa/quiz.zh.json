@@ -1,0 +1,78 @@
+{
+  "lesson": "23-watermarking-synthid-stable-signature-c2pa",
+  "title": "水印：SynthID、Stable Signature、C2PA",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Kirchenbauer 风格（SynthID-text）的 token watermarking 如何嵌入信号？",
+      "options": [
+        "通过修改 prompt template",
+        "用 public key 加密输出",
+        "在每个 decoding step，对前 K 个 token 做 hash，把词表划分为 green/red set，并让采样偏向 green；检测时通过 z-score 统计 green token",
+        "插入隐藏 HTML comment"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "文本水印面对 paraphrase 的主要限制是什么？",
+      "options": [
+        "改写或 paraphrase 文本会破坏 green-token 统计信号",
+        "paraphrase 只影响图像水印",
+        "paraphrase 会增强水印",
+        "它们实际上能经受 paraphrase"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Stable Signature（Fernandez 等，ICCV 2023）做什么？",
+      "options": [
+        "在上传时用 C2PA 签名图像",
+        "在图像角落添加可见水印",
+        "微调 latent diffusion decoder，使每张生成图像都携带一个可从 latent 中检测到的固定嵌入消息",
+        "用 private key 签名 metadata"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2024 年 5 月的“Stable Signature is Unstable”结果展示了什么？",
+      "options": [
+        "该水印被证明不可伪造",
+        "该水印需要 C2PA 才能工作",
+        "该水印只在 JPEG compression 上失败",
+        "生成后对 decoder 进行微调可以在保持图像质量的同时移除水印，从而削弱对抗鲁棒性"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "C2PA metadata 和 watermarking 如何互补？",
+      "options": [
+        "二者可以互相替代",
+        "watermark 使用和 C2PA 相同的 key 签名",
+        "metadata 可能被剥离，但能携带丰富 provenance chain；watermark 能跨 transcoding 保留，但只能携带少量 bit；分层使用时能提供可用的 provenance story",
+        "C2PA 完全替代 watermark"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么“没有 SynthID signal”不能证明内容真实（由人类生成）？",
+      "options": [
+        "因为 SynthID 只会给启用 SynthID 的模型生成内容加水印；来自任何未启用 SynthID 的模型的内容默认没有水印",
+        "因为 SynthID 是闭源的",
+        "因为 SynthID 总会在人类文本上产生 false positive",
+        "因为 SynthID 只适用于 Gemini 输出"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

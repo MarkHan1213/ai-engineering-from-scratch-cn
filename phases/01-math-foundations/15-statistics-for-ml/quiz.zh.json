@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在假设检验中，p-value 为 0.03 表示什么？",
+      "options": [
+        "零假设为真的概率是 3%",
+        "如果零假设为真，观察到当前这么极端的数据的概率是 3%",
+        "模型提升了 3%",
+        "97% 的数据支持备择假设"
+      ],
+      "correct": 1,
+      "explanation": "p-value 是在零假设为真的前提下，观察到与你得到的数据一样极端的数据的概率。它不是 H0 为真的概率，这是统计学中最常见的误解。"
+    },
+    {
+      "stage": "pre",
+      "question": "计算样本方差时，为什么除以 (n-1) 而不是 n？",
+      "options": [
+        "这样计算更快",
+        "这是为了修正样本均值不是真实总体均值这一事实（Bessel's correction）",
+        "这样可以把方差转换成标准差",
+        "它只适用于样本量为奇数的情况"
+      ],
+      "correct": 1,
+      "explanation": "Bessel's correction（除以 n-1）用于补偿用样本均值替代真实总体均值带来的偏差。如果不修正，样本方差会系统性低估真实总体方差。"
+    },
+    {
+      "stage": "post",
+      "question": "你在 alpha = 0.05 下测试 20 种不同模型配置。至少出现一次 false positive 的概率大约是多少？",
+      "options": [
+        "5%",
+        "25%",
+        "64%",
+        "95%"
+      ],
+      "correct": 2,
+      "explanation": "P(at least one false positive) = 1 - (1 - 0.05)^20 = 1 - 0.95^20 ≈ 0.64，也就是 64%。这就是多重比较问题。Bonferroni correction 会把每次测试的阈值改为 alpha/20 = 0.0025。"
+    },
+    {
+      "stage": "post",
+      "question": "Model A 在 100 万个测试样本上得分 0.9234，Model B 得分 0.9237，p-value = 0.001。你应该得出什么结论？",
+      "options": [
+        "Model B 显著更好，应该立即部署",
+        "差异具有统计显著性，但 0.03% 的提升未必有实际意义",
+        "测试无效，因为样本量太大",
+        "Model A 更好，因为它先被测试"
+      ],
+      "correct": 1,
+      "explanation": "有 100 万个样本时，即使极小的差异也会变得统计显著。p-value 确认差异真实存在，但 effect size（0.03% 准确率提升）未必足以抵消部署的工程成本。始终同时报告 p-value 和 effect size。"
+    },
+    {
+      "stage": "post",
+      "question": "比较两个 ML 模型时，bootstrap 相比 paired t-test 有什么优势？",
+      "options": [
+        "Bootstrap 总是产生更小的 p-value",
+        "Bootstrap 不需要分布假设，并且适用于任何指标（AUC、F1、median）",
+        "Bootstrap 需要更少样本就能达到显著性",
+        "Bootstrap 只能用于神经网络"
+      ],
+      "correct": 1,
+      "explanation": "Bootstrap resampling 通过有放回重采样来估计任意统计量的抽样分布。不同于 t-test，它不假设正态性。它适用于任何指标，例如 AUC、F1、precision@k、median，并且不需要闭式公式。"
+    }
+  ]
+}

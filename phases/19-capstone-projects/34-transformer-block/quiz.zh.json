@@ -1,0 +1,78 @@
+{
+  "lesson": "34-transformer-block",
+  "title": "从零实现 Transformer Block",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "单个 decoder transformer block 内有哪两个 sublayer？",
+      "options": [
+        "Convolution 和 recurrent gate",
+        "multi head causal attention 和 position wise MLP，二者都包在 residual connection 中",
+        "Embedding lookup 和 softmax",
+        "RNN encoder 和 decoder"
+      ],
+      "correct": 1,
+      "explanation": "每个现代 decoder LLM block 都是 attention 加 MLP，二者各有自己的 residual path 和 LayerNorm。"
+    },
+    {
+      "stage": "check",
+      "question": "pre-LN 和 post-LN 在深层网络中的关键区别是什么？",
+      "options": [
+        "pre-LN 使用不同的 attention math",
+        "pre-LN 让 residual signal 不被归一化，因此 gradient 能干净地传播到 embedding；post-LN 把 norm 放在 residual add 之后，会在深层缩小 gradient，并需要 warmup",
+        "post-LN 在 GPU 上更快",
+        "pre-LN 只适用于 encoder"
+      ],
+      "correct": 1,
+      "explanation": "pre-LN 在常见 learning rate 下无需 warmup 也能稳定训练；post-LN 是 2017 年论文使用的形式，并且需要 warmup。"
+    },
+    {
+      "stage": "check",
+      "question": "multi head attention 中的 causal mask 做什么？",
+      "options": [
+        "随机丢弃 token",
+        "把 attention logits 的上三角设为 negative infinity，使 token i 不能 attend 到位置大于 i 的 token",
+        "归一化 attention score",
+        "选择 batch 中最长的序列"
+      ],
+      "correct": 1,
+      "explanation": "忘记 causal mask 会训练出一个能读未来 token 的模型；mask 是唯一强制因果性的部分。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么使用 fused QKV projection，而不是三个独立 linear？",
+      "options": [
+        "它改变模型表达能力",
+        "一个宽度为 3 倍 d_model 的 linear 会把三次 kernel launch 和三次 matmul 合并为一次，在所有加速器上都更快，并匹配参考 GPT-2 实现",
+        "它避免 softmax",
+        "它移除 residual"
+      ],
+      "correct": 1,
+      "explanation": "数学相同，kernel 更少；GPT-2、LLaMA 和 Mistral 的参考实现都使用 fused projection。"
+    },
+    {
+      "stage": "post",
+      "question": "dropout 不应该放在 transformer block 的哪里？",
+      "options": [
+        "attention softmax output 上",
+        "residual identity path 本身，因为这会破坏让 gradient 在深层流动的 additive identity",
+        "第二个 MLP linear 之后",
+        "feed forward expansion 内部"
+      ],
+      "correct": 1,
+      "explanation": "dropout 属于 attention output 和 MLP residual update，绝不属于 residual 的 identity branch。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么把 causal mask 注册为 buffer，而不是每次 forward call 都分配？",
+      "options": [
+        "buffer 会被加密",
+        "mask 只依赖 maximum context length，因此在构造时分配一次、每次 call 切 active window，可以避免长上下文下的 allocator hot spot",
+        "buffer 只能在 GPU 上运行",
+        "buffer 提升数值精度"
+      ],
+      "correct": 1,
+      "explanation": "用 register_buffer 分配一次，每次 forward slice；否则 mask 会成为每次调用的分配成本。"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "hptune-pre-1",
+    "stage": "pre",
+    "question": "parameter 和 hyperparameter 有什么区别？",
+    "options": [
+      "Parameters 由用户设置；hyperparameters 在训练中学习得到",
+      "Parameters 在训练中学习得到（weights、biases）；hyperparameters 在训练开始前设置（learning rate、max depth）",
+      "没有区别；它们是同义词",
+      "Parameters 只适用于神经网络；hyperparameters 只适用于 tree models"
+    ],
+    "correct": 1,
+    "explanation": "Parameters 由优化算法在训练中学习得到，例如 weights。Hyperparameters 在训练前设置，控制学习如何发生，例如 learning rate、regularization strength。"
+  },
+  {
+    "id": "hptune-pre-2",
+    "stage": "pre",
+    "question": "对 4 个 hyperparameters 做 grid search，每个有 5 个取值，需要多少次评估？",
+    "options": [
+      "20",
+      "25",
+      "625",
+      "4"
+    ],
+    "correct": 2,
+    "explanation": "Grid search 会评估每一种组合：5^4 = 625。这种指数级扩展就是 hyperparameters 很多时 grid search 不实际的原因。"
+  },
+  {
+    "id": "hptune-post-1",
+    "stage": "post",
+    "question": "为什么在相同 evaluation budget 下，random search 往往优于 grid search？",
+    "options": [
+      "Random search 使用更好的 optimization algorithm",
+      "大多数 hyperparameters 的有效维度很低，所以 random search 能更密集地覆盖真正重要的维度",
+      "Random search 总能找到全局最优",
+      "Grid search 无法处理连续 hyperparameters"
+    ],
+    "correct": 1,
+    "explanation": "通常只有 1-2 个 hyperparameters 对某个问题真正重要。Grid search 会浪费评估次数去改变不重要的参数。Random search 在每次试验中都会为每个超参数独立随机采样取值，因此能更密集覆盖重要维度。"
+  },
+  {
+    "id": "hptune-post-2",
+    "stage": "post",
+    "question": "在 Bayesian optimization 中，acquisition function 平衡什么？",
+    "options": [
+      "训练速度和模型 accuracy",
+      "Exploitation（在已知好点附近搜索）和 exploration（在不确定区域搜索）",
+      "特征数和样本数",
+      "surrogate model 中的 bias 和 variance"
+    ],
+    "correct": 1,
+    "explanation": "acquisition function 会通过平衡 exploitation（靠近已知好结果）和 exploration（surrogate model 不确定的区域）来决定下一步评估哪里。这比随机搜索更高效地引导搜索。"
+  },
+  {
+    "id": "hptune-post-3",
+    "stage": "post",
+    "question": "你用 test set 调 hyperparameters，并报告最好的 test performance。这个做法有什么问题？",
+    "options": [
+      "没有问题，这是标准做法",
+      "你 overfit 到了 test set；报告的性能过于乐观，无法泛化",
+      "test set 应该用于训练，而不是调参",
+      "hyperparameters 应该只能是整数"
+    ],
+    "correct": 1,
+    "explanation": "在 test set 上调参意味着你选择了碰巧在这些特定样本上表现好的 hyperparameters。这是在 overfitting test set。应使用 validation set 调参，把 test set 留到最终评估。"
+  }
+]

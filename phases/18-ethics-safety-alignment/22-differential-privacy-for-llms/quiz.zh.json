@@ -1,0 +1,78 @@
+{
+  "lesson": "22-differential-privacy-for-llms",
+  "title": "LLM 的差分隐私",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "(epsilon, delta)-differential privacy 对随机算法 M 保证什么？",
+      "options": [
+        "M 永远不会记忆任何训练数据",
+        "M 除了噪声外是确定性的",
+        "对任意只相差一个样本的两个数据集和任意事件 S，都有 P(M(D) in S) <= e^epsilon * P(M(D') in S) + delta，因此无法可靠推断任意单个个体的贡献",
+        "M 被证明等价于一个非私有算法"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是 Abadi 等人（2016）描述的 DP-SGD 步骤？",
+      "options": [
+        "采样一个 mini-batch 并计算 per-example gradient",
+        "把每个 per-example gradient 裁剪到阈值 C",
+        "在每一步之间重新随机化模型 tokenizer",
+        "求和裁剪后的 gradient，并加入按 sigma * C 缩放的 Gaussian noise"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 LoRA + DP-SGD 是 2025 年常见配置？",
+      "options": [
+        "在 frontier model 上做完整 DP-SGD 成本过高；LoRA 把 gradient update 限制在小 adapter 上，在仍对 adapter 提供 DP guarantee 的同时减少 per-example gradient 存储",
+        "它把 LoRA 当作 tokenizer 使用",
+        "LoRA 按设计会增加 epsilon",
+        "LoRA 消除了对 accountant 的需求"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2025 年 3 月审计（arXiv:2503.06808）如何解决 canary-MIA 与 training-data-extraction 之间的张力？",
+      "options": [
+        "它完全消除了对 canary 的需求",
+        "它证明 DP-SGD 没有必要",
+        "它表明二者测量的是同一性质",
+        "它表明二者测量的是不同东西：插入 canary 上的 MIA 会低估 memorization，因为 canary 并没有被优化成真正对隐私最重要的“最可提取”样本"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "PMixED（arXiv:2403.15638）作为 DP training 的替代方案提供了什么？",
+      "options": [
+        "更快的 DP-SGD 变体",
+        "一个新的 Renyi DP accountant",
+        "通过 next-token distribution 上的 mixture of experts 和聚合噪声实现 inference-time differential privacy；完全避免 DP training",
+        "一种只用 epsilon-delta accounting 计算 epsilon 的方法"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Differential Privacy Reversal via LLM Feedback attack 是什么？",
+      "options": [
+        "把 DP-trained model 的 confidence score 当作 oracle 来重新识别个体，即使输出本身没有直接泄露",
+        "针对 tokenizer entropy 的攻击",
+        "把 epsilon 重置为 0 的方法",
+        "canary insertion 的对策"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "lesson": "18-frontier-safety-frameworks-rsp-pf-fsf",
+  "title": "Frontier Safety Frameworks：RSP、PF、FSF",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Anthropic 的 ASL 结构是仿照什么建模的？",
+      "options": [
+        "ITIL incident severity",
+        "EU AI Act 类别",
+        "Internet RFC 层级",
+        "Biosafety level（BSL）"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "OpenAI Preparedness Framework v2 中哪条标准捕捉了“伤害发生很快或无法挽回”？",
+      "options": [
+        "Net-new",
+        "Instantaneous-or-irremediable",
+        "Plausible",
+        "Measurable"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "DeepMind 的 FSF v3.0（2025 年 9 月）新增了哪个 Critical Capability Level？",
+      "options": [
+        "Harmful Manipulation",
+        "Cyber Uplift",
+        "Bioweapon Uplift",
+        "ML R&D Acceleration"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2025+ frontier safety framework 中的“competitor-adjustment clause”是什么？",
+      "options": [
+        "如果同行实验室在没有同等 safeguards 的情况下发布，允许某个 lab 降低自身安全要求的条款",
+        "出口管制豁免",
+        "API 访问的定价规则",
+        "model-card 披露要求"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程中描述的 safety case 三个标准支柱是什么？",
+      "options": [
+        "速度、准确率、成本",
+        "Monitoring、illegibility、incapability",
+        "Helpful、honest、harmless",
+        "Inner、outer、mesa"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Anthropic 的“Capability Thresholds”、OpenAI 的“High Capability thresholds”和 DeepMind 的“Critical Capability Levels”之间存在什么结构性对齐？",
+      "options": [
+        "结构性对齐：它们都有分层的 frontier-capability threshold 和公开评估标准，尽管术语不同",
+        "它们都没有公开文档",
+        "术语和数值 cutoff 完全相同",
+        "三者使用完全相同的评估"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

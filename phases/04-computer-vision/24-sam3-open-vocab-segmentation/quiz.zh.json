@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "SAM 3 引入的 Promptable Concept Segmentation（PCS）是什么？",
+      "options": [
+        "在单次 forward pass 中分割由短名词短语或图像 exemplar 描述的概念的所有 instances，并返回 masks 与唯一 instance IDs",
+        "像经典 SAM 一样的 visual prompt（point/box）segmentation",
+        "detector 后接 SAM 的 multi-step chain",
+        "tracking-only mode"
+      ],
+      "correct": 0,
+      "explanation": "PCS 是 SAM 3 的标志性能力。你传入 'yellow school bus' 或 bus 的 image exemplar，SAM 3 会返回每个匹配 instance 的 mask 和 unique ID，以及 presence score。经典 SAM 需要每个 instance 一个 prompt；PCS 会端到端产生所有匹配结果。"
+    },
+    {
+      "stage": "pre",
+      "question": "既然 SAM 3 已经支持 text-prompted segmentation，为什么 2026 年仍保留 decoupled detector + SAM 2 pipeline（Grounded SAM 2）？",
+      "options": [
+        "Grounded SAM 2 总是更准确",
+        "模块化：你可以为不同 domains、license constraints 或 threshold behaviour 换入不同 open-vocabulary detectors（DINO-X、Florence-2、Grounding DINO 1.5）；SAM 3 架构是 monolithic",
+        "SAM 3 不支持 video",
+        "SAM 3 只能在 cloud 中使用"
+      ],
+      "correct": 1,
+      "explanation": "Grounded SAM 2 是 detector 与 SAM 2 的 frozen weights 组合。有时这种模块化正是你需要的：医学影像 detector、license-friendly detector，或严格 threshold control。SAM 3 对常见用途端到端更准确，但更难定制。2026 年两者都有生产角色。"
+    },
+    {
+      "stage": "post",
+      "question": "SAM 3 的 presence head 产生什么？",
+      "options": [
+        "candidate bounding boxes 列表",
+        "tracking memory bank",
+        "一个 scalar probability，表示被查询概念是否存在于图像中，并与 localisation 解耦；让模型能干净地说“not present”，减少 absent concepts 上的 false positives",
+        "最终 mask"
+      ],
+      "correct": 2,
+      "explanation": "presence head 把“这里有没有？”的判断与“在哪里？”的判断分开。如果模型每次被询问都必须输出 boxes，就容易为不存在的概念幻觉出匹配。有了 presence head，SAM 3 可以明确返回“未检测到目标”。这也提升了相近 prompts 的区分度，例如 'a player in white' 与 'a player in red'。"
+    },
+    {
+      "stage": "post",
+      "question": "SAM 3.1 Object Multiplex（2026 年 3 月）引入了用于 tracking 的 shared-memory 机制。它替代了什么？",
+      "options": [
+        "整个 SAM 2",
+        "per-instance separate memory banks；Multiplex 把它们合并为一个 shared memory，并用 per-instance queries，使 tracking N 个 objects 明显更快且保持 accuracy",
+        "整个 presence head",
+        "ViT backbone"
+      ],
+      "correct": 1,
+      "explanation": "此前 SAM 2 / SAM 3 tracking 为每个 tracked instance 维护一个 memory bank，因此成本随 object count 线性增长。Object Multiplex 引入单个 shared memory 加 per-instance queries，用来提取 instance-specific features。many-instance tracking 现在变得高效，这对 crowds 和密集 multi-object scenes 至关重要。"
+    },
+    {
+      "stage": "post",
+      "question": "你需要在 edge device 上做 real-time open-vocabulary DETECTION（只有 boxes，无 masks）。2026 年哪类模型最合适？",
+      "options": [
+        "SAM 3",
+        "custom CLIP + detector chain",
+        "Grounded SAM 2",
+        "YOLO-World（以及相关 real-time open-vocab detectors）；SAM 3 会产生 masks 且更重，而 YOLO-World 专门为 edge hardware 上高 fps boxes 设计"
+      ],
+      "correct": 3,
+      "explanation": "YOLO-World 和类似模型（OV-DINO、LLMDet）是 real-time open-vocabulary detectors。它们不产生 masks，但能在普通 GPUs 上以 640x640 达到 30-60 fps。需要 masks 和 tracking 时 SAM 3 才合适。始终让模型复杂度和计算开销匹配任务需求：detection-only 不需要 mask overhead。"
+    }
+  ]
+}

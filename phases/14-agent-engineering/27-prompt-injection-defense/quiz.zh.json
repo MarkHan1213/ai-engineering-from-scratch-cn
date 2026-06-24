@@ -1,0 +1,90 @@
+{
+  "lesson": "27-prompt-injection-defense",
+  "title": "Prompt Injection 与 PVE 防御",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "什么是 indirect prompt injection？",
+      "options": [
+        "用户直接输入“ignore all rules”",
+        "Agent 检索的数据（网页、PDF、邮件、记忆笔记）中嵌入了指令，并在摄入时覆盖 developer prompt",
+        "模型误点击",
+        "system prompt 中有拼写错误"
+      ],
+      "correct": 1,
+      "explanation": "Greshake et al. 提出了 indirect prompt injection：攻击者控制的检索内容携带指令。"
+    },
+    {
+      "stage": "pre",
+      "question": "课程说，处理检索到的 prompt 等价于什么？",
+      "options": [
+        "言论自由",
+        "在 Agent 的工具使用表面执行任意代码",
+        "一次静态分析 pass",
+        "一次纯函数调用"
+      ],
+      "correct": 1,
+      "explanation": "Greshake 的表述是：检索到的指令可以触达 Agent 有权限访问的任何工具。"
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是已展示的五类 exploit 之一？",
+      "options": [
+        "Data theft",
+        "Worming",
+        "Persistent memory poisoning",
+        "Cache invalidation"
+      ],
+      "correct": 3,
+      "explanation": "五类是 data theft、worming、persistent memory poisoning、ecosystem contamination 和 arbitrary tool use。"
+    },
+    {
+      "stage": "check",
+      "question": "PVE 代表什么？",
+      "options": [
+        "Prompt-Validator-Executor：昂贵主模型 commit 前，每次工具调用都由便宜快速的 validator 检查",
+        "Provider-Verifier-Encoder",
+        "Plan-Verify-Execute，一种 HTN 方言",
+        "Pre-Vectorize-Embed"
+      ],
+      "correct": 0,
+      "explanation": "PVE 会用便宜 validator 包裹每次工具调用，然后才让主模型 commit。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么“system prompt 说忽略不可信指令”还不够？",
+      "options": [
+        "它太短",
+        "这只是 instruction-following，不是 enforcement；模型仍可能被足够有说服力的注入内容覆盖",
+        "provider 会剥离它",
+        "它被加密了"
+      ],
+      "correct": 1,
+      "explanation": "真正的防御需要 source tagging、allowlists、逐步 safety，以及 PVE 风格验证，而不只是 prompting。"
+    },
+    {
+      "stage": "post",
+      "question": "什么是 overtrust of retrieved memory？",
+      "options": [
+        "缓存过于激进",
+        "昨天的 Agent 写入了被污染的记忆笔记；今天的 Agent 读取它并重新执行注入",
+        "加载了错误模型",
+        "忘记 vacuum index"
+      ],
+      "correct": 1,
+      "explanation": "persistent memory poisoning 意味着如果把 memory 当作可信内容，注入会跨 session 存活。"
+    },
+    {
+      "stage": "post",
+      "question": "课程建议给每段内容附加什么 metadata？",
+      "options": [
+        "一个 encryption key",
+        "source tag：user_message vs tool_output vs retrieved；validator 会拒绝 retrieved 内容中的指令",
+        "只有 timestamp",
+        "token count"
+      ],
+      "correct": 1,
+      "explanation": "provenance tagging 让 validator 能按内容的信任等级处理它。"
+    }
+  ]
+}

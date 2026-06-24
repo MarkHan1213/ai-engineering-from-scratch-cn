@@ -1,0 +1,37 @@
+[
+  {
+    "question": "为什么基础 BPE tokenizer 会在多语言或代码输入上出问题？",
+    "options": ["BPE 天生只能单语言使用", "没有正确的 Unicode handling、byte fallback 和 pre-tokenization regex 时，它会产生错误或低效的 token 序列", "多语言文本不能被 tokenized", "BPE 只适用于 ASCII"],
+    "correct": 1,
+    "explanation": "朴素 BPE 实现可能无法处理多 byte Unicode 字符，可能错误地跨词边界 merge，也可能没有 byte-level fallback 来覆盖训练词表之外的字符。",
+    "stage": "pre"
+  },
+  {
+    "question": "生产 tokenizer 中 pre-tokenization regex 的作用是什么？",
+    "options": ["移除标点", "在 BPE merges 前按词边界切分文本，防止跨空格和词边界合并", "压缩空白", "把文本转成小写"],
+    "correct": 1,
+    "explanation": "Pre-tokenization regex 会把文本切成 chunks（通常按词边界、数字和标点），让 BPE merges 只发生在 chunk 内。否则 BPE 可能把 'end' 和下一个词前的空格合并。",
+    "stage": "pre"
+  },
+  {
+    "question": "什么是 special token，为什么 tokenizers 要专门处理它们？",
+    "options": ["频繁出现的 tokens", "像 <|endoftext|> 或 [PAD] 这样的保留 token，用来控制模型行为，必须编码成单个特定 ID", "Embedding 值最高的 tokens", "只在 evaluation 中使用的 tokens"],
+    "correct": 1,
+    "explanation": "Special tokens 承担结构作用：标记文档边界、padding sequences、表示生成开始/结束。它们必须被识别并编码成精确 ID，而不是拆成 subwords。",
+    "stage": "post"
+  },
+  {
+    "question": "如何评估 custom tokenizer 是否足够好？",
+    "options": ["检查它能否 tokenize 你的名字", "在多样文本上测 compression ratio（tokens per character），并与 tiktoken 等成熟 tokenizer 比较", "只数词表大小", "只测 encoding speed"],
+    "correct": 1,
+    "explanation": "Compression ratio（bytes per token 或 tokens per word）衡量效率。好的 tokenizer 在同样文本上产生更少 token，意味着 context window 能容纳更多内容。要跨语言和领域比较。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么现代 LLM 更偏好 byte-level BPE，而不是 word-level tokenization？",
+    "options": ["它更快", "它能表示任意输入而不会产生 unknown tokens，同时仍能为常见模式学习高效 subword merges", "它产生更小词表", "Word-level tokenization 更准确"],
+    "correct": 1,
+    "explanation": "Word-level tokenizers 无法处理未见词，会产生 [UNK] tokens。Byte-level BPE 从原始 bytes 出发（保证覆盖任意输入），并为常见序列学习 merges，在覆盖率和效率之间取得平衡。",
+    "stage": "post"
+  }
+]

@@ -1,0 +1,90 @@
+{
+  "lesson": "19-benchmarks-swebench-gaia",
+  "title": "Benchmarks：SWE-bench、GAIA、AgentBench",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "SWE-bench 的 evaluator 会检查 candidate patch 的什么？",
+      "options": [
+        "与参考修复的 BLEU score",
+        "之前失败的测试现在通过（FAIL_TO_PASS），之前通过的测试仍然通过（PASS_TO_PASS）",
+        "patch 长度低于 200 行",
+        "patch 通过另一个 LLM judge"
+      ],
+      "correct": 1,
+      "explanation": "harness 以测试状态转换为门槛：暴露 bug 的测试必须翻转，回归测试必须保持 green。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么会有 SWE-bench Verified？",
+      "options": [
+        "它运行更快",
+        "OpenAI 人工筛选的 500 任务子集移除了模糊 issue 和不可靠测试",
+        "它包含更多语言",
+        "它使用不同的 patch 格式"
+      ],
+      "correct": 1,
+      "explanation": "Verified 是更干净的子集，适合做可信报告。"
+    },
+    {
+      "stage": "check",
+      "question": "SWE-bench+ 对成功 patch 发现了什么？",
+      "options": [
+        "32.67% 在 issue 中泄漏了解法文本，31.08% 测试覆盖可疑地薄弱",
+        "所有 patch 都是记忆出来的",
+        "没有 contamination",
+        "patch 总是超过 1000 行"
+      ],
+      "correct": 0,
+      "explanation": "SWE-bench+ 在大量成功 patch 中标记出 solution leakage 和 weak coverage。"
+    },
+    {
+      "stage": "check",
+      "question": "GAIA 的设计哲学是什么？",
+      "options": [
+        "人类觉得难，AI 觉得容易",
+        "对人类概念上简单（约 92%），但对 AI 很难（早期 GPT-4 with plugins 约 15%）",
+        "纯 vector retrieval benchmark",
+        "只有 single-turn questions"
+      ],
+      "correct": 1,
+      "explanation": "GAIA 有意设计成 easy-for-humans、hard-for-AI，用来测试 reasoning + tools + modality。"
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是 AgentBench 的环境类别？",
+      "options": [
+        "Code（Bash, DB, KG）",
+        "Games（Alfworld, LTP）",
+        "Web（WebShop, Mind2Web）",
+        "Gradient（RL, IRL）"
+      ],
+      "correct": 3,
+      "explanation": "AgentBench 覆盖 code、games、web 和 open-ended generation。没有 gradient 类别。"
+    },
+    {
+      "stage": "post",
+      "question": "课程指出报告 SWE-bench 数字的错误方式是什么？",
+      "options": [
+        "报告 per-repo breakdowns",
+        "只报告一个 aggregate number，却不说明 Verified 或 SWE-bench+ 语境",
+        "报告 step counts",
+        "报告 wall-clock"
+      ],
+      "correct": 1,
+      "explanation": "执着于单个数字会掩盖 contamination 和成本；应始终报告 Verified 以及各分布语境。"
+    },
+    {
+      "stage": "post",
+      "question": "这些 benchmark 不衡量哪个维度？",
+      "options": [
+        "真实世界运营成本（tokens、wall-clock）、对抗安全性和你自己的领域",
+        "测试转换",
+        "逐任务成功率",
+        "step counts"
+      ],
+      "correct": 0,
+      "explanation": "benchmark 做的是聚合；它们无法捕捉成本、对抗鲁棒性或你的具体领域。"
+    }
+  ]
+}

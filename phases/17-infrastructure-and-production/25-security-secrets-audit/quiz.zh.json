@@ -1,0 +1,78 @@
+{
+  "lesson": "25-security-secrets-audit",
+  "title": "安全：Secrets、API Key Rotation、Audit Logs、Guardrails",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "2026 年 LLM service credentials 的标准模式是什么？",
+      "options": [
+        "把 keys 存在 Slack channel",
+        "集中式 vault，由 AI gateway 在 runtime 通过 IAM role 拉取；在 vault 中 rotate，所有 apps 在几分钟内感知",
+        "通过邮件把 key 发给每个工程师",
+        "为了速度把 API keys 硬编码进 config files"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程建议 API keys、vault root tokens 和 CI/CD credentials 采用什么 rotation cadence？",
+      "options": [
+        "90 天内，尽可能自动化，手动时要记录并跟踪",
+        "每 5 年",
+        "只有泄漏时",
+        "永不轮换"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 PII scrubbing 使用一致 tokenization（Mesh approach）？",
+      "options": [
+        "它比 regex 更省内存",
+        "它会加密给模型的 prompt",
+        "ISO 27001 要求这样做",
+        "同一个源值映射到同一个 placeholder，因此 LLM 能在 prompt 中保留代码和关系语义"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程建议 LLM service subnets 采用什么 egress posture？",
+      "options": [
+        "只 whitelist 少量 domains（api.openai.com、api.anthropic.com、vector DB、vault），丢弃其他全部，并使用 allowlist-only DNS resolver",
+        "阻止包括 providers 在内的所有 egress",
+        "允许 DNS 但阻止 HTTP",
+        "允许所有 outbound traffic"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "2026 年 Vercel supply-chain incident 对 CI/CD credentials 有什么教训？",
+      "options": [
+        "CI/CD credentials 等同于生产权限：存入 vault、窄范围授权、激进轮换",
+        "CI/CD secrets 不可能被盗",
+        "CI/CD credentials 风险低，可以留在 env files",
+        "Vercel 没受影响"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程建议为每次 LLM call 保留哪些 audit log fields？",
+      "options": [
+        "只有 raw prompt",
+        "只有 response",
+        "timestamp、user/tenant、prompt hash（不是 raw）、model + version、token counts、cost、response hash、任何 guardrail trips",
+        "只有 cost"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

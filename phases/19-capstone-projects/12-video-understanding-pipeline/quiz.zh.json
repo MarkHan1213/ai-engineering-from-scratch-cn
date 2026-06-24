@@ -1,0 +1,90 @@
+{
+  "lesson": "12-video-understanding-pipeline",
+  "title": "Capstone 12：视频理解 Pipeline（Scene、QA、Search）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "即使 long-context VLM 能原生读取 2 小时视频，为什么仍然需要 scene-level index？",
+      "options": [
+        "long-context VLM 无法 stream output",
+        "vector index 不支持视频文件",
+        "把 100 小时视频摄入成可查询语料需要 scene-level retrieval，即使单个视频可以整体读取",
+        "scene cut 是 VLM 唯一能理解的东西"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "multi-vector index 中每个 scene 有哪三种 vector？",
+      "options": [
+        "Caption embedding、keyframe embedding 和 transcript embedding",
+        "Audio waveform、mel-spectrogram 和 MFCC",
+        "Hash、gzip 和 CRC",
+        "Pose、depth 和 optical flow"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "查询时如何合并三个 retrieval stream 的结果？",
+      "options": [
+        "只选择 caption hit",
+        "对 cosine similarity 求平均",
+        "对三个 ranked list 做 reciprocal rank fusion",
+        "取并集但不评分"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "temporal grounding step 会在 top scene 内细化什么？",
+      "options": [
+        "Whisper 的 transcript word timestamp",
+        "Qdrant 中存储的 vector 数量",
+        "包含答案的 (start, end) timestamp window",
+        "keyframe embedding dimensionality"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "哪类问题会被单独报告，因为它是已知 hallucination hotspot？",
+      "options": [
+        "关于场景的描述性问题",
+        "speaker identification 问题",
+        "翻译问题",
+        "counting 和 action-type 问题，VLM 容易数错或排错事件顺序"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "rubric 在 held-out set 上衡量哪个 grounding metric？",
+      "options": [
+        "Temporal-grounding intersection-over-union（IoU）",
+        "Acceptance rate",
+        "Perplexity",
+        "MRR@10"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 pipeline 要求答案中包含被引用的 timestamp？",
+      "options": [
+        "它们降低 embedding dimension",
+        "timestamp 是 Whisper output 的要求",
+        "timestamp 是 Qdrant payload 的要求",
+        "它们让观看者能跳到精确的 (video_id, start, end)，从而验证 claim"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

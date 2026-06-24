@@ -1,0 +1,78 @@
+{
+  "lesson": "65-hybrid-retrieval-bm25-dense",
+  "title": "BM25 与 Dense Embeddings 的 Hybrid Retrieval",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么生产 RAG endpoint 需要同时使用 lexical 和 semantic retrieval？",
+      "options": [
+        "semantic retrieval 总是更准确",
+        "合规要求必须使用 lexical search",
+        "query 分布混合了 literal-identifier queries 和 paraphrased queries；每种 modality 都会在其中一类上失败",
+        "它会把 index size 减半"
+      ],
+      "correct": 2,
+      "explanation": "BM25 在 literal symbols 上占优；dense 在 paraphrases 上占优。真实 endpoint 会从同一批用户那里收到这两类 query。"
+    },
+    {
+      "stage": "pre",
+      "question": "BM25 参数 b 的默认值 0.75 表示什么？",
+      "options": [
+        "IDF 项上的 multiplier",
+        "一个 length-normalization knob：较长 documents 会被惩罚，但不是线性惩罚",
+        "query-time cosine similarity 的 exponent",
+        "document 中 fields 的数量"
+      ],
+      "correct": 1,
+      "explanation": "b 在无长度归一化（0）和完全归一化（1）之间插值；0.75 是论文推荐值。"
+    },
+    {
+      "stage": "check",
+      "question": "Reciprocal Rank Fusion 会为每个 candidate 计算什么？",
+      "options": [
+        "对每个包含该 candidate 的 ranked list 累加 1 / (k + rank)",
+        "跨 modalities 的 cosine similarities 乘积",
+        "min-max normalization 后 BM25 和 dense scores 的平均值",
+        "跨 modalities 的 median rank"
+      ],
+      "correct": 0,
+      "explanation": "RRF 会对每个 ranked list 累加 1 / (k + rank) 贡献；k = 60 是论文默认值。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 rank-based fusion 优于 BM25 与 cosine scores 的线性插值？",
+      "options": [
+        "cosine scores 没有上界",
+        "BM25 scores 不能排序",
+        "BM25 scores 无界且依赖 corpus；cosine 被限制在 -1 到 1；不同 corpora 上的分数尺度不可比较",
+        "线性插值需要 GPU 支持"
+      ],
+      "correct": 2,
+      "explanation": "每次 reindex 后 score distributions 都会漂移，score interpolation 会失效；rank 在不同 modalities 之间天然可比较。"
+    },
+    {
+      "stage": "check",
+      "question": "当你把 RRF 的常数 k 设得很小时，会发生什么？",
+      "options": [
+        "top-1 contribution 主导 fusion；深层 ranks 几乎没有贡献",
+        "fusion 变得等价于 linear score sum",
+        "out-of-corpus terms 会得到正分",
+        "fusion 会忽略第二种 modality"
+      ],
+      "correct": 0,
+      "explanation": "小 k 会集中 rank-1 的贡献；大 k 会压平贡献曲线，让更深的 candidates 也能投票。"
+    },
+    {
+      "stage": "post",
+      "question": "通过 token repetition 做 field weighting，具体避免了哪种 failure mode？",
+      "options": [
+        "out-of-vocabulary embeddings",
+        "避免在 query time 添加第二个 score-aggregation step；数学保持一致，也不需要 per-field-score combination logic",
+        "BM25 IDF 坍缩为零",
+        "cosine similarity 变成负数"
+      ],
+      "correct": 1,
+      "explanation": "在 index time 重复 tokens 会放大 term frequency，让 BM25 scoring math 仍是一层求和，而不需要额外 field-score combinator。"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "lesson": "04-multimodal-document-qa",
+  "title": "Capstone 04：多模态文档 QA（Vision-First PDF、表格、图表）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 2026 年前沿方案在财务 PDF 和科学论文上更偏好 vision-first late interaction，而不是 OCR-then-text？",
+      "options": [
+        "视觉模型按页计费更便宜",
+        "OCR pipeline 会破坏旋转表格、密集公式和图表图像，丢掉一半信号",
+        "OCR 比渲染更慢",
+        "OCR 不能在 GPU 上运行"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "ColPali 风格检索中的 late interaction 是什么意思？",
+      "options": [
+        "每个 query token 都和每个 patch token 打分，再通过 MaxSim 汇总每个 token 的最大值",
+        "embedding 推迟到 eval time 才计算",
+        "用户点击结果之后才计算 embedding",
+        "reranker 只在最终 candidate 上运行"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "ColQwen embedding 每页大约产生多少个 patch vector，这会造成什么存储问题？",
+      "options": [
+        "每页约 2048 个 patch vector，相比 single-vector index 会让 raw storage 膨胀",
+        "正好 128 个 vector，可轻松放进任何 vector DB",
+        "每页 1 个 vector，没有存储问题",
+        "16 个 vector，存储开销可忽略"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "DocPruner 在这条 pipeline 中做什么？",
+      "options": [
+        "ingestion 前移除重复 PDF 页面",
+        "通过保留约 50% 的高信号 patch 来压缩 multi-vector index，且几乎不损失准确率",
+        "重写 query embedding 以得到更短 vector",
+        "裁剪 evidence region 周围的 bounding box"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么某些页面仍会拼入 OCR text channel？",
+      "options": [
+        "它提升 PDF 渲染质量",
+        "VLM 无法读取 180 DPI 图像",
+        "OCR 是主要检索模态",
+        "公式密集和表格密集页面会从图像旁边的文本 fallback 中受益"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "这个 capstone 面向哪个 benchmark 做 vision-first retrieval evaluation？",
+      "options": [
+        "RewardBench-2",
+        "SWE-bench Pro",
+        "ViDoRe v3",
+        "MMLU-Pro"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "rubric 中的 evidence-region grounding 是什么意思？",
+      "options": [
+        "DocPruner 达到的压缩率",
+        "reranker 在 p99 tail 的延迟",
+        "每个 query 检索的总页数",
+        "被引用的 bounding box 中实际包含答案 span 的比例"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

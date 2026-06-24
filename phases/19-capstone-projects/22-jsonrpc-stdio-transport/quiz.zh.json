@@ -1,0 +1,90 @@
+{
+  "lesson": "22-jsonrpc-stdio-transport",
+  "title": "基于 Newline-Delimited Stdio 的 JSON-RPC 2.0",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在线路格式上，JSON-RPC notification 与 request 的区别是什么？",
+      "options": [
+        "jsonrpc version field 不同",
+        "notification 省略 id 字段；server 不得响应它们",
+        "notification 使用不同的 method namespace",
+        "notification 被包在 array 中"
+      ],
+      "correct": 1,
+      "explanation": "缺少 id 是唯一标记。server 不响应，因为没有 id 可以用于关联。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 newline-delimited JSON 足以用于 stdio framing？",
+      "options": [
+        "因为 JSON 不允许字符串中出现未转义的字面换行，所以每个 object 可以占一行",
+        "因为 pipe 保证 newline atomicity",
+        "因为 UTF-8 没有 newline byte",
+        "因为 spec 强制要求这样"
+      ],
+      "correct": 0,
+      "explanation": "json.dumps 每个 object 输出一行；字符串里的字面换行会被转义。这让 \\n 可以作为安全的 record separator。"
+    },
+    {
+      "stage": "check",
+      "question": "当 JSON 解析失败时，transport 返回哪个 error code？",
+      "options": [
+        "-32600",
+        "-32700",
+        "-32603",
+        "-32601"
+      ],
+      "correct": 1,
+      "explanation": "-32700 是 Parse error。response id 为 null，因为无法提取 id。"
+    },
+    {
+      "stage": "check",
+      "question": "如果 handler 抛出普通 ValueError，transport 返回什么？",
+      "options": [
+        "Method not found (-32601)",
+        "Invalid params (-32602)",
+        "Internal error (-32603)，并在 data 中包含 exception class name",
+        "不返回；连接断开"
+      ],
+      "correct": 2,
+      "explanation": "未映射异常会表现为 -32603。data.exception 保留 class name，供 client 诊断。"
+    },
+    {
+      "stage": "check",
+      "question": "当 batch 只包含 notification 时，server 返回什么？",
+      "options": [
+        "空 array",
+        "什么都不返回，不写任何 byte",
+        "每个 notification 一个 null",
+        "单个 null response"
+      ],
+      "correct": 1,
+      "explanation": "spec 规则是：如果每个 entry 都是 notification，server 保持沉默。"
+    },
+    {
+      "stage": "post",
+      "question": "session 中间到达一行损坏的 JSON。后续行会怎样？",
+      "options": [
+        "transport 关闭 stream",
+        "它们会被 buffer，直到损坏行被重试",
+        "transport 写入 -32700 response，并继续把下一行当作全新记录读取",
+        "它们全部被 -32600 拒绝"
+      ],
+      "correct": 2,
+      "explanation": "framing layer 不能污染整条 stream。一次 parse error 对应一个 error response，然后 loop 继续。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 transport 不直接查询 tool registry？",
+      "options": [
+        "因为 registry 是 async",
+        "为了让 transport layer 只保持 JSON-RPC 形态；handler 负责把 transport 与 registry 串起来",
+        "因为 registry 持有 secret",
+        "因为 transport 运行在不同进程中"
+      ],
+      "correct": 1,
+      "explanation": "transport 负责线路协议。dispatcher（下一课）才是 transport、registry 和 timeout 相遇的位置。"
+    }
+  ]
+}

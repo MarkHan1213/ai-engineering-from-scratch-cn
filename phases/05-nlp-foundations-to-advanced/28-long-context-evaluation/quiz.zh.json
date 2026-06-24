@@ -1,0 +1,102 @@
+{
+  "lesson": "28-long-context-evaluation",
+  "title": "Long-Context Evaluation：NIAH、RULER、LongBench、MRCR",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "原始 NIAH benchmark 衡量什么？",
+      "options": [
+        "Tokenizer fertility",
+        "模型是否能在长上下文的受控深度中检索被植入的事实",
+        "Embedding cosine drift",
+        "只衡量 multi-hop reasoning"
+      ],
+      "correct": 1,
+      "explanation": "NIAH = needle in a haystack：植入事实，要求模型检索，并扫描深度和长度。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么宣传的 context window 往往和 usable context 差异很大？",
+      "options": [
+        "Attention 会随长度和任务退化；规格表最大值很少能在 multi-hop 或 reasoning 负载下成立",
+        "Tokenizers 会截断",
+        "Embeddings 会 overflow",
+        "Beam search 会变慢"
+      ],
+      "correct": 0,
+      "explanation": "推理任务的有效上下文通常只有广告最大值的 25-50%。"
+    },
+    {
+      "stage": "check",
+      "question": "RULER 相比 NIAH 增加了什么？",
+      "options": [
+        "翻译任务",
+        "更快推理",
+        "Per-token logprobs",
+        "在多个上下文长度上覆盖 retrieval、multi-hop tracing、aggregation 和 QA 的 13 类任务"
+      ],
+      "correct": 3,
+      "explanation": "RULER 把 NIAH 扩展成多任务 long-context benchmark，能抓住 NIAH 饱和但其他任务失败的模型。"
+    },
+    {
+      "stage": "check",
+      "question": "什么是 'lost in the middle' effect？",
+      "options": [
+        "模型对长输入中间位置的内容关注不足；depth=0.5 往往比 depth=0 或 1 表现更差",
+        "模型会重排 tokens",
+        "模型会忘掉第一个 token",
+        "模型会丢失标点"
+      ],
+      "correct": 0,
+      "explanation": "中间上下文最不容易被注意到；扫描 depth 会暴露 U-shaped accuracy curve。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 NIAH-only evaluation 必须补充 multi-hop tests？",
+      "options": [
+        "Multi-hop 更快",
+        "NIAH 没有 ground truth",
+        "NIAH 不能在长上下文上运行",
+        "Frontier models 可能轻松通过 single-needle retrieval，但仍在 multi-hop variable-tracing 或 aggregation tasks 上失败"
+      ],
+      "correct": 3,
+      "explanation": "检索通过不代表推理通过；multi-hop benchmarks 才能暴露真实上限。"
+    },
+    {
+      "stage": "post",
+      "question": "NoLiMa 主要施压什么能力？",
+      "options": [
+        "Streaming output",
+        "Latency",
+        "Tokenization",
+        "Needles 与 query 没有 literal token 重叠，因此检索需要语义推理步骤"
+      ],
+      "correct": 3,
+      "explanation": "NoLiMa 去掉词面重叠，让模型必须推理，而不是匹配关键词。"
+    },
+    {
+      "stage": "post",
+      "question": "Long-context spec sheet 应该报告哪两个数字？",
+      "options": [
+        "Effective retrieval length（如 90% NIAH pass）和 effective reasoning length（如 70% multi-hop pass）",
+        "只报告 GPU memory 和 latency",
+        "只报告 advertised max",
+        "只报告 tokens per second"
+      ],
+      "correct": 0,
+      "explanation": "区分 retrieval-effective 与 reasoning-effective length，是评估真实世界能力声明的关键。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么要在长上下文长度下测 time-to-first-token？",
+      "options": [
+        "1M-token prefill 可能需要几十秒；只看准确率会掩盖影响产品体验的延迟",
+        "Tokenization 很慢",
+        "RAG 要求如此",
+        "Beam search 依赖它"
+      ],
+      "correct": 0,
+      "explanation": "长 prompts 的 prefill 成本很高；必须和准确率一起跟踪 latency。"
+    }
+  ]
+}

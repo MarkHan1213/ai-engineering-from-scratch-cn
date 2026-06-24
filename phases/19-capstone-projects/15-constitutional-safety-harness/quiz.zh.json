@@ -1,0 +1,90 @@
+{
+  "lesson": "15-constitutional-safety-harness",
+  "title": "Capstone 15：Constitutional Safety Harness + Red-Team Range",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "这个 capstone 中的 layered safety 是什么意思？",
+      "options": [
+        "人工 review 每个响应",
+        "只在输入上运行一个强分类器",
+        "对输出使用单个 rule-based regex",
+        "在 input sanitize、policy rails、classifier gate、model、output filter 和 HITL tier 上做 defense in depth"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "哪个分类器覆盖约 132 种语言的多语言场景？",
+      "options": [
+        "Nemotron 3 Content Safety",
+        "ShieldGemma-2",
+        "X-Guard",
+        "Llama Guard 4"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么要在 XSTest 这样的 benign suite 上测量 over-refusal？",
+      "options": [
+        "替代 red-team scoring",
+        "benchmark token throughput",
+        "认证 guardrail framework",
+        "跟踪 false-positive block，使模型在提升 harmlessness 的同时保持 helpful"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "这个 capstone 中的 constitutional self-critique loop 是什么？",
+      "options": [
+        "对 candidate jailbreak prompt 做 rerank",
+        "从头训练一个 RLHF reward model",
+        "单次前向通过 Llama Guard 4",
+        "critic LLM 按 written constitution 给 draft 打分，提示模型重写被反对的输出，然后在改进后的 pair 上运行 SFT"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在 findings 中，成功 jailbreak 如何评分严重性？",
+      "options": [
+        "按产生响应的模型",
+        "使用 CVSS 4.0，包含 attack vector、complexity 和 impact，并附 disclosure timeline",
+        "按 prompt 的原始 token count",
+        "按 operator 选择的手工 1-10 分尺度"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "red-team range 会运行哪六类 attack family？",
+      "options": [
+        "BLEU、ROUGE、METEOR、BERTScore、CometKiwi 和 chrF",
+        "PAIR、TAP、GCG、encoding（ASCII/base64/rot13）、multi-turn persona 和 multilingual code-switch",
+        "Brute-force、dictionary、replay、MITM、phishing 和 CSRF",
+        "PSI、KL、MMD、KS、JS 和 Wasserstein"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 range automation（cron + alert）是 rubric 的一部分？",
+      "options": [
+        "cron 是调用 OPA 的唯一方式",
+        "连续的定时 probe 可以捕捉 attack success rate 和 over-refusal 随时间漂移产生的 regression",
+        "明确要求人工运行",
+        "automation 是禁用 Llama Guard 4 的必要条件"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "lesson": "01-instruction-following-alignment-signal",
+  "title": "把遵循指令作为对齐信号",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么一个原始预训练语言模型面对“写一个反转列表的 Python 函数”时，常常会继续写另一个 prompt，而不是直接写代码？",
+      "options": [
+        "它的词表里没有 Python token",
+        "不经过微调就无法表示函数签名",
+        "它的 temperature 默认是 0",
+        "它被训练来续写网页风格文本，而这类文本里 prompt 后面常常继续出现更多 prompt"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "InstructGPT 的 reward model 在成对偏好标签上使用哪种损失？",
+      "options": [
+        "对标注者分数做均方误差",
+        "Bradley-Terry: -log sigmoid(r(x, y_w) - r(x, y_l))",
+        "带固定 margin 的 hinge loss",
+        "预测 reward 与真实 reward 之间的交叉熵"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "InstructGPT 第 3 阶段里的 KL penalty 主要是在防止什么？",
+      "options": [
+        "灾难性遗忘 tokenizer 统计",
+        "PPO 梯度更新中的数值不稳定",
+        "采样时撑爆 context window",
+        "优化器找到利用 reward model 的对抗性高 reward 字符串"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "PPO-ptx 把什么问题混入 RL 目标中以缓解它？",
+      "options": [
+        "reward model 在 PPO 期间漂移",
+        "KL 项变成负数",
+        "alignment tax：RLHF 没有直接优化的 benchmark 出现退化",
+        "SFT 与 RM 之间的 tokenizer 不匹配"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "1.3B 的 InstructGPT 大约 70% 的时候比 175B base GPT-3 更受偏好。这说明 alignment 和 capability 之间是什么关系？",
+      "options": [
+        "alignment 是不同于 capability 的一个维度，而 base model 决定 capability 的下限",
+        "偏好率超过 50% 就证明 proxy reward 等于人类价值",
+        "在规模足够大时，capability 和 alignment 是同一个维度",
+        "更大的 base model 总会输给更小的 aligned model"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "InstructGPT 中的 reward model 是从下面哪一个初始化的？",
+      "options": [
+        "一个没有预训练的随机标量回归器",
+        "一个单独的 encoder-only transformer",
+        "保留 LM head 的 base pre-trained model",
+        "把 LM head 替换成 scalar head 的 SFT model"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

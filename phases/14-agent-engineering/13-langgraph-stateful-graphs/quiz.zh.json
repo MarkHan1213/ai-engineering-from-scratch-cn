@@ -1,0 +1,90 @@
+{
+  "lesson": "13-langgraph-stateful-graphs",
+  "title": "LangGraph：有状态图与 Durable Execution",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "LangGraph 将 Agent 的核心单元视为什么？",
+      "options": [
+        "自由形式的 LLM 调用",
+        "由 typed state、function nodes 和 conditional edges 组成的状态机",
+        "单个工具注册表",
+        "vector index"
+      ],
+      "correct": 1,
+      "explanation": "LangGraph 将 Agent 建模为 state graph：节点是纯函数，边是转移，state 有类型且不可变。"
+    },
+    {
+      "stage": "pre",
+      "question": "durable execution 解决了什么问题？",
+      "options": [
+        "降低推理成本",
+        "40 步运行在第 38 步失败时，可带着精确 state 从第 38 步恢复，而不是从头开始",
+        "更快生成 embeddings",
+        "在 provider 之间翻译"
+      ],
+      "correct": 1,
+      "explanation": "每个节点后保存 checkpoint，让 runtime 可以从最后成功的步骤继续。"
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是 LangGraph 支持的三种拓扑之一？",
+      "options": [
+        "Supervisor",
+        "Swarm（peer-to-peer）",
+        "Hierarchical（嵌套 subgraphs）",
+        "Gradient ring"
+      ],
+      "correct": 3,
+      "explanation": "拓扑包括 supervisor、swarm 和 hierarchical。Gradient ring 不是 LangGraph 拓扑。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么节点必须具备确定性，resume 才能干净工作？",
+      "options": [
+        "provider 要求确定性",
+        "resume 假设相同输入会产生相同 state update；random seed、wall-clock 和外部 API 都必须被捕获",
+        "确定性会降低 token 成本",
+        "GIL 要求这样做"
+      ],
+      "correct": 1,
+      "explanation": "如果节点依赖未捕获的非确定性，resume 就无法重建该步骤之后的 state。"
+    },
+    {
+      "stage": "check",
+      "question": "什么是 conditional edge？",
+      "options": [
+        "由 training loss 加权的边",
+        "由 state 的函数选择的边，用于让图分支",
+        "只在 GPU 上运行的边",
+        "带 TTL 的边"
+      ],
+      "correct": 1,
+      "explanation": "conditional edge 基于 state 分支；过度使用会让图难以推理。"
+    },
+    {
+      "stage": "post",
+      "question": "checkpoint 太小时会出什么问题？",
+      "options": [
+        "工具状态和 memory writes 无法恢复；必须序列化完整 state",
+        "磁盘会被写满",
+        "图无法到达 END",
+        "模型会生成更短的答案"
+      ],
+      "correct": 0,
+      "explanation": "只 checkpoint 对话 turn，会让工具状态和 memory writes 留在 resume 能力之外。"
+    },
+    {
+      "stage": "post",
+      "question": "human-in-the-loop 在 LangGraph 设计中位于哪里？",
+      "options": [
+        "它需要 fork runtime",
+        "在关键节点前暂停，把序列化 state 展示给人类，接受修改后 resume；checkpointer 让这件事成本很低",
+        "只能在 START 和 END",
+        "通过单独的 provider API"
+      ],
+      "correct": 1,
+      "explanation": "因为节点之间的 state 已经被序列化，人类审查与编辑天然适合 pause-and-resume 模式。"
+    }
+  ]
+}

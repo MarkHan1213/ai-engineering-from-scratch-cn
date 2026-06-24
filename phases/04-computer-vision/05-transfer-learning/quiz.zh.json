@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "你有 500 张带标签图像，新任务接近 ImageNet 分布。哪种训练方式最合理？",
+      "options": [
+        "从头训练一个 ResNet-50",
+        "冻结 ImageNet-pretrained backbone，只训练新的 linear head",
+        "用相同的大 LR fine-tune 每一层",
+        "忽略 pretrained weights；小数据集最适合小模型"
+      ],
+      "correct": 1,
+      "explanation": "500 张图像没有足够信号从头训练深层网络，也不足以安全地 end-to-end fine-tune 所有层，因为这会破坏 pretrained features。冻结 backbone 并只训练新 head（linear probe）直接使用 pretrained features，是小规模、近域数据集的标准做法。"
+    },
+    {
+      "stage": "pre",
+      "question": "即使 ImageNet 不包含 X-rays，为什么 ImageNet-pretrained network 的早期 conv layers 仍能很好迁移到医学图像？",
+      "options": [
+        "PyTorch 会自动重新初始化早期层",
+        "早期层编码通用视觉基元，例如 edges、orientations、contrast，这些几乎在所有视觉领域共享；只有后期层才专门化到 ImageNet categories",
+        "ImageNet 暗中包含医学数据",
+        "只有 domains 匹配时 transfer 才有效"
+      ],
+      "correct": 1,
+      "explanation": "Gabor-like filters 和简单纹理检测器是早期 CNN layers 在任何自然图像语料上都会学到的特征。它们反映光、影、边缘的统计规律，这些规律跨摄影、医学影像、显微镜和卫星数据都成立。后期层才逐渐专门化，因此 fine-tuning 通常集中在最后几个 blocks。"
+    },
+    {
+      "stage": "post",
+      "question": "使用 discriminative learning rates 做 end-to-end fine-tuning 时，为什么早期 layers 应该使用比后期 layers 更小的 LR？",
+      "options": [
+        "早期 layers 参数更少",
+        "早期 layers 编码你想保留的通用特征；后期 layers 编码需要移动的任务特定特征；较小的早期 LR 能防止 feature drift 和 catastrophic forgetting",
+        "PyTorch 正确性要求 layer-wise LR",
+        "早期 layers 使用较小 LR 能加快训练"
+      ],
+      "correct": 1,
+      "explanation": "早期 layers 已经编码了正确的视觉基元，你希望只做很小更新以保留这些特征。后期 layers 需要向新任务移动。全模型一个 learning rate 会迫使两端折中，伤害两者。Discriminative LRs 允许每个阶段按自己的速度移动，这是 fine-tuning 的经验最佳点。"
+    },
+    {
+      "stage": "post",
+      "question": "你在 800 张 grayscale 医学图像（复制成 3 通道）的 10 类数据集上 fine-tune ResNet，accuracy 是 10%（10 类随机猜测）。最可能的原因是什么？",
+      "options": [
+        "使用了错误的 loss function",
+        "BatchNorm running statistics 来自 ImageNet RGB 照片，与 grayscale-medical 分布严重不匹配，导致前几层 BN 产生噪声并向前传播",
+        "ResNet 无法处理 grayscale input",
+        "800 张图像对任何 transfer learning 来说都太少"
+      ],
+      "correct": 1,
+      "explanation": "BatchNorm 会保留来自 ImageNet 的 running_mean 和 running_var。在小型、分布偏移的数据集上，这些 buffers 在短时间 fine-tune 中无法足够快适应，BN 会用错误统计量归一化 activations。修复方式包括冻结 BN statistics、切换到 GroupNorm，或先在目标数据集上做 BN-only warmup pass 来预热 BN 统计。"
+    },
+    {
+      "stage": "post",
+      "question": "你比较两次运行：(a) 冻结 ImageNet backbone 的 linear probe，82% accuracy；(b) end-to-end fine-tune，78% accuracy。应该怎么理解？",
+      "options": [
+        "Fine-tuning 没用，直接上线 linear probe",
+        "fine-tune 结果低于 linear probe 几乎总是训练 bug：LR 太高、BN 处理错误，或 scheduler/optimizer 配置不当；先诊断再讨论 transfer 结论",
+        "数据集太大",
+        "pretrained weights 很差"
+      ],
+      "correct": 1,
+      "explanation": "Fine-tuning 应该总是达到或超过 linear probe，因为 linear probe 是 backbone LR = 0 的 fine-tuning 特例。如果 fine-tune 更差，说明 pipeline 正在主动破坏 pretrained features。修复方向是降低 backbone LR、使用 discriminative LRs 或冻结 BN，而不是放弃 fine-tuning。"
+    }
+  ]
+}

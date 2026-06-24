@@ -1,0 +1,90 @@
+{
+  "lesson": "25-multi-agent-debate",
+  "title": "Multi-Agent Debate 与协作",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Society of Minds protocol 让 N 个模型实例做什么？",
+      "options": [
+        "各自运行不同 benchmark",
+        "独立提出答案，然后在 R 轮中阅读并 critique 彼此提案，直到收敛",
+        "在共享数据集上训练",
+        "协商价格"
+      ],
+      "correct": 1,
+      "explanation": "N 个 proposer、R 轮、交叉 critique、收敛，是 Du et al. debate 的经典形态。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么跨模型 debate（例如 ChatGPT + Bard）优于单模型 debate？",
+      "options": [
+        "不同厂商会协商价格",
+        "异质性减少共享盲点，因此交叉 critique 能捕捉更多错误",
+        "它更便宜",
+        "厂商共享权重"
+      ],
+      "correct": 1,
+      "explanation": "混合模型会带来独立的错误分布，从而提升 debate 的上限。"
+    },
+    {
+      "stage": "check",
+      "question": "相比 full mesh，sparse topology 在 token 成本上的主要收益是什么？",
+      "options": [
+        "sparse topology 不需要模型",
+        "每个 debater 只阅读部分 peer，因此 critique 操作数下降，而准确率通常仍能匹配",
+        "sparse topology 会让轮数翻倍",
+        "它移除了 LLM"
+      ],
+      "correct": 1,
+      "explanation": "sparse（star、ring、hub-and-spoke）会减少 critique ops，同时在许多任务上不损失准确率。"
+    },
+    {
+      "stage": "check",
+      "question": "课程列出哪种 debate 会伤害效果的场景？",
+      "options": [
+        "开放式推理",
+        "简单事实查询，因为一次查询比五轮 debate 更便宜",
+        "象棋走法合法性",
+        "传记生成"
+      ],
+      "correct": 1,
+      "explanation": "对延迟和成本敏感的简单查询，不会从 N x R debate 中受益。"
+    },
+    {
+      "stage": "check",
+      "question": "什么是 convergence collapse？",
+      "options": [
+        "网络中断",
+        "所有 agents 都收敛到第一个错误答案；可通过强制分歧轮缓解",
+        "进程崩溃",
+        "TLS 握手失败"
+      ],
+      "correct": 1,
+      "explanation": "过早认同错误答案，可通过强制第一轮提案互不相同来缓解。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 prompt homogenization 会破坏 debate？",
+      "options": [
+        "它违反 Apache 2.0",
+        "相同 prompt 会产生近乎相同的答案，消除交叉 critique 信号",
+        "它使用太多 token",
+        "它绕过 supervisor"
+      ],
+      "correct": 1,
+      "explanation": "多样化 prompt（最好也多样化模型）能保持提案分布足够宽。"
+    },
+    {
+      "stage": "post",
+      "question": "根据课程，哪种生产模式是 debate 的变体？",
+      "options": [
+        "带 synthesis 步骤的 Anthropic orchestrator-workers",
+        "纯 single-shot RAG",
+        "只有 cron 的 schedule",
+        "vector indexing"
+      ],
+      "correct": 0,
+      "explanation": "带 synthesis 的 orchestrator-workers 是生产中的 debate-shaped pattern。"
+    }
+  ]
+}

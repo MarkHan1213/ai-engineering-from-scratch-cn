@@ -1,0 +1,78 @@
+{
+  "lesson": "63-multimodal-eval",
+  "title": "Multimodal Evaluation",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么仅靠 training loss 不足以衡量 multimodal model 的质量？",
+      "options": [
+        "loss 很难计算",
+        "training loss 衡量的是对训练分布的拟合；eval surfaces（retrieval、VQA、captioning）衡量模型能否泛化到 held-out tasks",
+        "loss values 是随机的",
+        "loss 是字符串"
+      ],
+      "correct": 1,
+      "explanation": "最小化 loss 是必要但不充分的。三个 task surfaces 上的 held-out metrics 衡量模型实际能做什么。"
+    },
+    {
+      "stage": "pre",
+      "question": "在 100-sample retrieval eval 中，R@5 衡量的是什么？",
+      "options": [
+        "第五个 caption 总是正确",
+        "在 100 个 retrieved candidates 中，正确匹配落入 top 5 的 query 占比",
+        "百分之五准确率",
+        "每秒五个 queries"
+      ],
+      "correct": 1,
+      "explanation": "R@K = target 位于 top K ranked candidates 中的 queries 占比。越高越好。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 BLEU-4 对 1- 到 4-gram precisions 取 geometric mean，而不是 arithmetic mean？",
+      "options": [
+        "算术平均更慢",
+        "如果任意 n-gram precision 为零，geometric mean 就为零，这正是 BLEU 想要的严格匹配属性；smoothing 会处理零值情况",
+        "geometric mean 更大",
+        "PyTorch 只支持 geometric mean"
+      ],
+      "correct": 1,
+      "explanation": "geometric mean 强制所有 n-gram 阶数都要贡献；4-gram precision 为零时，smoothing 前分数会坍缩。"
+    },
+    {
+      "stage": "check",
+      "question": "BLEU-4 中的 brevity penalty 防止什么问题？",
+      "options": [
+        "长 captions 被惩罚",
+        "短 captions 只输出安全高频 tokens 来刷高 precision；当 generated < reference length 时，BP < 1",
+        "memory leaks",
+        "tokenizer errors"
+      ],
+      "correct": 1,
+      "explanation": "没有 BP 时，一个只匹配 reference 中一个词的一词 caption 也可能得 1.0。BP 会压低过短 generation 的分数。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么在同一个 generation 上，multi-reference BLEU 通常高于 single-reference BLEU？",
+      "options": [
+        "数学公式不同",
+        "generation 中的每个 n-gram 都可以匹配任意 reference；reference 更多时，clipped count 更高",
+        "single-reference 是坏的",
+        "references 会额外占用内存"
+      ],
+      "correct": 1,
+      "explanation": "更多 references 会给 n-gram 更多匹配机会；clipped counts 增加，precision 也会上升。"
+    },
+    {
+      "stage": "post",
+      "question": "哪种 eval surface 不使用 model embeddings，只做 id-level matching？",
+      "options": [
+        "Retrieval",
+        "VQA exact match：直接把 predicted answer id 与 reference id 比较，不经过 embedding step",
+        "BLEU-4",
+        "Cosine similarity"
+      ],
+      "correct": 1,
+      "explanation": "VQA exact match 是模型输出 answer token 后的一次整数比较；不涉及 embedding 或 similarity 计算。"
+    }
+  ]
+}

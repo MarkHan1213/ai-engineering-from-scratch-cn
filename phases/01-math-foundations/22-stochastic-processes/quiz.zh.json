@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Markov property 是什么？",
+      "options": [
+        "过程总会回到起始状态",
+        "下一个状态只依赖当前状态，而不依赖之前状态的历史",
+        "每一步所有状态都等可能",
+        "过程必须只有有限个状态"
+      ],
+      "correct": 1,
+      "explanation": "Markov property（无记忆性）表示 P(X_{t+1} = j | X_t = i, X_{t-1}, ...) = P(X_{t+1} = j | X_t = i)。未来只取决于你现在在哪里，而不取决于你如何到达这里。这使得 transition matrix 可以紧凑表示整个过程。"
+    },
+    {
+      "stage": "pre",
+      "question": "在一维 random walk 中，离原点的期望距离如何随步数 n 缩放？",
+      "options": [
+        "线性增长：与 n 成正比",
+        "按平方根增长：与 sqrt(n) 成正比",
+        "对数增长：与 log(n) 成正比",
+        "不管 n 多大都保持不变"
+      ],
+      "correct": 1,
+      "explanation": "每一步等概率为 +/-1。n 步后的方差是 n，因此标准差（离原点的典型距离）是 sqrt(n)。走 10,000 步后，期望距离大约是 100，而不是 10,000。"
+    },
+    {
+      "stage": "post",
+      "question": "Markov chain 的 stationary distribution 是什么？",
+      "options": [
+        "状态的初始分布",
+        "在 transition matrix 作用下保持不变的分布：pi * P = pi",
+        "恰好一次转移后的状态分布",
+        "所有状态上的均匀分布"
+      ],
+      "correct": 1,
+      "explanation": "stationary distribution pi 满足 pi * P = pi，也就是应用 transition matrix 后保持不变。它表示长期来看停留在各状态的时间比例。对 irreducible、aperiodic 的链，任意初始分布都会收敛到 pi。"
+    },
+    {
+      "stage": "post",
+      "question": "在 Langevin dynamics x_{t+1} = x_t - dt * grad(U) + sqrt(2*T*dt) * z 中，当 temperature T 接近 0 时会发生什么？",
+      "options": [
+        "过程变成纯 random walk",
+        "过程变成纯 gradient descent（确定性优化）",
+        "过程发散到无穷大",
+        "过程冻结在初始位置"
+      ],
+      "correct": 1,
+      "explanation": "当 T = 0 时，噪声项 sqrt(2*T*dt)*z 消失，剩下 x_{t+1} = x_t - dt * grad(U)，也就是标准 gradient descent。高 T 时噪声主导，过程接近 random walk；中等 T 则在探索和利用之间平衡。"
+    },
+    {
+      "stage": "post",
+      "question": "在 diffusion model 中，forward process 会在 T 步内对一个数据样本做什么？",
+      "options": [
+        "每一步去除噪声，让图像更清晰",
+        "沿着 Markov chain 逐渐加入 Gaussian noise，直到样本变成纯噪声",
+        "把图像压缩到更低分辨率",
+        "应用学习到的变换来生成新数据"
+      ],
+      "correct": 1,
+      "explanation": "forward process 是一条 Markov chain：x_t = sqrt(alpha_t) * x_{t-1} + sqrt(1 - alpha_t) * noise。经过 T 步后，x_T 近似为 N(0, I)，也就是纯 Gaussian noise。之后由神经网络学习到的 reverse process 逐步去噪来生成新数据。"
+    }
+  ]
+}

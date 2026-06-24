@@ -1,0 +1,78 @@
+{
+  "lesson": "09-production-quantization",
+  "title": "生产量化：AWQ、GPTQ、GGUF K-quants、FP8、MXFP4/NVFP4",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "课程称哪种 quantization format 是 CPU 和 edge serving 的生产默认选择？",
+      "options": [
+        "FP8",
+        "GGUF Q4_K_M / Q5_K_M",
+        "AWQ INT4",
+        "NVFP4"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "当 vLLM 需要 multi-LoRA 时，课程选择哪种 format 作为 datacenter GPU serving 方案？",
+      "options": [
+        "GGUF Q4_K_M",
+        "AWQ",
+        "GPTQ with Marlin kernels",
+        "NVFP4"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "AWQ 中“my model is 4 GB now”的陷阱是什么？",
+      "options": [
+        "AWQ 与 vLLM 不兼容",
+        "AWQ 要求 INT8 KV cache",
+        "AWQ 实际上不会缩小 weights",
+        "AWQ 只缩小 weights；KV cache 和 activations 是独立开销，在生产 batch size 下可额外增加 30-50 GB"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么在通用 web text 上校准 AWQ 会伤害 domain models？",
+      "options": [
+        "它会禁用 Marlin kernels",
+        "算法会错误判断哪些 weights 应该被保护，从而降低 domain accuracy（例如 HumanEval 上掉几个 Pass@1 点）",
+        "它只在 AMD GPUs 上工作",
+        "它会增加模型大小"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "对于质量不可妥协的 reasoning-heavy workload，课程默认推荐哪种 precision？",
+      "options": [
+        "GPTQ INT4",
+        "INT2 GGUF",
+        "NVFP4 weights",
+        "FP8 weights"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程指出 2026 年初 NVFP4 有哪项量化限制？",
+      "options": [
+        "还不支持 LoRA",
+        "H100 上不支持",
+        "只能在 CPU 上运行",
+        "不能与 FP8 KV cache 组合"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

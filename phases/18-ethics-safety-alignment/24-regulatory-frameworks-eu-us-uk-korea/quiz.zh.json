@@ -1,0 +1,78 @@
+{
+  "lesson": "24-regulatory-frameworks-eu-us-uk-korea",
+  "title": "监管框架：EU、US、UK、Korea",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "EU AI Act 何时生效，哪个类别最先适用？",
+      "options": [
+        "2024 年 8 月；prohibited practices 和 AI literacy 于 2025 年 2 月 2 日适用",
+        "2026 年 8 月；只有 GPAI 在生效日适用",
+        "2025 年 8 月；所有类别一次性适用",
+        "2024 年 1 月；high-risk system 当天适用"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "EU AI Act 自 2026 年 8 月 2 日起适用的最高罚款金额是多少？",
+      "options": [
+        "无限额",
+        "最高 100 万 EUR 或全球营业额的 0.1%",
+        "最高 1500 万 EUR 或全球营业额的 3%",
+        "最高 500 万 EUR 或全球营业额的 1%"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "GPAI Code of Practice（2025 年 7 月 10 日）由哪三章组成？",
+      "options": [
+        "Training、Inference、Deployment",
+        "Capability、Control、Compliance",
+        "Privacy、Bias、Watermarking",
+        "Transparency、Copyright、Safety and Security"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "2025 年 2 月 UK AISI 更名为“AI Security Institute”传递了什么信号？",
+      "options": [
+        "范围收窄，聚焦 frontier-capability security，淡化 algorithmic bias 和 free-speech framing",
+        "与 EU AI Office 合并",
+        "关闭英国 frontier evaluation",
+        "扩展到 algorithmic bias"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "美国 CAISI 在 2025 年 6 月更名传递了什么政策方向？",
+      "options": [
+        "与 FDA 合并",
+        "更严格的 pre-deployment safety evaluation",
+        "转向“pro-growth AI policies”，强调标准和创新支持，降低对 pre-deployment evaluation 的强调",
+        "强制 frontier model 开源发布"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "韩国 AI Framework Act（2026 年 1 月生效）的核心义务是什么？",
+      "options": [
+        "完全照搬 EU AI Act",
+        "所有生成式模型强制开放权重",
+        "全面禁止外国 AI provider",
+        "第 12 条在 MSIT 下设立 AISI，并要求 high-impact 和 generative AI 设置本地代表、开展风险评估和安全措施"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

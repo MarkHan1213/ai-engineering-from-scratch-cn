@@ -1,0 +1,90 @@
+{
+  "lesson": "34-repo-memory-and-state",
+  "title": "Repo Memory 与 Durable State",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "决定一条信息是否属于 repo memory 的 durability test 是什么？",
+      "options": [
+        "它是否是 JSON",
+        "三个月后的 CI rerun 是否仍会用到它；会用到就进 repo，否则就是 telemetry",
+        "用户是否标记为 important",
+        "它是否能放进 4 kB"
+      ],
+      "correct": 1,
+      "explanation": "repo memory 用于三个月后仍有用的 durable state；瞬时数据属于 telemetry。"
+    },
+    {
+      "stage": "pre",
+      "question": "哪个 schema field 承载 Agent 的 contract version？",
+      "options": [
+        "schema_version",
+        "build_hash",
+        "model_id",
+        "session_uuid"
+      ],
+      "correct": 0,
+      "explanation": "schema_version 是整数 contract；manager 会拒绝加载未知版本。"
+    },
+    {
+      "stage": "check",
+      "question": "atomic write 如何工作？",
+      "options": [
+        "在同目录 tempfile.mkstemp，写入，fsync，然后用 os.replace（atomic rename）覆盖目标",
+        "truncate 目标后直接写入",
+        "append-only 加 CRC",
+        "加密并覆盖"
+      ],
+      "correct": 0,
+      "explanation": "POSIX 和 Windows 上的 atomic rename 可以防止 partial-write corruption。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么非幂等 tool calls 需要 idempotency keys？",
+      "options": [
+        "用于计费",
+        "如果 Agent 在 tool call 后、checkpoint 结果前崩溃，可以安全重试；执行前记录 call ID，重试时跳过该调用",
+        "用于日志去重",
+        "缩短输出"
+      ],
+      "correct": 1,
+      "explanation": "pending_calls.jsonl 保存 call IDs；恢复流程会检查并跳过已经执行过的工作。"
+    },
+    {
+      "stage": "check",
+      "question": "大型 artifacts（CSVs、长 transcripts、生成文件）相对 state 应该放在哪里？",
+      "options": [
+        "内联进 agent_state.json",
+        "作为独立文件（或 object storage），state 中只保存路径，让 checkpoints 保持小而快",
+        "放在环境变量中",
+        "拼接进一个巨大 log"
+      ],
+      "correct": 1,
+      "explanation": "独立 artifacts 可以独立于 state 增长；checkpoints 的读写成本保持低。"
+    },
+    {
+      "stage": "post",
+      "question": "audit 用 event sourcing、resume 用 snapshots 会带来什么？",
+      "options": [
+        "更低磁盘使用",
+        "通过读取 snapshot 再 replay 其后的 events，可以逐字重放 Agent 决策；形态类似 Postgres WAL",
+        "更快推理",
+        "原生语音支持"
+      ],
+      "correct": 1,
+      "explanation": "每次 mutation 都 append 到 state.events.jsonl；定期 snapshot 到 state.json；再 replay snapshot timestamp 之后的 events。"
+    },
+    {
+      "stage": "post",
+      "question": "课程说 schema_version 不匹配时会发生什么？",
+      "options": [
+        "manager 静默升级",
+        "manager 拒绝加载，直到运行 tools/migrate_state.py 中的迁移脚本",
+        "state 被删除",
+        "Agent 重试"
+      ],
+      "correct": 1,
+      "explanation": "要么执行 schema migration，要么拒绝加载；绝不静默升级。"
+    }
+  ]
+}

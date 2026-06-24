@@ -1,0 +1,78 @@
+{
+  "lesson": "54-paper-writer",
+  "title": "Paper Writer",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 writer 要在写任何正文之前，把 sections、figures 和 citations 声明为数据？",
+      "options": [
+        "因为 LaTeX 要求 forward declaration",
+        "因为结构就是契约：harness 可以在 prose generation 之前验证完整性",
+        "因为 model 需要 system prompt",
+        "因为 BibTeX 不能解析 forward references"
+      ],
+      "correct": 1,
+      "explanation": "structure-first 让 harness 可以在调用 prose generator 之前验证唯一性、citation coverage 和 figure coverage。skeleton 就是契约。"
+    },
+    {
+      "stage": "pre",
+      "question": "figure-injection step 会从 experiment manifest 产出什么？",
+      "options": [
+        "由 artifacts 编译出的 PDF",
+        "一组 Figure records，其中 ids 稳定，paths 会归一化到 paper directory",
+        "带 figure descriptions 的 model prompt",
+        "bibliography stub"
+      ],
+      "correct": 1,
+      "explanation": "read_experiment_manifest 会返回 Figure records。ids 是确定性的，paths 会被归一化，captions 来自 manifest。"
+    },
+    {
+      "stage": "check",
+      "question": "哪种 validation failure 会在任何文件写入前抛出 PaperValidationError？",
+      "options": [
+        "authors 数量为奇数",
+        "某个 section 引用了 bibliography 中未声明的 key",
+        "abstract 超过 200 words",
+        "figure path 在磁盘上不存在"
+      ],
+      "correct": 1,
+      "explanation": "缺失 bibliography keys、重复 figure ids、空 title、空 abstract 和未知 figure refs 都会抛出 PaperValidationError。磁盘上是否存在不在这里强制检查，因为后续 LaTeX compiler 会检查。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 prose generator 是注入到 PaperWriter 的 callable，而不是它自己的 method？",
+      "options": [
+        "因为 Python 不允许 method 接收 Paper 作为参数",
+        "因为测试可以把确定性的 MockProseGenerator 换成 model call，而不需要改 writer",
+        "因为 LaTeX 要求 callback",
+        "因为 dataclass 不能保存 state"
+      ],
+      "correct": 1,
+      "explanation": "writer 把 prose generator 当作依赖传入。测试替换为 MockProseGenerator，生产环境替换为 model call，而 writer 本身不变。"
+    },
+    {
+      "stage": "post",
+      "question": "PaperWriter.write 成功时会写出哪三个文件？",
+      "options": [
+        "paper.tex, paper.pdf, references.bib",
+        "paper.tex, references.bib, manifest.json",
+        "outline.json, paper.tex, figures.tar",
+        "manifest.json, prose.txt, paper.pdf"
+      ],
+      "correct": 1,
+      "explanation": "paper.tex 是 LaTeX source。references.bib 是 bibliography。manifest.json 是 critic loop 下一步会读取的结构化 artifact。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 manifest 是 writer 契约的一部分，而不只是 LaTeX 文件？",
+      "options": [
+        "因为 LaTeX 太大，无法解析",
+        "因为下游 tooling（critics、dashboards）读取结构化 manifests，而不是 LaTeX",
+        "因为 manifest.json 是 BibTeX 唯一接受的文件",
+        "因为 LaTeX compilers 会拒绝 untyped sections"
+      ],
+      "correct": 1,
+      "explanation": "manifest 是下游阶段的稳定接口。critics 和 dashboards 检查 manifest.json。LaTeX 是给人读的 artifact，不是机器接口。"
+    }
+  ]
+}

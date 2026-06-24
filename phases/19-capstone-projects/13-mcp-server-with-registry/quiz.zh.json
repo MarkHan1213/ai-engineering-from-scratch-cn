@@ -1,0 +1,90 @@
+{
+  "lesson": "13-mcp-server-with-registry",
+  "title": "Capstone 13：带 Registry 与治理的 MCP Server",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 2026 MCP revision 在生产服务器中偏好 StreamableHTTP？",
+      "options": [
+        "它移除了认证需求",
+        "它是唯一支持 tool call 的 transport",
+        "它会自动加密 payload",
+        "它默认无状态，因此负载均衡器后面的单个 endpoint 可以水平扩展"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "这个 capstone 用哪种授权模型 gate tool call？",
+      "options": [
+        "携带 per-tool scope 的 OAuth 2.1 token，并在 tool-call time 检查",
+        "共享 admin password",
+        "按 IP address 发放 API key",
+        "没有 scope 的 mutual TLS"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": ".well-known/mcp-capabilities 文档的作用是什么？",
+      "options": [
+        "存储 server 的 audit log",
+        "列出 outbound IP range",
+        "保存 OPA policy bundle",
+        "暴露 tool manifest、transport URL 和 auth requirement，让 registry 能验证并索引 server"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么这个设计中 destructive tool 放在单独的 MCP server 上？",
+      "options": [
+        "它们不能通过 StreamableHTTP 暴露",
+        "它们运行在更慢的硬件上",
+        "它们被 approval token gate，而 token 需要在短窗口内通过 Slack card 提权",
+        "它们需要不同的编程语言"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "OPA / Rego 在每次 tool call 上决定什么？",
+      "options": [
+        "调用哪个模型",
+        "audit log 写到哪里",
+        "server 应该如何 rerank 响应",
+        "caller 的 scope 是否允许调用，并处理 PII redaction 和 payload cap"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "load test 中哪项证据展示了 StreamableHTTP 的水平扩展？",
+      "options": [
+        "把并发降到一个 client",
+        "切换到 stdio transport",
+        "所有内容都在单进程中运行",
+        "添加第二个 replica，并展示 load balancer 在没有 session stickiness 的情况下重新分配负载"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么 audit log 在按 tenant 持久化前要用 Presidio 清洗 PII？",
+      "options": [
+        "让 log 更短",
+        "在保持 per-call lineage 可查询的同时满足企业安全要求",
+        "Presidio 会降低 ClickHouse write amplification",
+        "PII 会提升搜索性能"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

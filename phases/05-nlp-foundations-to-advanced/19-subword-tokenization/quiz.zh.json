@@ -1,0 +1,102 @@
+{
+  "lesson": "19-subword-tokenization",
+  "title": "Subword Tokenization：BPE、WordPiece、Unigram、SentencePiece",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "相比 word-level vocabularies，subword tokenization 带来了什么？",
+      "options": [
+        "稀有词会拆成已知 subword pieces，在词表大小受控的同时消除 OOV",
+        "更小的模型",
+        "更快的训练",
+        "更好的 embeddings"
+      ],
+      "correct": 0,
+      "explanation": "Subword tokens 通过拆分覆盖任意输入，去掉 word-level vocab 的 OOV 问题。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 GPT-2 使用 byte-level BPE，而不是 character-level BPE？",
+      "options": [
+        "Transformer 要求如此",
+        "Byte BPE 不需要 merges",
+        "256-byte 基础词表覆盖任何 UTF-8 输入，保证没有 [UNK] tokens",
+        "Bytes 更小"
+      ],
+      "correct": 2,
+      "explanation": "Byte-level BPE 从 256 个 byte 出发，因此任何输入都能编码，不会 OOV。"
+    },
+    {
+      "stage": "check",
+      "question": "Unigram tokenizer 如何构建词表？",
+      "options": [
+        "贪心 IDF weighting",
+        "从一个大的候选集合开始，迭代剪掉那些移除后最不影响 corpus log-likelihood 的 token",
+        "贪心合并高频 pair",
+        "随机采样"
+      ],
+      "correct": 1,
+      "explanation": "Unigram 会拟合 unigram LM，并迭代移除最没用的 token，直到达到目标词表大小。"
+    },
+    {
+      "stage": "check",
+      "question": "WordPiece 的 merge criterion 与 BPE 有什么区别？",
+      "options": [
+        "WordPiece 使用 bytes",
+        "WordPiece 是 unsupervised",
+        "WordPiece 合并能最大化训练语料 likelihood 的 pair，而 BPE 合并最频繁的 pair",
+        "WordPiece 跳过 merges"
+      ],
+      "correct": 2,
+      "explanation": "WordPiece 按 likelihood 选择 merge；BPE 按原始频次选择。"
+    },
+    {
+      "stage": "check",
+      "question": "哪个工具可以直接在原始多语言 Unicode 文本上训练 tokenizer？",
+      "options": [
+        "spaCy",
+        "tiktoken",
+        "tokenizers-lite",
+        "SentencePiece（把空白编码为特殊标记，并训练 BPE 或 Unigram）"
+      ],
+      "correct": 3,
+      "explanation": "SentencePiece 能在未预分词的原始文本上训练 BPE/Unigram；tiktoken 只负责编码。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么生产 CI 必须对部署的 tokenizer.json 做 hash-check？",
+      "options": [
+        "Tokenizer drift 会产生与模型训练时不同的 token IDs，悄悄污染输出",
+        "Hugging Face 要求如此",
+        "为了压缩存储",
+        "它会减小词表"
+      ],
+      "correct": 0,
+      "explanation": "即使很小的 tokenizer 变化也会移动 IDs；hash check 能在影响用户前捕捉 drift。"
+    },
+    {
+      "stage": "post",
+      "question": "一个 emoji 经常占用很多 token 的常见原因是什么？",
+      "options": [
+        "Emoji 是保留符号",
+        "多 codepoint emoji 会编码成多个 UTF-8 bytes；没有专用 token 时，每个 byte 可能成为自己的 subword",
+        "Emoji 以 float 存储",
+        "Emoji 是 stop characters"
+      ],
+      "correct": 1,
+      "explanation": "组合 emoji 会编码成多个 bytes；byte-level tokenizer 可能让一个字形占多个 tokens。"
+    },
+    {
+      "stage": "post",
+      "question": "为新的 monolingual transformer 选择 vocabulary size 时，有什么经验法则？",
+      "options": [
+        "永远 8000",
+        "永远 1M",
+        "1B 参数以下约 32k；1-10B 约 50-100k；多语言或 frontier models 约 200k+",
+        "匹配训练语料大小"
+      ],
+      "correct": 2,
+      "explanation": "Vocab size 会随模型规模和语言覆盖增长；这些是社区常用粗略默认值。"
+    }
+  ]
+}

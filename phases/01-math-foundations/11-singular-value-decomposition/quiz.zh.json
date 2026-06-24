@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "相比 eigendecomposition，SVD 有什么优势？",
+      "options": [
+        "SVD 计算总是更快",
+        "SVD 适用于任意形状的任意矩阵，而 eigendecomposition 需要方阵且具备完整特征向量组",
+        "SVD 产生的输出矩阵更小",
+        "SVD 不需要数值计算"
+      ],
+      "correct": 1,
+      "explanation": "Eigendecomposition 只适用于拥有 n 个线性无关特征向量的方阵。SVD 可以把任意 m x n 矩阵分解为 U * Sigma * V^T，对形状和秩都没有限制。"
+    },
+    {
+      "stage": "pre",
+      "question": "low-rank approximation 是什么意思？",
+      "options": [
+        "从矩阵中删除数值较低的行",
+        "只保留矩阵最重要的成分，用一个独立方向更少的简单矩阵来近似它",
+        "把矩阵转换为更低精度的数据类型",
+        "按大小对矩阵的行排序"
+      ],
+      "correct": 1,
+      "explanation": "rank-k approximation 只保留前 k 个奇异值及其向量，丢弃其余部分。Eckart-Young theorem 证明这是该秩下可能得到的最佳近似。"
+    },
+    {
+      "stage": "post",
+      "question": "在 SVD A = U * Sigma * V^T 中，每个因子分别代表什么几何操作？",
+      "options": [
+        "U 缩放，Sigma 旋转，V^T 平移",
+        "V^T 在输入空间中旋转，Sigma 沿主轴缩放，U 旋转到输出空间",
+        "U 压缩，Sigma 扩展，V^T 归一化",
+        "三个因子都执行同一种操作：旋转"
+      ],
+      "correct": 1,
+      "explanation": "SVD 揭示每个矩阵都在执行三步操作：(1) V^T 旋转输入，使其对齐主方向；(2) Sigma 沿各轴拉伸或压缩；(3) U 把结果旋转到输出空间。也就是旋转、缩放、再旋转。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 sklearn 用 SVD 实现 PCA，而不是对协方差矩阵做 eigendecomposition？",
+      "options": [
+        "SVD 会产生不同结果，并且对 ML 更准确",
+        "SVD 可以直接作用在数据矩阵上，不必构造协方差矩阵，避免把条件数平方，从而提升数值稳定性",
+        "SVD 更容易在 GPU 上并行化",
+        "SVD 不需要对数据中心化"
+      ],
+      "correct": 1,
+      "explanation": "构造 A^T*A 会把奇异值（以及条件数）平方。如果 A 的奇异值是 [1000, 0.001]，A^T*A 的特征值就是 [10^6, 10^-6]，会损失 6 位精度。SVD 直接处理 A，避免这个问题。"
+    },
+    {
+      "stage": "post",
+      "question": "truncated SVD 如何帮助推荐系统预测缺失评分？",
+      "options": [
+        "用平均评分填补缺失项",
+        "把评分矩阵分解成潜在用户画像和电影画像；用户画像与电影画像的点积预测缺失评分",
+        "把相似用户聚类，并复制他们的评分",
+        "在已观察评分上训练一个神经网络"
+      ],
+      "correct": 1,
+      "explanation": "SVD 会把评分矩阵分解成用户画像 (U)、潜在因子重要性 (Sigma) 和电影画像 (V^T)。低秩重构会基于解释用户偏好的潜在因子（题材、年代、风格等）填补缺失项。"
+    }
+  ]
+}

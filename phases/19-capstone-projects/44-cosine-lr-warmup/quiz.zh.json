@@ -1,0 +1,78 @@
+{
+  "lesson": "44-cosine-lr-warmup",
+  "title": "带线性 Warmup 的余弦 LR",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 cosine-with-warmup schedule 从 0 开始，而不是从 lr_max 开始？",
+      "options": [
+        "因为 lr_max 在 step zero 是非法的",
+        "前一千次更新噪声很大；从 0 线性爬升到 lr_max，可以在运行估计稳定前给 optimizer 一个较小的有效步长",
+        "因为 Adam 要求这样",
+        "只是传统做法"
+      ],
+      "correct": 1,
+      "explanation": "Warmup 会让脆弱的早期更新保持较小；否则模型要么发散，要么进入平台期。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 schedule 要实现为一个关于 step 的单一函数，而不是三个拼接片段？",
+      "options": [
+        "单一函数更短",
+        "拼接的 schedule 第一次修改 lr_max 时就容易丢掉某个边界；单一函数计算同一个 closed-form 表达式，并保持 warmup 和 total endpoint 处连续",
+        "linter 要求这样",
+        "没有特别原因"
+      ],
+      "correct": 1,
+      "explanation": "lr(warmup_steps) 和 lr(total_steps) 处的连续性来自 closed form。"
+    },
+    {
+      "stage": "check",
+      "question": "在这个 schedule 中，当 step > total_steps 时会发生什么？",
+      "options": [
+        "抛出异常",
+        "固定在 lr_min；schedule 不做外推，需要延长训练的 trainer 必须显式修改 total_steps",
+        "返回 nan",
+        "绕回开头"
+      ],
+      "correct": 1,
+      "explanation": "固定的下限能让超出步数的 trainer 处在一个有文档说明的状态，而不是崩溃。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么要在 learning rate 旁边记录 gradient L2 norm？",
+      "options": [
+        "看起来更漂亮",
+        "norm 是训练健康度的另一半：发散的 run 会在 loss 之前出现 norm spike；过激的 peak 会表现为 warmup 后 norm 仍然很高",
+        "Adam 要求这样",
+        "传统做法"
+      ],
+      "correct": 1,
+      "explanation": "一起记录可以让病态 schedule 在运行时暴露出来，而不是事后才发现。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么生产中要把 warmup_steps 配置成 total_steps 的一个比例？",
+      "options": [
+        "比例更整洁",
+        "适合 20k-step run 的固定 warmup 次数，在 200M-step run 中几乎等于没有 warmup；比例（典型为 1-3 percent）会随训练时长缩放",
+        "只是随机偏好",
+        "硬件要求"
+      ],
+      "correct": 1,
+      "explanation": "绝对 warmup 次数在不同训练时长尺度上会表现失常。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么生产中通常会使用非零 lr_min？",
+      "options": [
+        "Adam 要求非零",
+        "接近 lr_max 10 percent 的下限，可以让 optimizer 在长尾阶段继续学习；lr_min 为 0 会得到一条看起来不错、但模型还没训练完的曲线",
+        "为了数值稳定性",
+        "为了向后兼容"
+      ],
+      "correct": 1,
+      "explanation": "schedule 的尾部正是后期细化发生的地方；把它降到零会浪费这部分信号。"
+    }
+  ]
+}

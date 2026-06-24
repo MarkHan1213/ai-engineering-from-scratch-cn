@@ -1,0 +1,62 @@
+[
+  {
+    "question": "为什么 neural network debugging 比传统软件 debugging 更难？",
+    "options": [
+      "神经网络使用不同的编程语言",
+      "网络可能在没有任何错误消息或崩溃的情况下产生错误输出，也就是代码能跑，但结果静默错误",
+      "神经网络无法测试",
+      "没有神经网络 debugging tools"
+    ],
+    "correct": 1,
+    "explanation": "传统 bug 通常会崩溃或抛出异常。神经网络 bug 会产生一个看似正常但错误的数值，例如 loss 不下降、accuracy 卡住，或输出细微错误。没有错误消息告诉你哪里错了。",
+    "stage": "pre"
+  },
+  {
+    "question": "overfit one batch debugging technique 是什么？",
+    "options": [
+      "在完整数据集上训练直到 overfit",
+      "在一个很小 batch 上训练，直到 loss 接近零，用来验证模型至少能记住少量样本",
+      "使用非常大的 batch size",
+      "overfit validation set"
+    ],
+    "correct": 1,
+    "explanation": "如果模型不能把一个 tiny batch（例如 4-8 个样本）记到 near-zero loss，就说明有根本问题：architecture 错、loss function 坏了，或 training loop 不正确。这是最先应该运行的诊断。",
+    "stage": "pre"
+  },
+  {
+    "question": "训练几步后 loss 变成 NaN。最可能的原因是什么？",
+    "options": [
+      "数据集太小",
+      "Exploding gradients 或数值 overflow，常见原因是 learning rate 太高或缺少 gradient clipping",
+      "模型参数太少",
+      "activation function 错了"
+    ],
+    "correct": 1,
+    "explanation": "NaN loss 通常来自数值 overflow：gradients 爆炸、weights 无界增长，log(0) 或 exp(1000) 等操作产生 infinity/NaN。降低 learning rate 或加入 gradient clipping。",
+    "stage": "post"
+  },
+  {
+    "question": "training loss 下降，但 validation loss 从一开始就保持不变。这说明什么？",
+    "options": [
+      "模型正在 overfitting",
+      "模型在学习训练数据模式，但这些模式无法泛化；很可能是 data pipeline 问题（train/val data mismatch）或严重 overfitting",
+      "learning rate 太低",
+      "模型需要更多 layers"
+    ],
+    "correct": 1,
+    "explanation": "如果 validation loss 从不改善，模型要么是在记忆训练噪声（overfitting），要么存在 data pipeline bug，使 train 和 validation distributions 根本不同。",
+    "stage": "post"
+  },
+  {
+    "question": "当 loss curve 完全平坦（loss 根本不下降）时，应该先检查什么？",
+    "options": [
+      "尝试不同 architecture",
+      "确认 gradients 非零、learning rate 足够高，并且 loss function 确实依赖模型预测",
+      "添加更多训练数据",
+      "切换到不同 optimizer"
+    ],
+    "correct": 1,
+    "explanation": "loss 平坦表示模型没有更新。常见原因包括 zero gradients（dead neurons、detached tensors）、learning rate 太小，或 loss function 没有把 gradients 传回模型，例如在 .backward() 前使用了 .item()。",
+    "stage": "post"
+  }
+]

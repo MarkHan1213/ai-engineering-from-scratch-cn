@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "概率质量函数（PMF）和概率密度函数（PDF）有什么区别？",
+      "options": [
+        "PMF 用于连续变量，PDF 用于离散变量",
+        "PMF 给出离散结果的精确概率；PDF 给出连续变量的密度，必须在区间上积分才能得到概率",
+        "没有区别，只是同一概念的不同名称",
+        "PMF 总和为 0.5，PDF 积分为 1"
+      ],
+      "correct": 1,
+      "explanation": "对离散变量，PMF 直接给出 P(X=k)。对连续变量，PDF f(x) 是密度，P(a<=X<=b) 需要把 f(x) 从 a 到 b 积分。单点处的密度不是概率。"
+    },
+    {
+      "stage": "pre",
+      "question": "中心极限定理说明了什么？",
+      "options": [
+        "所有数据都服从正态分布",
+        "许多独立随机样本的均值会收敛到正态分布，无论原始分布是什么",
+        "大数据集总是低方差",
+        "随着样本量增大，稀有事件的概率会下降"
+      ],
+      "correct": 1,
+      "explanation": "CLT 表明，许多独立随机变量的平均值会接近 Gaussian，不管原始分布长什么样。这解释了为什么正态分布无处不在。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 softmax 在取指数前要减去最大 logit（即 softmax trick）？",
+      "options": [
+        "为了让所有概率相等",
+        "为了避免对大数取指数导致数值溢出，同时保持数学结果完全相同",
+        "为了把 logits 归一化为均值为零",
+        "为了减少指数运算次数，从而加速计算"
+      ],
+      "correct": 1,
+      "explanation": "exp(100) 会溢出成 infinity。减去 max(logits) 后，最大值被平移到 0，exp(0)=1 是安全的。这个平移会在归一化中抵消，因此概率完全相同。"
+    },
+    {
+      "stage": "post",
+      "question": "分类中的 cross-entropy loss 可以化简为 -log(q(true_class))。直观上这是什么意思？",
+      "options": [
+        "把预测概率乘以真实标签",
+        "根据模型给正确类别的预测概率有多低来惩罚模型；预测越低，损失越高",
+        "对所有类别的 log 概率求平均",
+        "计算真实分布的熵"
+      ],
+      "correct": 1,
+      "explanation": "如果模型给正确类别预测 0.9，loss = -log(0.9) = 0.105，较低。如果它预测 0.01，loss = -log(0.01) = 4.6，较高。这个损失会惩罚对正确答案缺乏信心的模型。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么语言模型使用 log probabilities，而不是原始概率？",
+      "options": [
+        "log probabilities 更容易可视化理解",
+        "许多小概率相乘会数值下溢到零；log probabilities 把乘积变成求和，从而避免这个问题",
+        "transformer 架构要求使用 log probabilities",
+        "原始概率无法表示小于 0.01 的值"
+      ],
+      "correct": 1,
+      "explanation": "P(sentence) = P(word1) * P(word2) * ... 会很快在 float64 中下溢为 0.0。Log P(sentence) = log P(word1) + log P(word2) + ... 会保持在有限范围内，乘积变成了求和。"
+    }
+  ]
+}

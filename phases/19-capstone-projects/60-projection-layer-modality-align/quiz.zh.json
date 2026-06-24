@@ -1,0 +1,78 @@
+{
+  "lesson": "60-projection-layer-modality-align",
+  "title": "用于 Modality Alignment 的 Projection Layer",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 vision encoder 产出的 tokens 不能被 text decoder 直接消费？",
+      "options": [
+        "它们是不同的文件格式",
+        "image tokens 位于 encoder 在 vision pretraining 中学到的 basis 中，与 decoder 的 word vectors 没有对应关系",
+        "image tokens 被加密了",
+        "image tokens 太短"
+      ],
+      "correct": 1,
+      "explanation": "两个 encoders 会学到相互独立的 bases；需要一个 bridge module 把它们对齐到共享空间。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么实践中 two-layer MLP 就足以做 modality alignment？",
+      "options": [
+        "PyTorch 要求两层",
+        "两个 linear projections 之间的一次非线性弯折（GELU），经验上足以把 CLIP-style features 与 text embeddings 对齐",
+        "one-layer projections 被禁止",
+        "更深 projections 是非法的"
+      ],
+      "correct": 1,
+      "explanation": "LLaVA 及其后继系统使用这种 two-layer MLP，因为非线性可以修正单个 linear 无法处理的曲率不匹配。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么在这个 alignment stage 中要冻结 vision encoder？",
+      "options": [
+        "冻结意味着 wall time 更快",
+        "86M-parameter encoder 无法在小型 mock corpus 上重新训练；只有 1.3M-parameter projection 足够轻，可以在几分钟内完成对齐",
+        "PyTorch 不支持训练 encoder",
+        "encoder 是空的"
+      ],
+      "correct": 1,
+      "explanation": "冻结 encoder 和 text table 会让 projection 成为唯一学习的部分，这就是每个 adapter-based VLM 的操作形态。"
+    },
+    {
+      "stage": "check",
+      "question": "当两个向量方向相反时，cosine_alignment_loss(image_emb, text_emb) 返回什么？",
+      "options": [
+        "0.0",
+        "2.0",
+        "1.0",
+        "Infinity"
+      ],
+      "correct": 1,
+      "explanation": "loss 是 1 - cos(angle)。反平行向量的 cos = -1，所以 loss 是 1 - (-1) = 2.0。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么要用 CLS pooling 从 197 个 tokens 生成单个 image-level vector？",
+      "options": [
+        "PyTorch 会自动 sum tokens",
+        "captions 是每个 sample 一个 vector，所以 image 侧也需要一个 vector；CLS token 是 encoder 内置的图像摘要",
+        "它节省磁盘空间",
+        "patch tokens 没被使用"
+      ],
+      "correct": 1,
+      "explanation": "alignment 是一个 image vector 对一个 caption vector；CLS pooling 不增加参数就能产生这个 image vector。"
+    },
+    {
+      "stage": "post",
+      "question": "哪个生产系统与 lesson 60 的模式最直接对应？",
+      "options": [
+        "PaLM",
+        "LLaVA 1.5：冻结 vision encoder、冻结 LLM，只训练 two-layer MLP projection",
+        "AlphaFold",
+        "Stable Diffusion"
+      ],
+      "correct": 1,
+      "explanation": "LLaVA 的 stage-one training 正是这样：冻结 encoder 和 LM，只把 two-layer MLP bridge 作为唯一可训练部分。"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "lesson": "01-terminal-native-coding-agent",
+  "title": "Capstone 01：Terminal-Native Coding Agent",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "2026 年的 terminal coding agent 共享哪种循环形态？",
+      "options": [
+        "Plan, act, observe, recover",
+        "Encode, decode, sample, stream",
+        "Train, evaluate, deploy, monitor",
+        "Fetch, embed, rank, synthesize"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 harness 要在 E2B 或 Daytona sandbox 中运行每个任务？",
+      "options": [
+        "把文件系统和工具执行与 host 隔离开来，使 worktree 能在完成后被清理",
+        "绕过 model-provider rate limit",
+        "在冷缓存上 benchmark token throughput",
+        "为 agent loop 启用 GPU 访问"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "哪个内置 hook 最适合在破坏性 shell 命令执行前阻断它们？",
+      "options": [
+        "PreToolUse",
+        "SessionStart",
+        "Stop",
+        "PostToolUse"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "capstone 把每个 tool result 限制在约 4k token。它主要防止哪种失败模式？",
+      "options": [
+        "通过恶意 shell metacharacter 逃逸 sandbox",
+        "工具返回大段 dump 时造成 context poisoning 和失控成本",
+        "恢复 session 时 plan state 过期",
+        "模型对 tool-call trace 过拟合"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "PreCompact hook 在 150k-token 标记处做什么？",
+      "options": [
+        "取消运行并退还用户预算",
+        "把较早的 turn 总结成 prior-state block，使 plan 和新 observation 仍能放进上下文",
+        "force-push 当前分支以备份进度",
+        "把底层模型切换为更小的 draft model"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "这个 capstone 在 30-issue SWE-bench Pro 子集上与哪个 baseline 比较 harness？",
+      "options": [
+        "OpenCode",
+        "mini-swe-agent",
+        "Live-SWE-agent",
+        "Aider"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "交付物要衡量哪组指标？",
+      "options": [
+        "WER、MOS 和 first-audio-out",
+        "Perplexity、BLEU 和 ROUGE",
+        "pass@1、turns-per-task 和 dollar-per-task",
+        "MRR@10 和 nDCG@10"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

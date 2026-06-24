@@ -1,0 +1,37 @@
+[
+  {
+    "question": "为什么 MMLU 这类 benchmarks 对比较 frontier models 变得不那么有用？",
+    "options": ["它们测试了错误科目", "Frontier models 已经在 MMLU 上饱和（86-89%），leaderboard 被压缩到差异接近统计噪声的范围", "MMLU 是为小模型设计的", "问题太简单"],
+    "correct": 1,
+    "explanation": "当 GPT-4、Claude 3 和 Llama 3 都在 MMLU 上得到 86-89% 时，1 个点的差异并不显著。这个 benchmark 已无法区分模型，却仍主导 leaderboard 文化。",
+    "stage": "pre"
+  },
+  {
+    "question": "LLM evaluation 语境中的 Goodhart's Law 是什么？",
+    "options": ["关于 model scaling 的定律", "当一个 measure 变成 target，它就不再是好的 measure；模型和团队会优化 benchmark，而不是实际能力", "关于 learning rate schedules 的规则", "关于 attention mechanisms 的定理"],
+    "correct": 1,
+    "explanation": "实验室会优化 benchmark scores（data contamination、benchmark-specific prompting）。分数上升，但真实世界能力不一定提升。你自己的 task-specific eval 才是可靠度量。",
+    "stage": "pre"
+  },
+  {
+    "question": "什么是 LLM-as-judge evaluation approach？",
+    "options": ["让人类 judge 评估每个回答", "用强 LLM（如 GPT-4）按照 rubrics 给回答打分，以规模化替代昂贵的人类评估", "训练单独分类器用于评估", "让模型评估自己"],
+    "correct": 1,
+    "explanation": "LLM-as-judge 使用能力强的模型按定义好的标准给回答打分。它比人类评估更便宜、更快，但有偏差（如偏好冗长回答）需要校准。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么要构建 custom evaluation suite，而不是依赖 public benchmarks？",
+    "options": ["Public benchmarks 总是错的", "Public benchmarks 测的是通用能力；你的应用有具体要求，只有 custom eval 能衡量", "Custom evals 更容易构建", "Public benchmarks 太贵"],
+    "correct": 1,
+    "explanation": "一个模型 MMLU 90% 仍可能在你的具体任务上失败（例如从你格式的法律文档中抽取日期）。只有包含你的数据、边界情况和成功标准的 custom eval 才衡量真正重要的东西。",
+    "stage": "post"
+  },
+  {
+    "question": "LLM benchmarks 中的 data contamination 是什么？",
+    "options": ["训练数据损坏", "Benchmark questions 出现在模型 pre-training data 中，抬高分数但不反映真实能力", "模型生成错误数据", "Evaluation data 标注错误"],
+    "correct": 1,
+    "explanation": "如果 MMLU 问题出现在训练语料中，模型是在记忆答案，而不是推理答案。这会抬高分数，使 benchmark 比较不可靠。随着训练语料扩大，这个问题越来越严重。",
+    "stage": "post"
+  }
+]

@@ -1,0 +1,78 @@
+{
+  "lesson": "35-gpt-model-assembly",
+  "title": "GPT Model Assembly",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "本课复现的参考 GPT-2 small 配置是什么？",
+      "options": [
+        "vocab 30000、context 512、d_model 512、6 heads、6 layers",
+        "vocab 50257、context 1024、d_model 768、12 heads、12 layers、参数量接近 124 million",
+        "vocab 100000、context 2048、d_model 1024、16 heads、24 layers",
+        "vocab 50000、context 4096、d_model 4096、32 heads、32 layers"
+      ],
+      "correct": 1,
+      "explanation": "GPT-2 small 是 124M parameter 配置；匹配它可以确认 wiring 正确。"
+    },
+    {
+      "stage": "check",
+      "question": "model assembly 中的 weight tying 是什么意思？",
+      "options": [
+        "token embedding 和 LM head 共享完全相同的 parameter tensor；optimizer 更新一份同时用于 lookup 和 output projection 的 matrix",
+        "两个 shape 相同的不同 tensor，每一步都互相复制",
+        "跨 layer 共享 bias term",
+        "attention head 上的约束"
+      ],
+      "correct": 0,
+      "explanation": "设置 lm_head.weight = tok_embed.weight 会共享 storage；复制不会。这样节省 vocab times d_model 个 parameter。"
+    },
+    {
+      "stage": "check",
+      "question": "generation 如何滑动它的 context window？",
+      "options": [
+        "每一步截断到一半 context",
+        "每一步取 running sequence（prompt 加 generated）的最后 context_length 个 token，并把它们喂给模型",
+        "用 0 padding 到最大 context",
+        "每一步都从 prompt 重新开始"
+      ],
+      "correct": 1,
+      "explanation": "当 running sequence 超过 context length 时，sliding window 会丢弃最旧的 token。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 attention output projection 和第二个 MLP linear 的初始化 std 要小于其他部分？",
+      "options": [
+        "节省内存",
+        "二者都直接进入 residual add。把它们的 std 按 1 over sqrt of 2 times num_layers 缩放，可以让 residual stream 在十二层中保持尺度",
+        "dataset 要求这样",
+        "top-k sampling 需要更小权重"
+      ],
+      "correct": 1,
+      "explanation": "没有这种缩放时，residual stream 会随深度增长，并把 final LayerNorm 推入过热状态。"
+    },
+    {
+      "stage": "post",
+      "question": "sampling 时 temperature 做什么？",
+      "options": [
+        "选择 optimizer learning rate",
+        "在 softmax 前除以 logits。T 小于 1 会让分布更尖、更接近 greedy；T 等于 1 保持自然模型分布；T 大于 1 会压平分布",
+        "给 head 加 dropout",
+        "缩放 embedding"
+      ],
+      "correct": 1,
+      "explanation": "temperature 是最简单的旋钮；和 top-k 结合时，它控制 generation 的探索程度。"
+    },
+    {
+      "stage": "post",
+      "question": "top-k filtering 在 sampling 前做什么？",
+      "options": [
+        "选择最低的 k 个 logits",
+        "保留值最高的 k 个 logits，把其余设为 negative infinity，然后只在幸存的 top k token 上 softmax 并 multinomial sampling",
+        "移除所有低于零的 logits",
+        "把 logits cap 到 k"
+      ],
+      "correct": 1,
+      "explanation": "top-k 会在 softmax 前截断长尾；top_k=1 是 greedy，更大的 k 保留更多多样性。"
+    }
+  ]
+}

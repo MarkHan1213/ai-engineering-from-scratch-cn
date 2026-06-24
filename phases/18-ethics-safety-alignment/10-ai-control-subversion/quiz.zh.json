@@ -1,0 +1,78 @@
+{
+  "lesson": "10-ai-control-subversion",
+  "title": "AI Control：即使存在颠覆也要保持安全",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "下面哪一项最准确地概括 alignment 和 AI control 的区别？",
+      "options": [
+        "alignment 问 U 是否可信；control 问我们能否在不信任 U 的情况下安全使用 U",
+        "control 替换 loss function，而 alignment 改变 optimizer",
+        "二者是同义词",
+        "control 关注硬件，alignment 关注软件"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "AI Control threat model 假设了什么？",
+      "options": [
+        "U 是 untrusted strong，T 是 trusted weak，H 是有限的可信人类劳动",
+        "U 和 T 都是对抗性的",
+        "三个资源（U、T、H）都可信",
+        "只有 U 存在"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Trusted Editing 避免了 Untrusted Monitoring 中的哪个关键风险？",
+      "options": [
+        "两个 U 实例可能串通或共享先验，因此协议必须把预算花在抗串通上",
+        "人类无法被审计",
+        "硬件资源争用",
+        "T 无法编辑文本"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在 Greenblatt 等人（ICML 2024）的 code-backdoor 任务上，相比 Untrusted Monitoring，Trusted Editing 达成了什么？",
+      "options": [
+        "它严格更差",
+        "它只在零人类预算下胜出",
+        "二者完全等价",
+        "它严格 Pareto-dominates：在每个安全水平上都有更高 usefulness"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "下面哪一项不是课程列出的 control 三个根本限制之一？",
+      "options": [
+        "trusted weak model 最终会落后于 U",
+        "control 会顺带产生 aligned model",
+        "人类无法按规模扩展",
+        "如果 U 能操纵 T 或推理 H 的审计分布，control 在更高能力水平下可能失败"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Control Safety Case 要论证什么？",
+      "options": [
+        "T 比 U 更有能力",
+        "在关于 U 的最坏情况假设下，部署协议把不可接受结果的概率限制在界内",
+        "U 是可信的",
+        "模型通过了一次人工 jailbreak 测试"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

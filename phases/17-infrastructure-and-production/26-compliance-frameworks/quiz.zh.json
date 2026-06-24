@@ -1,0 +1,78 @@
+{
+  "lesson": "26-compliance-frameworks",
+  "title": "合规：SOC 2、HIPAA、GDPR、PCI-DSS、EU AI Act、ISO 42001",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "EU AI Act 对 high-risk systems 的 enforcement 从什么时候开始？",
+      "options": [
+        "February 2, 2025",
+        "August 2, 2026",
+        "2024 年已完全执行",
+        "January 1, 2030"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "EU AI Act 定义了哪种 two-tier fine ceiling？",
+      "options": [
+        "任何违规最多统一 €1M",
+        "任何违规最多 €100K",
+        "high-risk-system obligations（Art. 99(4)）最高 €15M 或全球年营业额 3%；prohibited AI practices（Art. 99(3)）最高 €35M 或 7%",
+        "没有经济处罚，只有 takedown orders"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 post-processing PII cleanup 不是站得住脚的 GDPR posture？",
+      "options": [
+        "它在规模化时太慢",
+        "GDPR 完全禁止 redaction",
+        "post-processing 与实时处理相同",
+        "模型已经看到了数据，因此 defensible 2026 标准是在 LLM call 前做 real-time inference-layer redaction"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "SOC 2 Type I 和 Type II 的实际区别是什么？",
+      "options": [
+        "Type I 要求 HIPAA BAA",
+        "Type I 比 Type II 更严格",
+        "Type I 证明 controls 已设计并文档化；Type II 证明 controls 在 6-12 个月内有效运行",
+        "Type II 只适用于 startups"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "cross-framework control mapping 旨在交付什么？",
+      "options": [
+        "一套 control policy 满足多个 framework requirements（例如 access logging 映射到 ISO 27001 A.5.15-5.18、GDPR Art. 32、HIPAA §164.312(a)）",
+        "消除 audits",
+        "用 ISO 42001 替代所有 frameworks",
+        "每个 framework 使用更多不同 controls"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程对 HIPAA + LLM workloads 的建议是什么？",
+      "options": [
+        "HIPAA 不适用于 LLMs",
+        "没有签署 BAA 时，绝不要把 PHI 发给外部 AI service；三大 hyperscalers 和主要 LLM API providers 都提供 BAAs",
+        "只能使用 on-prem models，永远不能 managed",
+        "可以把 PHI 发给任何 provider；BAA 可选"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

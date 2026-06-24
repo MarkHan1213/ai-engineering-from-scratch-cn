@@ -1,0 +1,90 @@
+{
+  "lesson": "17-personal-ai-tutor",
+  "title": "Capstone 17：Personal AI Tutor（自适应、多模态、带记忆）",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "当学习者直接索要答案时，Socratic tutor policy 会怎么做？",
+      "options": [
+        "提出一个引导性问题，把学习者 scaffold 到答案",
+        "记录请求然后沉默",
+        "立即给出答案并继续",
+        "切换到另一个 concept node"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "curriculum graph 编码了什么结构？",
+      "options": [
+        "带 prerequisite edge 的概念有向图，并关联到 OER content",
+        "主题的随机 shuffle",
+        "无关概念的扁平列表",
+        "只有最近学习过的 node"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "learner model 在每次交互后更新什么？",
+      "options": [
+        "base LLM 的权重",
+        "COPPA retention policy",
+        "curriculum graph schema",
+        "通过 Bayesian knowledge tracing 或类似变体更新每个概念的 mastery probability"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "memory 如何拆分为 episodic store 和 semantic store？",
+      "options": [
+        "episodic 保存每次交互；semantic 保存从 episodic 提升出来的压缩错误和偏好",
+        "二者是同一数据的副本",
+        "episodic 给家长用；semantic 给学习者用",
+        "episodic 保存 embedding；semantic 保存原始音频"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "哪项约束塑造了 K-12 学习者的 memory retention？",
+      "options": [
+        "基于 model context length 的 retention",
+        "永久保留且不删除",
+        "只有 GDPR",
+        "COPPA-aware retention：在定义好的窗口后自动删除，并提供家长访问"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "用于 gate 交付物的 efficacy study 结构是什么？",
+      "options": [
+        "匿名互联网问卷",
+        "30 秒 AB test",
+        "10 名学习者进行两周 pre-test 和 post-test，并与非自适应 baseline cohort 对比",
+        "一名学习者的一次一小时 session"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "tutor 向学习者暴露哪些多模态输入路径？",
+      "options": [
+        "只有文本",
+        "只通过自定义 OCR model 处理照片",
+        "只有语音，没有文本或照片",
+        "键入文本、通过 LiveKit + Whisper 的语音，以及通过 dots.ocr 或 PaliGemma 2 的拍照数学题"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

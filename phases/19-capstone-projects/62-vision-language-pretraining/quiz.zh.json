@@ -1,0 +1,78 @@
+{
+  "lesson": "62-vision-language-pretraining",
+  "title": "Vision-Language Pretraining",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "把 InfoNCE 和 LM loss 结合到一个模型中，会训练出哪两种不同能力？",
+      "options": [
+        "速度和准确率",
+        "排序（为 caption 找到正确 image）和生成（为 image 写 caption）",
+        "压缩和解压",
+        "Tokenization 和 detokenization"
+      ],
+      "correct": 1,
+      "explanation": "InfoNCE 负责排序；LM loss 负责生成。CoCa、BLIP 等系统会在一次训练 pass 中结合两者。"
+    },
+    {
+      "stage": "pre",
+      "question": "在 batch size 为 N 的 paired InfoNCE 中，会形成多少 positive pairs 和 negative pairs？",
+      "options": [
+        "1 个 positive 和 N 个 negatives",
+        "similarity matrix 对角线上的 N 个 positives，以及 off-diagonal 的 N*(N-1) 个 negatives",
+        "N 个 positives 和 N 个 negatives",
+        "N^2 个 positives"
+      ],
+      "correct": 1,
+      "explanation": "N 个匹配 pair 位于对角线上；所有非对角位置都是 negative。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 contrastive temperature 通常是 learned parameter？",
+      "options": [
+        "PyTorch 要求这样",
+        "手动调参很脆弱；让 tau 学习，可以在训练过程中随着 embedding scale 演化，找到合适的 softmax peakedness",
+        "learned tau 在 GPU 上更快",
+        "它可以避免使用 Adam"
+      ],
+      "correct": 1,
+      "explanation": "CLIP 引入 learned log-tau，让 contrastive softmax 在 embedding norms 增长时仍处在有用区间。"
+    },
+    {
+      "stage": "check",
+      "question": "哪些 sub-modules 会从 LM loss 接收 gradient，但不会从 contrastive loss 接收 gradient？",
+      "options": [
+        "vision encoder",
+        "cross-attention decoder",
+        "MLP projector",
+        "text-side encoder"
+      ],
+      "correct": 1,
+      "explanation": "contrastive loss 不会碰 decoder；LM loss 不会碰 text-side mean-pool encoder。"
+    },
+    {
+      "stage": "check",
+      "question": "LM cross-entropy 中的 ignore_index=PAD_ID 实现了什么？",
+      "options": [
+        "加速 loss",
+        "把 padding positions 从 loss 中 mask 掉，避免模型因为 caption 结束后的 token 预测而被惩罚",
+        "加密 pad tokens",
+        "重新排序 tokens"
+      ],
+      "correct": 1,
+      "explanation": "padding positions 没有信号；忽略它们可以防止 loss 学着预测 pad。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么在 synthetic data 上跑 50-step demo，就足以认为这节课完成？",
+      "options": [
+        "模型在 50 steps 时达到 state of the art",
+        "demo 证明 gradient plumbing 端到端可用；生产训练形态完全相同，只是会在真实数据上运行数百万步",
+        "50 steps 是支持的最大值",
+        "真实数据会改变架构"
+      ],
+      "correct": 1,
+      "explanation": "demo 展示的动态（两个 losses 都下降、没有 NaN、tau 稳定）与十亿图像级 run 会展示的动态相同，只是规模更大。"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "lesson": "40-multi-session-handoff",
+  "title": "Multi-Session Handoff",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "handoff packet 中哪个字段最承重？",
+      "options": [
+        "summary",
+        "next_action（没有它，文档只是 status report，而不是 handoff）",
+        "commands_run",
+        "verdict_pointer"
+      ],
+      "correct": 1,
+      "explanation": "除了 next_action 什么都有的 handoff 只是 status report；下一步具体动作才能让下一次 session 有生产力。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 handoffs 应该生成，而不是手写？",
+      "options": [
+        "generator 更快",
+        "手写 handoff 在困难的一天会被跳过；generator 读取 workbench artifacts 并输出 packet，Agent 只需让 workbench 留在可总结状态",
+        "generator 加密更好",
+        "Apache 2.0 要求这样做"
+      ],
+      "correct": 1,
+      "explanation": "自动化能弥合意图与一致性之间的差距。"
+    },
+    {
+      "stage": "check",
+      "question": "packet 以哪两种形式交付？",
+      "options": [
+        "PDF 和 PNG",
+        "handoff.md（人类可读）和 handoff.json（机器可读，二者来自同一 source artifacts；分歧时 JSON 优先）",
+        "Email 和 Slack",
+        "YAML 和 TOML"
+      ],
+      "correct": 1,
+      "explanation": "Markdown 给人读，JSON 给下一个 Agent；二者都由同一个 generator 生成。"
+    },
+    {
+      "stage": "check",
+      "question": "课程如何区分 compaction 和 handoff？",
+      "options": [
+        "它们相同",
+        "compaction 延长一个 session；handoff 干净结束一个 session，并在新鲜上下文中开启下一个。packet 让这个转换便宜",
+        "compaction 付费，handoff 免费",
+        "handoff 需要 GPU"
+      ],
+      "correct": 1,
+      "explanation": "Hermes Issue 20372 的思路是：在就地压缩降低质量前写出紧凑 handoff，然后在新 session 中恢复。"
+    },
+    {
+      "stage": "check",
+      "question": "课程建议什么时候 wrap up 一个 session？",
+      "options": [
+        "到 100% context 时再慌张处理",
+        "在 context budget 到 50-75% 之前、上下文仍完整时；压缩伪影污染 state 前写出来成本最低",
+        "只在午夜",
+        "只在 merge 后"
+      ],
+      "correct": 1,
+      "explanation": "提前 wrap up 可以保持 generator 输入干净。"
+    },
+    {
+      "stage": "post",
+      "question": "课程建议在 packet 中如何裁剪 feedback log？",
+      "options": [
+        "只保留前 K 条",
+        "保留最后 K 条，以及所有 non-zero exit 的条目，让 packet 保持小，同时保留失败历史",
+        "随机 N 条",
+        "只保留最新一条"
+      ],
+      "correct": 1,
+      "explanation": "非对称裁剪：失败必须保留；尾部琐碎信息保留成本很低。"
+    },
+    {
+      "stage": "post",
+      "question": "哪些 metadata 能支撑 multi-agent sessions 之间的协作？",
+      "options": [
+        "最高机密加密",
+        "branch、last_known_good_commit 和 status（active | superseded | archived）；每个 branch 和 topic 只保留一个 active handoff",
+        "共享 Slack channel",
+        "中心队列"
+      ],
+      "correct": 1,
+      "explanation": "stale handoffs 是主要的多 Agent 失败；status + branch + LKG 能让 active set 保持小。"
+    }
+  ]
+}

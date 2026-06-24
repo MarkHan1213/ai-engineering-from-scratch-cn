@@ -1,0 +1,78 @@
+{
+  "lesson": "30-bpe-tokenizer-from-scratch",
+  "title": "从零实现 BPE Tokenizer",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 byte-level BPE tokenizer 从 256-symbol alphabet 开始？",
+      "options": [
+        "它保证在学到任何 merge 之前，任意 UTF-8 输入都能表示",
+        "它是支持英语的最小 alphabet",
+        "它匹配大多数加速器上的 GPU warp size",
+        "它移除了存储 merge table 的需求"
+      ],
+      "correct": 0,
+      "explanation": "256 个 raw byte id 覆盖所有可能的 UTF-8 输入。永远不需要 unknown token，因为任何输入都能表示成 byte 序列。"
+    },
+    {
+      "stage": "check",
+      "question": "每一步 BPE training 做什么？",
+      "options": [
+        "随机拆分一个词，并给它分配新 id",
+        "统计语料中的相邻 symbol pair，并 merge 最频繁的一对",
+        "移除最不常见 id，从而减少 vocabulary",
+        "训练一个小神经网络给 subword 打分"
+      ],
+      "correct": 1,
+      "explanation": "每一步都会找到语料中频率最高的相邻 pair，把它 merge 成新 symbol，并记录这次 merge。"
+    },
+    {
+      "stage": "check",
+      "question": "编码新文本时，merge 按什么顺序应用？",
+      "options": [
+        "随机顺序，直到没有可应用 merge",
+        "按输入中的位置从左到右，不考虑训练 rank",
+        "按训练时获得的 rank，最低 rank 最先",
+        "按 pair 的 byte 字母序排序"
+      ],
+      "correct": 2,
+      "explanation": "推理会按学习到的顺序应用 merge。当多个 merge 都可应用时，table 中最早的 merge 获胜。"
+    },
+    {
+      "stage": "check",
+      "question": "当 allow_special 为 False 时，encoder 对 special-token string 的行为是什么？",
+      "options": [
+        "抛出错误",
+        "把字符串映射到 reserved id",
+        "编码该字符串的字面 byte",
+        "静默跳过该字符串"
+      ],
+      "correct": 2,
+      "explanation": "allow_special 关闭时，像 <|endoftext|> 这样的字符串会被视为 raw bytes，并像其他输入一样进入 merge loop。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 decoder 永远不需要 unknown-token id？",
+      "options": [
+        "每个 learned token 都是两个 known token 的拼接，递归展开直到 single byte",
+        "encoder 在 decoding 前剥离 unknown token",
+        "模型在 sampling 时拒绝 unknown id",
+        "decoder 对 unknown id 总是返回空字符串"
+      ],
+      "correct": 0,
+      "explanation": "每个 id 要么解析为 raw byte，要么解析为两个已知 id。递归展开总会终止在 byte 上，然后 byte 解码为 UTF-8。"
+    },
+    {
+      "stage": "post",
+      "question": "随着目标 vocabulary 增大，固定句子的 encoded length 会发生什么？",
+      "options": [
+        "随 vocabulary size 线性增加",
+        "保持不变，因为每个 id 编码一个 byte",
+        "通常会下降，因为更大的 vocabulary 覆盖更多 subword",
+        "随机振荡，因为 BPE 是非确定性的"
+      ],
+      "correct": 2,
+      "explanation": "更大的 vocabulary 会学习更多 merge，所以常见 subword 会折叠成单个 id，encoded sequence 会变短。"
+    }
+  ]
+}

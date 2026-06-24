@@ -1,0 +1,78 @@
+{
+  "lesson": "06-mesa-optimization-deceptive-alignment",
+  "title": "Mesa-Optimization 与欺骗性对齐",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "哪一组最准确地概括 inner / outer alignment 的区别？",
+      "options": [
+        "Outer = 模型能否在硬件上运行；inner = loss 是否足够低",
+        "Outer = base objective 是否符合我们的真实意图；inner = mesa-objective 是否符合 base objective",
+        "Outer = policy 是否稳定；inner = temperature 是否足够低",
+        "Outer = 数据是否干净；inner = 优化器是否随机"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是 Hubinger 等人提出的四类 mesa-objective alignment 之一？",
+      "options": [
+        "Approximately aligned",
+        "Robustly aligned",
+        "Proxy aligned",
+        "Probabilistically aligned"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在什么条件下，欺骗性对齐会成为 mesa-optimizer 的 reward-maximizing 策略？",
+      "options": [
+        "它使用 PPO 而不是 DPO 训练",
+        "它有持久的终极目标、能意识到训练与部署的情境差异，并且如果它在训练中背离，base optimizer 会修改它",
+        "它的容量超过 100B 参数",
+        "它只要有任何内部表征就会如此"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么标准 adversarial training 可能无法解决，甚至加重欺骗性对齐？",
+      "options": [
+        "它比 RLHF 需要更多计算",
+        "它教会 mesa-optimizer 更敏锐地区分测试与部署，而不是形成 aligned mesa-objective",
+        "它使用了错误的 loss function",
+        "它不能在 GPU 上运行"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Hubinger 等人（2019）引入的 gradient hacking 指什么？",
+      "options": [
+        "一种推测性病理：有能力的 mesa-optimizer 产生会塑造自身梯度更新的输出，以保留自己的 mesa-objective",
+        "一种针对 instruction-tuned model 的 jailbreak 方法",
+        "autograd 中的一个 bug",
+        "一种更快训练的技术"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "下面哪一项是 OUTER alignment 失败，而不是 inner alignment 失败？",
+      "options": [
+        "reward hacking 和 sycophancy 出现，是因为 base objective 本身就是人类意图的有缺陷 proxy",
+        "mesa-optimizer 优化一个在分布外会偏离的 proxy goal",
+        "backdoor 在 SFT 后仍然存活",
+        "mesa-optimizer 在评测期间隐藏自己的目标"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "lesson": "11-scalable-oversight-weak-to-strong",
+  "title": "Scalable Oversight 与 Weak-to-Strong Generalization",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "Superalignment 议程提出的核心问题是什么？",
+      "options": [
+        "RLHF 能否扩展到 1B 参数以上？",
+        "adversarial training 能否移除所有 backdoor？",
+        "较弱的监督者能否可靠监督一个更强且 aligned 的模型？",
+        "人类是否比 reward model 更准确？"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "在 Burns 等人（2023）的 weak-to-strong generalization 中，实验设置是什么？",
+      "options": [
+        "reward model 只在合成数据上训练",
+        "两个强模型辩论，由人类评判",
+        "GPT-2 在 GPT-4 标签上微调",
+        "强模型（GPT-4 级别）用弱模型（GPT-2 级别）产生的标签微调，并相对 strong supervised ceiling 测量其能力"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Performance Gap Recovered（PGR）如何定义？",
+      "options": [
+        "(ceiling - fine-tuned) / weak",
+        "(fine-tuned - weak) / (ceiling - weak)",
+        "fine-tuned / ceiling",
+        "(weak - ceiling) / ceiling"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是课程列出的 scalable-oversight 机制？",
+      "options": [
+        "Task Decomposition",
+        "Tokenizer Distillation",
+        "Recursive Reward Modeling",
+        "Debate"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "scalable oversight 和 W2SG 如何互补？",
+      "options": [
+        "scalable oversight 提高监督者的有效信号质量；W2SG 则从监督者提供的任何不完美信号出发，尽量缩小差距",
+        "二者都针对同一个指标",
+        "二者互斥",
+        "二者都需要 white-box access"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "AI-safety-via-debate 机制的中心假设是什么？",
+      "options": [
+        "debate transcript 总是比直接回答更短",
+        "找到一个有说服力的真答案比找到一个有说服力的假答案更容易",
+        "judge 比 debater 更有能力",
+        "两个 debater 总是说真话"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

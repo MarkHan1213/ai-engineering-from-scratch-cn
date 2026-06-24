@@ -1,0 +1,78 @@
+{
+  "lesson": "83-prompt-injection-detector",
+  "title": "Capstone 83：Prompt Injection Detector",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "detector 会为一个 prompt 返回什么？",
+      "options": [
+        "只返回一个 boolean block decision",
+        "rulebase 中每条 rule 的列表",
+        "一个 category 和一个 [0, 1] 内的 confidence",
+        "model 的完整 system prompt"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 normalize 要在 substring 和 regex rules 之前运行？",
+      "options": [
+        "因为 regex 比 substring 慢",
+        "因为 normalize 会降低磁盘上的文件大小",
+        "因为 normalize 会把 base64、rot13 和 zero-width insertions 等隐藏 tokens 暴露给下游 rules",
+        "因为 standard library 禁止在原始文本上运行 rules"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "对于 category C，true positives = 6、false positives = 2，precision 是多少？",
+      "options": [
+        "0.50",
+        "0.60",
+        "0.75",
+        "0.86"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 benign prompt corpus 是 evaluation 的一部分？",
+      "options": [
+        "为了抬高 accuracy 数字",
+        "为了测量 safe text 上的 false-positive rate，并捕捉过宽的 rules",
+        "为了预训练 rules",
+        "为了计算 attacks 上的 recall"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "当没有任何 rule 触发时，analyze method 会做什么？",
+      "options": [
+        "返回 category benign，confidence 0.0",
+        "抛出异常",
+        "返回最近尝试的 rule 的 category",
+        "返回随机 category"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "为什么这节课认为 detector 不是 safety gate 本身？",
+      "options": [
+        "因为 detector 是用 Python 实现的",
+        "因为 detector 只是 gate 会组合的多个信号之一，每个信号都以不同方式权衡 precision 和 recall",
+        "因为 detector 太快，没什么用",
+        "因为 rules 以数据形式存储"
+      ],
+      "correct": 1,
+      "explanation": ""
+    }
+  ]
+}

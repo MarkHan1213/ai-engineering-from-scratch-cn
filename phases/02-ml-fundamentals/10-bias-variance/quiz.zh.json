@@ -1,0 +1,67 @@
+[
+  {
+    "id": "biasvar-pre-1",
+    "stage": "pre",
+    "question": "用线性模型拟合明显弯曲（二次）的关系时，哪个误差成分占主导？",
+    "options": [
+      "Variance：模型随不同训练数据变化太大",
+      "Bias：模型太僵硬，无法捕捉真实的非线性模式",
+      "Irreducible noise：数据噪声太大",
+      "都不是：模型应该完美拟合"
+    ],
+    "correct": 1,
+    "explanation": "线性模型无论看多少数据，都无法捕捉二次曲线。这种来自错误模型假设的系统性误差就是 bias。模型发生了 underfitting。"
+  },
+  {
+    "id": "biasvar-pre-2",
+    "stage": "pre",
+    "question": "expected error 的 bias-variance decomposition 有三项。哪一项不能被任何模型降低？",
+    "options": [
+      "Bias squared",
+      "Variance",
+      "Irreducible noise（sigma squared）",
+      "三项都可以降到零"
+    ],
+    "correct": 2,
+    "explanation": "Irreducible noise 来自数据本身的随机性，例如测量误差或缺失变量。没有模型能预测噪声。Expected error = bias^2 + variance + irreducible noise。"
+  },
+  {
+    "id": "biasvar-post-1",
+    "stage": "post",
+    "question": "给模型加入 L2 regularization 会增加 bias、降低 variance。为什么这有用？",
+    "options": [
+      "它总是同时提升训练和测试 accuracy",
+      "variance 的下降可能超过 bias 的上升，从而降低总误差",
+      "L2 regularization 会消除 irreducible noise",
+      "它让模型训练更快"
+    ],
+    "correct": 1,
+    "explanation": "Regularization 用少量 bias 增加来换取更大的 variance 降低。当模型 overfitting（high variance）时，这种权衡会降低总误差，尽管 bias 会略微上升。"
+  },
+  {
+    "id": "biasvar-post-2",
+    "stage": "post",
+    "question": "一个模型 training error = 2%，test error = 25%。最可能的诊断是什么？",
+    "options": [
+      "High bias（underfitting）：模型太简单",
+      "High variance（overfitting）：模型记住了训练数据，无法泛化",
+      "High irreducible noise：数据噪声太大",
+      "模型校准得很完美"
+    ],
+    "correct": 1,
+    "explanation": "训练误差低、测试误差高且差距很大，说明 high variance（overfitting）。模型拟合了训练集特有的噪声。修复方式包括 regularize、降低复杂度或获取更多数据。"
+  },
+  {
+    "id": "biasvar-post-3",
+    "stage": "post",
+    "question": "你用 50 个不同随机训练子集训练同一模型架构，发现预测结果差异很大。这说明什么？",
+    "options": [
+      "High bias：模型一直错过真实模式",
+      "High variance：模型对具体看到的训练数据很敏感",
+      "High irreducible noise：目标变量是随机的",
+      "learning rate 太高"
+    ],
+    "correct": 1,
+    "explanation": "Variance 衡量模型在不同数据子集上训练后预测会变化多少。不同子集之间预测剧烈变化，就是 high variance 的定义。"
+  }
+]

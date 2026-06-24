@@ -1,0 +1,67 @@
+[
+  {
+    "id": "timeseries-pre-1",
+    "stage": "pre",
+    "question": "为什么 random train/test split 对 time series data 是无效的？",
+    "options": [
+      "随机拆分会让数据集太小",
+      "随机拆分会把未来信息泄漏进 training set，让模型作弊",
+      "time series data 完全不能拆分",
+      "随机拆分只适用于分类问题"
+    ],
+    "correct": 1,
+    "explanation": "随机拆分时，未来数据点可能进入训练集，而过去数据点进入测试集。模型于是用未来信息预测过去，得到虚高的结果。"
+  },
+  {
+    "id": "timeseries-pre-2",
+    "stage": "pre",
+    "question": "time series 是 stationary 意味着什么？",
+    "options": [
+      "数值随时间从不变化",
+      "它的统计性质（均值、方差、自相关）不会随时间变化",
+      "它没有 seasonal patterns",
+      "它总是向上趋势"
+    ],
+    "correct": 1,
+    "explanation": "stationary series 具有恒定的均值、方差和自相关结构。大多数预测方法假设平稳性。非平稳序列通常需要先做 differencing 或 detrending。"
+  },
+  {
+    "id": "timeseries-post-1",
+    "stage": "post",
+    "question": "对 time series 做 differencing 的目的是什么？",
+    "options": [
+      "增加数据点数量",
+      "通过建模相邻值之间的变化来去除趋势，使序列更平稳",
+      "把回归转换成分类",
+      "把数值归一化到 0 和 1 之间"
+    ],
+    "correct": 1,
+    "explanation": "Differencing 会用当前值与前一个值的变化替换每个值：diff[t] = value[t] - value[t-1]。这会去除趋势，使序列更接近平稳。"
+  },
+  {
+    "id": "timeseries-post-2",
+    "stage": "post",
+    "question": "Lag features 会把 time series 转成 supervised learning 问题。预测 y[t] 时，lag-3 feature 是什么？",
+    "options": [
+      "未来 3 个值的平均：(y[t+1] + y[t+2] + y[t+3]) / 3",
+      "3 个时间步之前的值：y[t-3]",
+      "序列的三阶导数",
+      "当前值与未来 3 步值之间的差"
+    ],
+    "correct": 1,
+    "explanation": "lag-3 feature 是 y[t-3]，也就是过去 3 个时间步的值。把过去值作为输入特征，可以让标准 ML 模型（regression、trees）无需专门时序算法也能做 time series prediction。"
+  },
+  {
+    "id": "timeseries-post-3",
+    "stage": "post",
+    "question": "Walk-forward validation 会把时间数据拆成扩展窗口或滑动窗口。为什么它比 K-fold CV 更适合 time series？",
+    "options": [
+      "Walk-forward 计算更快",
+      "Walk-forward 尊重时间顺序，只用过去数据训练、未来数据测试，从而避免 lookahead bias",
+      "K-fold CV 不能用于数值数据",
+      "Walk-forward 使用更多数据训练"
+    ],
+    "correct": 1,
+    "explanation": "Walk-forward validation 总是用过去数据训练、用未来数据测试，模拟真实部署。K-fold CV 会打乱数据，可能用未来预测过去，造成 temporal leakage。"
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "anomaly-pre-1",
+    "stage": "pre",
+    "question": "为什么 anomaly detection 通常被表述为 unsupervised 问题，而不是 classification？",
+    "options": [
+      "anomaly detection 不需要任何数据",
+      "有标签 anomalies 极其稀少，而且新的 anomaly 类型可能不同于过去见过的类型",
+      "supervised classification 总是不够准确",
+      "anomaly detection 只适用于 time series data"
+    ],
+    "correct": 1,
+    "explanation": "Anomalies 很稀少，通常少于数据的 0.1%，因此有标签样本太少，难以训练分类器。而且未来的 anomalies 可能属于从未见过的类型。建模 normal 并标记偏离点可以同时处理这两个问题。"
+  },
+  {
+    "id": "anomaly-pre-2",
+    "stage": "pre",
+    "question": "90F 的温度在夏天正常，但在冬天异常。这是哪种 anomaly？",
+    "options": [
+      "Point anomaly",
+      "Contextual anomaly",
+      "Collective anomaly",
+      "Statistical anomaly"
+    ],
+    "correct": 1,
+    "explanation": "Contextual anomaly 指在给定上下文（时间、地点）下不寻常的值。数值本身在其他上下文可能是正常的。同一个数据点，会因为周围条件不同而有不同解释。"
+  },
+  {
+    "id": "anomaly-post-1",
+    "stage": "post",
+    "question": "Z-score method 会标记距离均值超过 3 个标准差的点。什么时候这种方法会失败？",
+    "options": [
+      "当数据完全服从正态分布时",
+      "当数据是多峰、偏斜，或训练数据中的 outliers 抬高了 mean 和 std 时",
+      "当数据集中恰好有 3 个 anomalies 时",
+      "当特征已标准化时"
+    ],
+    "correct": 1,
+    "explanation": "Z-score 假设数据来自单个 Gaussian distribution。它在多峰数据（多个 clusters）、偏斜分布，以及训练 outliers 改变 mean/std 时会失败，使真正 anomalies 更难检测。"
+  },
+  {
+    "id": "anomaly-post-2",
+    "stage": "post",
+    "question": "Isolation Forest 与基于距离的方法相比，是如何检测 anomalies 的？",
+    "options": [
+      "它使用 neural networks 而不是 trees",
+      "它用随机 split 隔离数据点；anomalies 因为少且不同，通常用更少 split 就能被隔离",
+      "它计算到数据集中每个其他点的距离",
+      "它只适用于文本数据"
+    ],
+    "correct": 1,
+    "explanation": "Isolation Forest 会用树的随机 split 分割数据。Anomalies 因为稀少且不同，往往只需更少 split 就会被隔离到自己的 leaf 中。平均路径长度越短，越异常。"
+  },
+  {
+    "id": "anomaly-post-3",
+    "stage": "post",
+    "question": "你同时构建了 unsupervised anomaly detector 和 supervised fraud classifier。什么时候应该优先使用 unsupervised approach？",
+    "options": [
+      "总是如此，因为 unsupervised 对 anomaly detection 总是更好",
+      "当你需要检测不同于历史有标签样本的新型欺诈模式时",
+      "当你有数百万个有标签欺诈样本时",
+      "当你只关心 precision，而不关心 recall 时"
+    ],
+    "correct": 1,
+    "explanation": "Supervised classifiers 只能抓住训练数据中出现过的欺诈类型。Unsupervised detectors 会标记任何偏离 normal 的行为，因此能捕捉新型欺诈方案。代价是 false positive rate 更高。"
+  }
+]

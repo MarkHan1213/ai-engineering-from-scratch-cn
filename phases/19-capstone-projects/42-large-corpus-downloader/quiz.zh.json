@@ -1,0 +1,78 @@
+{
+  "lesson": "42-large-corpus-downloader",
+  "title": "大型语料下载器",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 downloader 要为每个 shard 保留独立的 .partial.json checkpoint？",
+      "options": [
+        "为了让 cache 目录看起来更整齐",
+        "这样恢复下载时可以在追加之前验证已确认字节的 sha256 前缀，避免静默损坏",
+        "因为 urllib 要求这样做",
+        "为了在 shard 文件移动时保存 URL"
+      ],
+      "correct": 1,
+      "explanation": "checkpoint 会记录 verified_bytes 以及这些字节的 sha256；只有当磁盘上的 hash 匹配时，resume 才会继续。"
+    },
+    {
+      "stage": "check",
+      "question": "LSH band 方案提供了 exact-hash dedup 做不到的什么能力？",
+      "options": [
+        "常数内存使用",
+        "亚线性查找，可以在文档只差几个 token 时标记 Jaccard 相似度很高的近重复项",
+        "无损压缩",
+        "更快的 sha256 计算"
+      ],
+      "correct": 1,
+      "explanation": "MinHash 加 LSH 能抓住 exact-hash dedup 会跳过的改写文本和模板变体。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 checkpoint 要在追加 bytes 之前写入，而不是之后？",
+      "options": [
+        "这样更方便",
+        "如果进程在写入 bytes 和更新 checkpoint 之间崩溃，下一次 resume 会读到落后于文件内容的 checkpoint，并静默重复追加，导致文件损坏",
+        "这样更快",
+        "这样能节省磁盘空间"
+      ],
+      "correct": 1,
+      "explanation": "先写 checkpoint 类似 write-ahead log：崩溃后 verified offset 只会落后于或等于文件内容，不会超前。"
+    },
+    {
+      "stage": "check",
+      "question": "manifest sha256 lock file 的作用是什么？",
+      "options": [
+        "加速读取",
+        "除非 manifest 内容匹配固定 hash，否则下游阶段拒绝启动，从而关闭攻击者只编辑一个文件造成的静默攻击面",
+        "记录日期",
+        "作为 manifest 的备份"
+      ],
+      "correct": 1,
+      "explanation": "固定 manifest hash 会让代码与数据之间的连接变成内容寻址契约。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 dedup 要放在 tokenization 上游，而不是之后？",
+      "options": [
+        "tokenizer 不能读取 JSONL",
+        "Tokenization 成本很高；对同一文档运行两次不会带来 loss 曲线收益，所以先删除重复项一定更便宜",
+        "Tokenizer 会拒绝重复项",
+        "tokenizer 需要先有 vocabulary"
+      ],
+      "correct": 1,
+      "explanation": "Dedup 是第一个能让每个被删除重复文档都节省一次 tokenizer pass 的阶段。"
+    },
+    {
+      "stage": "post",
+      "question": "对被丢弃的重复项做 tombstone，相比静默删除保留了什么？",
+      "options": [
+        "磁盘空间",
+        "重复项与保留项之间的关联，以及即使之后阈值变化也能保留的审计轨迹",
+        "压缩率",
+        "Manifest sha256 稳定性"
+      ],
+      "correct": 1,
+      "explanation": "Tombstone 让未来的处理可以重新审视 dedup 阈值；直接删除会丢失证据。"
+    }
+  ]
+}

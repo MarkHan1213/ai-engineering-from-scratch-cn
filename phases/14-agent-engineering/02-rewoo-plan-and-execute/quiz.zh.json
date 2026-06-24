@@ -1,0 +1,90 @@
+{
+  "lesson": "02-rewoo-plan-and-execute",
+  "title": "ReWOO 与 Plan-and-Execute：解耦规划",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 ReAct 的 prompt 会随着深度呈二次增长？",
+      "options": [
+        "模型每一步都会重新 tokenize 自己",
+        "每一步都携带完整的既有上下文，包括之前所有 thought 和 observation",
+        "工具 schema 会在每次调用时重复",
+        "provider 按字节而不是按 token 收费"
+      ],
+      "correct": 1,
+      "explanation": "ReAct 每一步都会重新包含之前的 thought 和 observation，因此总 prompt 长度会随深度的平方增长。"
+    },
+    {
+      "stage": "pre",
+      "question": "定义 ReWOO 的三种角色是什么？",
+      "options": [
+        "Reader, Writer, Reviewer",
+        "Planner, Workers, Solver",
+        "Actor, Evaluator, Reflector",
+        "Generator, Critic, Optimizer"
+      ],
+      "correct": 1,
+      "explanation": "ReWOO 将系统拆成生成 DAG 的 Planner、获取证据的 Workers，以及组合最终答案的 Solver。"
+    },
+    {
+      "stage": "check",
+      "question": "论文报告 ReWOO 相比 ReAct 在 HotpotQA 上的核心数字是什么？",
+      "options": [
+        "token 约少 5 倍，准确率绝对值 +4",
+        "token 约多 2 倍，准确率 +10",
+        "token 相同，准确率 +1",
+        "token 少 10 倍，准确率 -2"
+      ],
+      "correct": 0,
+      "explanation": "ReWOO 报告在 HotpotQA 上相比 ReAct 约减少 5 倍 token，并带来 +4 的绝对准确率提升。"
+    },
+    {
+      "stage": "check",
+      "question": "ReWOO 计划节点里的 #E1 这类占位符是什么意思？",
+      "options": [
+        "worker 1 返回的错误码",
+        "调度时用上游 worker 节点输出替换的引用",
+        "证据获取的重试计数器",
+        "planner 版本标识"
+      ],
+      "correct": 1,
+      "explanation": "计划节点使用 #E1、#E2 这样的证据引用，执行器会把它们替换为上游 worker 的输出。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 ReWOO 比 ReAct 更容易定位失败？",
+      "options": [
+        "任何错误都会让 worker 终止整次运行",
+        "worker 的错误会变成字符串，Solver 能和原始计划一起看到，所以退化按节点发生，而不是按步骤蔓延",
+        "ReWOO 会把每次失败调用重试最多十次",
+        "Planner 会在每个错误后重新输出全新的 DAG"
+      ],
+      "correct": 1,
+      "explanation": "按节点失败且保留原始计划，让 Solver 可以优雅降级，而不是在错误中途继续推理导致整体跑偏。"
+    },
+    {
+      "stage": "post",
+      "question": "哪类任务形态更适合 Plan-and-Act，而不是普通 ReWOO？",
+      "options": [
+        "两步 factoid 查询",
+        "40 步 Web 或移动端导航轨迹",
+        "单轮分类",
+        "纯算术问题"
+      ],
+      "correct": 1,
+      "explanation": "Plan-and-Act 面向长程（超过 30 步）的 Web 和移动端 Agent；单条 ReAct 轨迹在这类任务中容易失去连贯性。"
+    },
+    {
+      "stage": "post",
+      "question": "ReWOO 的 planner distillation 结果对生产 Agent 暗示了什么？",
+      "options": [
+        "每一步都必须使用 frontier model",
+        "一个小 planner（约 7B）可以匹配大 teacher，因为 planner 从不读取 observation",
+        "低于 7B 参数时规划质量一定下降",
+        "蒸馏需要基于梯度的 RL 数据"
+      ],
+      "correct": 1,
+      "explanation": "由于 planner 不读取 observation，大 teacher 生成的计划 trace 能干净地迁移到经过微调的小 planner 上。"
+    }
+  ]
+}

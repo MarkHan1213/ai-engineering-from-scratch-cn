@@ -1,0 +1,37 @@
+[
+  {
+    "question": "人们写 LLM prompts 时最常见的错误是什么？",
+    "options": ["使用太多 tokens", "指令含糊、缺少细节，让模型猜测格式、范围和约束", "使用了错误 API", "没有使用足够 examples"],
+    "correct": 1,
+    "explanation": "LLM 会按字面遵循指令。'Write me a marketing email' 没有给模型任何约束。指定 tone、audience、length、format 和 constraints 会显著改善结果。",
+    "stage": "pre"
+  },
+  {
+    "question": "有效 prompt 的四个核心组件是什么？",
+    "options": ["Input、output、model、temperature", "Role、context、constraints 和 output format", "System、user、assistant、function", "Query、document、answer、score"],
+    "correct": 1,
+    "explanation": "有效 prompts 会说明：模型应该是谁（role）、需要知道什么（context）、应该做什么和不做什么（constraints）、以及如何组织回答（output format）。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么应该在 prompt 中包含 output format instructions？",
+    "options": ["它让 prompt 更短", "没有格式指令时，模型会自行选择结构，不同调用之间会变化，也很难程序化解析", "它降低 API 成本", "它防止 hallucination"],
+    "correct": 1,
+    "explanation": "LLM 是非确定性的。没有明确格式指令时，一次可能返回 bullet points，下一次返回 prose，再下一次返回 markdown。指定格式能保证输出一致、可解析。",
+    "stage": "post"
+  },
+  {
+    "question": "System prompt 的目的是什么？",
+    "options": ["认证 API 调用", "设置贯穿整个对话的持久行为规则、role 和 constraints", "定义模型架构", "压缩对话历史"],
+    "correct": 1,
+    "explanation": "System prompt 会为整个 session 建立模型的 persona、rules 和 constraints。它在每个 user turn 前生效，是生产中控制模型行为的主要机制。",
+    "stage": "post"
+  },
+  {
+    "question": "如何测试一次 prompt 修改是否真的提升了输出质量？",
+    "options": ["读几个输出并做主观判断", "在多样化 test set 上运行 prompt，并衡量定义好的 metrics（accuracy、format compliance、relevance）的变化", "问模型自己是否做得更好", "检查 API response time"],
+    "correct": 1,
+    "explanation": "只看少数样本来评估 prompt 修改并不可靠。系统化 evaluation harness 结合多样测试用例和明确指标，才能判断变化是否在整体分布上有效，而不是只改善了挑出来的例子。",
+    "stage": "post"
+  }
+]

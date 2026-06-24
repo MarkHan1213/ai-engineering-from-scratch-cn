@@ -1,0 +1,67 @@
+[
+  {
+    "id": "pipeline-pre-1",
+    "stage": "pre",
+    "question": "在 ML pipelines 语境下，data leakage 是什么？",
+    "options": [
+      "预处理时数据被意外删除",
+      "来自 test set 或未来数据的信息污染了训练过程",
+      "模型处理数据太慢",
+      "encoding 时特征被丢弃"
+    ],
+    "correct": 1,
+    "explanation": "当预测时本不应该可用的信息被用于训练时，就发生了 data leakage。例如在包含 test data 的完整数据集上计算 scaler 的 mean/std。"
+  },
+  {
+    "id": "pipeline-pre-2",
+    "stage": "pre",
+    "question": "为什么先在完整数据集上 fit scaler，再拆分 train/test，被认为是泄漏？",
+    "options": [
+      "Scaling 会改变数据分布",
+      "scaler 的统计量（mean、std）包含 test data，因此模型训练时会间接看到测试信息",
+      "Scaling 只应该在 test set 上做",
+      "在大数据集上 fit scaler 太慢"
+    ],
+    "correct": 1,
+    "explanation": "当 scaler 在所有数据上 fit 时，它的均值和标准差包含了测试样本的信息。训练特征随后会用测试统计量进行平移，导致未来信息泄漏进训练。"
+  },
+  {
+    "id": "pipeline-post-1",
+    "stage": "post",
+    "question": "在 sklearn 中，对 pipeline step 调用 fit_transform 和 transform 有什么区别？",
+    "options": [
+      "它们完全相同，都会 fit 并 transform",
+      "fit_transform 从数据中学习参数并应用变换；transform 只应用此前学到的参数",
+      "transform 用于 training data；fit_transform 用于 test data",
+      "fit_transform 更慢但更准确"
+    ],
+    "correct": 1,
+    "explanation": "fit_transform 会从数据中计算统计量（如 mean、std）并进行变换。transform 会应用已经学到的统计量，不会重新计算。在 test data 上必须使用 transform 来避免 leakage。"
+  },
+  {
+    "id": "pipeline-post-2",
+    "stage": "post",
+    "question": "为什么真实世界数据集需要 ColumnTransformer？",
+    "options": [
+      "它让 pipeline 在多个 CPU 上并行运行",
+      "它能在同一个 pipeline 中对数值列和类别列应用不同预处理步骤",
+      "它会自动移除有缺失值的列",
+      "它把所有列转换为同一种数据类型"
+    ],
+    "correct": 1,
+    "explanation": "真实数据集通常有混合类型。数值列需要 scaling，类别列需要 encoding。ColumnTransformer 会在同一个 pipeline 中把不同列子集路由到合适的 transformer。"
+  },
+  {
+    "id": "pipeline-post-3",
+    "stage": "post",
+    "question": "生产模型收到训练期间从未见过的类别值（'new_category'）时，pipeline 应该如何处理？",
+    "options": [
+      "完全忽略这一行，不返回预测",
+      "从头重新训练整个模型",
+      "优雅处理未知类别，例如使用 'unknown' bucket，或在 target encoding 中使用全局均值",
+      "把未知类别转换成数字零"
+    ],
+    "correct": 2,
+    "explanation": "稳健的 pipeline 会预期生产环境中出现未见类别。解决方式包括为 one-hot encoding 设置 'unknown' fallback，或在 target encoding 中默认使用全局均值。"
+  }
+]

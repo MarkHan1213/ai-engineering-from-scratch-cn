@@ -1,0 +1,39 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 vanilla self-attention 要用 1/sqrt(d_k) 缩放 dot product？",
+      "options": ["为了让输出值落在 0 到 1 之间", "为了防止高维下 dot products 变得很大，把 softmax 推到梯度极小的区域", "为了把 query 和 key 向量归一化到单位长度", "为了降低矩阵乘法的计算成本"],
+      "correct": 1,
+      "explanation": "当 d_k 很大时，随机向量的 dot product 会按 sqrt(d_k) 比例增长。没有缩放时，softmax 会收到很大的输入，产生接近 one-hot 的输出，导致梯度消失。"
+    },
+    {
+      "stage": "pre",
+      "question": "Self-attention 中的三个 projection 是什么？",
+      "options": ["Input、hidden 和 output", "Query、key 和 value，每一个都是同一输入的 learned linear projection", "Encoder、decoder 和 cross-attention", "Embedding、position 和 segment"],
+      "correct": 1,
+      "explanation": "Self-attention 通过三个不同的权重矩阵投影输入，得到 queries（我在找什么）、keys（我包含什么）和 values（匹配上时我输出什么）。"
+    },
+    {
+      "stage": "post",
+      "question": "在 8 个 heads、d_model=512 的 multi-head attention 中，每个 head 的维度是多少？",
+      "options": ["512，每个 head 都看到完整维度", "64，d_model 在 heads 间均分（512/8=64）", "8，每个 head 一个维度", "4096，每个 head 扩展表示"],
+      "correct": 1,
+      "explanation": "Multi-head attention 会把 d_model 切成 h 个 heads，每个 head 在 d_k = d_model/h 维上工作。512/8 = 64，每个 head 64 维，总计算成本等于完整维度的 single-head attention。"
+    },
+    {
+      "stage": "post",
+      "question": "Autoregressive attention 中的 causal mask 防止什么？",
+      "options": ["防止模型关注 padding tokens", "防止每个位置关注未来位置，保证预测下一个 token 时只能使用过去上下文", "防止 attention weights 过大", "防止模型关注自身位置"],
+      "correct": 1,
+      "explanation": "在 autoregressive generation 中，token t 不能看到 t+1、t+2 等未来 token。Causal mask 会在 softmax 前把未来位置设为 -infinity，让它们的 attention weights 为零。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 self-attention 对序列长度 n 的复杂度是 O(n^2)？",
+      "options": ["因为模型堆叠了 n 层", "因为每个 token 都要和其他每个 token 计算 attention scores，形成 n x n attention matrix", "因为 attention 后面的 feedforward layers 是二次复杂度", "因为 attention 的 backpropagation 需要 n^2 次梯度计算"],
+      "correct": 1,
+      "explanation": "QK^T 矩阵乘法会产生 n x n attention matrix，其中 (i,j) 表示 token i 对 token j 的注意力。计算和内存都按 O(n^2) 增长，因此长上下文模型需要 FlashAttention 等技术。"
+    }
+  ]
+}

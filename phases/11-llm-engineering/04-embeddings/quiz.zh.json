@@ -1,0 +1,37 @@
+[
+  {
+    "question": "Embeddings 解决了 keyword search 不能解决的什么问题？",
+    "options": ["Embeddings 更快", "Embeddings 捕捉语义含义，即使 'payment didn't go through' 与 'charge was declined' 没有共享词，也能匹配", "Embeddings 使用更少存储", "Embeddings 可以离线工作"],
+    "correct": 1,
+    "explanation": "Keyword search 把词当作独立符号。Embeddings 把文本映射到高维向量，其中语义相似性等于几何接近度。意思相同的文本会聚在一起，不管措辞是否相同。",
+    "stage": "pre"
+  },
+  {
+    "question": "Cosine similarity 在两个 embedding vectors 之间衡量什么？",
+    "options": ["Euclidean distance", "向量之间的角度，表示方向相似度而不受 magnitude 影响", "它们分量的和", "匹配维度数量"],
+    "correct": 1,
+    "explanation": "Cosine similarity = dot(A,B) / (|A|*|B|)。范围从 -1（相反）到 1（方向完全相同）。含义相同的文本会有方向几乎相同的向量，cosine similarity 接近 1。",
+    "stage": "pre"
+  },
+  {
+    "question": "现代 text embedding models 的典型维度是多少？",
+    "options": ["2-10 dimensions", "50-100 dimensions", "768-3072 dimensions", "100,000+ dimensions"],
+    "correct": 2,
+    "explanation": "现代 embedding models（OpenAI text-embedding-3、BGE、E5）通常产生 768 到 3072 维向量。更高维能捕捉更多细节，但存储和搜索成本更高。",
+    "stage": "post"
+  },
+  {
+    "question": "为什么评估 embedding quality 应该使用 retrieval benchmarks，而不只是看 similarity scores？",
+    "options": ["Similarity scores 总是错误", "不同模型的绝对相似度值不可直接比较；关键是相关文档是否排在无关文档前面（precision@k、recall）", "Retrieval benchmarks 更快", "Similarity scores 不使用 cosine distance"],
+    "correct": 1,
+    "explanation": "Cosine similarity 0.85 对一个模型可能表示“非常相似”，对另一个模型可能只是“有点相似”。Retrieval metrics（precision@k、recall）衡量真正重要的事：正确文档是否被找回。",
+    "stage": "post"
+  },
+  {
+    "question": "什么时候会使用本地 / open-source embedding model，而不是 API-based 模型？",
+    "options": ["Local models 总是更好", "需要数据隐私、离线运行、大规模低成本，或领域特定 fine-tuning 时", "Local models 产生更高质量 embeddings", "API models 不支持 batching"],
+    "correct": 1,
+    "explanation": "API embeddings（OpenAI、Cohere）易用，但会把数据发到外部。Local models（BGE、E5、Nomic）让数据留在本地，消除大规模 per-call 成本，并支持领域数据 fine-tuning。",
+    "stage": "post"
+  }
+]

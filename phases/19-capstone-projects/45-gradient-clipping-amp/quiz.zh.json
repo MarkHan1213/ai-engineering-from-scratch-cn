@@ -1,0 +1,78 @@
+{
+  "lesson": "45-gradient-clipping-amp",
+  "title": "Gradient Clipping 与 Mixed Precision",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "global L2 gradient clipping 解决的是什么问题？",
+      "options": [
+        "训练太慢",
+        "单个坏 batch 可能让 gradient norm 暴涨数个数量级；clipping 会限制最坏情况下的 optimizer step，避免一个 batch 重置数小时的学习成果",
+        "Vocabulary drift",
+        "随机重启"
+      ],
+      "correct": 1,
+      "explanation": "Clipping 就像安全带，用来防止一个噪声 batch 毁掉整条 loss 曲线。"
+    },
+    {
+      "stage": "check",
+      "question": "一个 step 中 GradScaler 操作的正确顺序是什么？",
+      "options": [
+        "step, scale, unscale, backward, update",
+        "scaler.scale(loss).backward(); scaler.unscale_(optimizer); clip_grad_norm_; scaler.step(optimizer); scaler.update()",
+        "backward, step, scale, update",
+        "任意顺序；scaler 会在内部重排"
+      ],
+      "correct": 1,
+      "explanation": "要在 unscale_ 和 step 之间对未缩放的 gradients 做 clip；update 始终要运行。"
+    },
+    {
+      "stage": "check",
+      "question": "scaler.update() 在 skipped step 上做什么？",
+      "options": [
+        "什么也不做",
+        "把 scaling factor 减半并重置 no-inf counter；忘记在 skip path 调它，就是导致“scaling factor 从未变化”的 bug",
+        "把 scaling factor 翻倍",
+        "关闭 run"
+      ],
+      "correct": 1,
+      "explanation": "scaler 会根据最近 step 的 skip / clean 比例来调整自己的 factor。"
+    },
+    {
+      "stage": "check",
+      "question": "既然已经有 GradScaler，为什么还需要 loss finiteness check？",
+      "options": [
+        "因为 GradScaler 很慢",
+        "GradScaler 处理 backward-pass overflow，但 non-finite loss 不会产生有用梯度；在 backward 前跳过可以节省计算并避免污染 scaler 状态",
+        "只是装饰",
+        "PyTorch 要求这样"
+      ],
+      "correct": 1,
+      "explanation": "loss check 覆盖 forward-pass 失败；scaler 覆盖 backward-pass 失败。"
+    },
+    {
+      "stage": "post",
+      "question": "rolling skip rate 中的生产信号是什么？",
+      "options": [
+        "任何 skip 都必须告警",
+        "每次 run 有少量 skip 是健康的；每个 epoch 数百次 skip（rolling rate 大约超过 5 percent）则是硬告警，说明模型进入了 FP16 承受不了的区间",
+        "skip rate 无关紧要",
+        "只有连续 skip 才告警"
+      ],
+      "correct": 1,
+      "explanation": "基于比例的告警能捕捉偶发 skip 告警发现不了的静默失败模式。"
+    },
+    {
+      "stage": "post",
+      "question": "skip 频繁时，为什么要从 FP16 autocast 切换到 BF16 autocast？",
+      "options": [
+        "BF16 更新",
+        "BF16 的 exponent range 比 FP16 更宽，而且很少需要 loss scaling；同一个模型上的 skip rate 通常会降到 0",
+        "BF16 更慢，所以 skip 更少",
+        "只是传统做法"
+      ],
+      "correct": 1,
+      "explanation": "FP16 更偏向 mantissa 精度而不是范围；BF16 取舍相反，基本移除了 overflow 这一类问题。"
+    }
+  ]
+}

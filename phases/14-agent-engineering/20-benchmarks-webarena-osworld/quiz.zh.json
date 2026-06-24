@@ -1,0 +1,90 @@
+{
+  "lesson": "20-benchmarks-webarena-osworld",
+  "title": "Benchmarks：WebArena 与 OSWorld",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 WebArena 自托管四个目标应用？",
+      "options": [
+        "为了省钱",
+        "为了固定可复现版本，让评估基于执行且不易 flaky",
+        "为了在 GPU 上运行",
+        "为了避免 TLS"
+      ],
+      "correct": 1,
+      "explanation": "固定的自托管应用让基于执行的评估可靠，并且能随时间比较。"
+    },
+    {
+      "stage": "pre",
+      "question": "为什么 OSWorld 使用真实 OS 截图，而不是 accessibility APIs？",
+      "options": [
+        "accessibility APIs 太快",
+        "截图迫使 Agent 在 1920x1080 中做真实 GUI grounding，贴近生产约束",
+        "accessibility APIs 会泄漏 PII",
+        "截图成本更低"
+      ],
+      "correct": 1,
+      "explanation": "由截图驱动的评估会迫使模型完成从像素到元素的 grounding，这是实际生产约束。"
+    },
+    {
+      "stage": "check",
+      "question": "OSWorld 暴露的两个主要失败模式是什么？",
+      "options": [
+        "延迟和带宽",
+        "GUI grounding 和 operational knowledge",
+        "embedding drift 和 token leakage",
+        "hallucination 和 refusal"
+      ],
+      "correct": 1,
+      "explanation": "Grounding（像素到元素）和 operational knowledge（菜单、快捷键）是主要阻塞点。"
+    },
+    {
+      "stage": "check",
+      "question": "OSWorld-Human 在基础 benchmark 上增加了什么？",
+      "options": [
+        "更多任务",
+        "人工整理的 gold action trajectories，暴露 1.4 到 2.7 倍的 Agent 步骤低效差距",
+        "更大的屏幕分辨率",
+        "一个新的 OS"
+      ],
+      "correct": 1,
+      "explanation": "gold trajectories 让轨迹效率可衡量，而不仅仅是成功率。"
+    },
+    {
+      "stage": "check",
+      "question": "课程引用了 WebArena 发布时的哪个数字？",
+      "options": [
+        "最佳 GPT-4 Agent 成功率 14.41%，人类 78.24%",
+        "最佳 Agent 99%，人类 100%",
+        "最佳 Agent 50%，人类 50%",
+        "最佳 Agent 全部 0%"
+      ],
+      "correct": 0,
+      "explanation": "14.41% 对 78.24% 的差距是 WebArena 发布时的数字。"
+    },
+    {
+      "stage": "post",
+      "question": "当 Agent 使用 DOM 或 accessibility APIs 时，课程提醒 screenshot-only evaluation 会发生什么？",
+      "options": [
+        "没有变化",
+        "你会错过 OSWorld 设计来衡量的 grounding 挑战",
+        "你会超过 rate limit",
+        "测试会轻易通过"
+      ],
+      "correct": 1,
+      "explanation": "用 screenshot-only benchmark 评估 accessibility-API Agent，会绕过 grounding 测试。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么忽略 trajectory length 是 benchmark 失败？",
+      "options": [
+        "它隐藏了成功率本身看不出的成本和低效（OSWorld-Human 暴露的 1.4 到 2.7 倍差距）",
+        "trajectory length 总是匹配 gold",
+        "trajectory 无法衡量",
+        "length 是唯一重要指标"
+      ],
+      "correct": 0,
+      "explanation": "两个 60% 成功率的 Agent 可能在步骤数上相差 2 到 3 倍；只有衡量 trajectory length 才能看到成本和效率。"
+    }
+  ]
+}

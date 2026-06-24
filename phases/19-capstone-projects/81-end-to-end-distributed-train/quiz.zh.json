@@ -1,0 +1,78 @@
+{
+  "lesson": "81-end-to-end-distributed-train",
+  "title": "端到端 Distributed Training",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "既然每节课已经有自己的 tests，为什么还需要 capstone？",
+      "options": [
+        "只是装饰",
+        "composition 是单独属性：组件可以通过 unit tests，但放在一起运行时 integration 会 deadlock、loss 发散或 memory 增长",
+        "更慢",
+        "更容易评分"
+      ],
+      "correct": 1,
+      "explanation": "end-to-end tests 会捕捉任何孤立组件测试不到的 wiring bugs：rendezvous、barrier order、gather contracts。"
+    },
+    {
+      "stage": "pre",
+      "question": "demo 会验证哪四个 invariants？",
+      "options": [
+        "速度",
+        "(a) loss 跑到 step 20 没有 NaN，(b) 每个 rank 的 parameter norm 一致，(c) per-rank optimiser memory 等于 ZeRO-1 公式，(d) step-10 checkpoint reload 是 byte-equal 的",
+        "tokens per second",
+        "硬件"
+      ],
+      "correct": 1,
+      "explanation": "每个 invariant 都捕捉不同的 composition bug：NaN 抓 divergence，norm-agree 抓 sync drift，memory 抓 sharding bugs，checkpoint 抓 write atomicity。"
+    },
+    {
+      "stage": "check",
+      "question": "为什么 model 是 tiny GPT，而不是 MLP？",
+      "options": [
+        "看起来更高级",
+        "GPT 会加入 LayerNorm running statistics、embedding gradient shape 和 softmax+cross-entropy edge cases，而 MLP 会隐藏这些问题",
+        "更快",
+        "必需"
+      ],
+      "correct": 1,
+      "explanation": "MLP gradient sync 已经在 lesson 77 验证过；capstone 需要一个带更多 edge cases 的模型，证明 composition 在更真实的 ops 下成立。"
+    },
+    {
+      "stage": "check",
+      "question": "这里的 self-terminating 是什么意思？",
+      "options": [
+        "process 会杀掉自己",
+        "固定 step count（20），完成时 exit 0，没有 human in the loop；如果任何部分 deadlock，demo 不会返回，CI 会抓到",
+        "crash recovery",
+        "手动"
+      ],
+      "correct": 1,
+      "explanation": "有边界的 run 加 exit 0，可以让 test rig 断言它会终止；while-True loops 会掩盖 deadlocks。"
+    },
+    {
+      "stage": "check",
+      "question": "demo 如何组合 DDP 和 ZeRO？",
+      "options": [
+        "两者同时完整运行",
+        "初始化时用 DDP-style broadcast 做 parameter sync；ZeRO-1 的 reduce_scatter+allgather 替代 optimiser.step；DDP gradient allreduce 被 ZeRO 的 reduce_scatter 包含",
+        "只用 DDP",
+        "只用 ZeRO"
+      ],
+      "correct": 1,
+      "explanation": "ZeRO-1 通过 reduce_scatter 拥有 gradient sync，因此不需要 DDP 单独的 allreduce；初始化时的 broadcast 是唯一保留下来的 DDP-specific call。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么生产中使用 wall-clock checkpoint cadence，而不是 step count？",
+      "options": [
+        "看起来更整洁",
+        "step time 会随 sequence length 和 microbatch count 变化；10-minute cadence 不管 model size 如何，都能捕捉同样的 compute 时间",
+        "更快",
+        "NCCL 要求这样"
+      ],
+      "correct": 1,
+      "explanation": "本课为了清晰使用 step-based；生产 run 通常每 5-15 分钟 wall-clock 保存一次。"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "ensemble-pre-1",
+    "stage": "pre",
+    "question": "为什么把多个 weak classifiers 组合成 ensemble 可以提升 accuracy？",
+    "options": [
+      "每个 weak classifier 记住 test set 的不同部分",
+      "如果分类器犯的错误不同，majority voting 会抵消单个模型的错误",
+      "Ensembles 总是比单模型使用更多训练数据",
+      "Weak classifiers 总是比 strong classifiers 更快"
+    ],
+    "correct": 1,
+    "explanation": "关键是多样性。如果分类器犯独立错误，majority voting 下错误答案必须骗过超过一半模型才会被选中。错误会相互抵消，ensemble accuracy 会超过单个模型。"
+  },
+  {
+    "id": "ensemble-pre-2",
+    "stage": "pre",
+    "question": "bagging 和 boosting 的主要区别是什么？",
+    "options": [
+      "Bagging 在随机子集上并行训练模型；boosting 按顺序训练模型，并关注前一轮错误",
+      "Bagging 使用深度神经网络；boosting 使用 decision trees",
+      "Bagging 降低 bias；boosting 降低 variance",
+      "Bagging 需要 labeled data；boosting 是 unsupervised"
+    ],
+    "correct": 0,
+    "explanation": "Bagging 在 bootstrap samples 上独立训练模型（并行，降低 variance）。Boosting 按顺序训练模型，每个新模型关注当前 ensemble 的错误（降低 bias）。"
+  },
+  {
+    "id": "ensemble-post-1",
+    "stage": "post",
+    "question": "在 AdaBoost 中，每一轮后被误分类训练点的 sample weight 会怎样？",
+    "options": [
+      "保持不变",
+      "增加，让下一个 weak learner 更关注这个困难样本",
+      "减少，让下一个 learner 忽略它",
+      "从 training set 中移除"
+    ],
+    "correct": 1,
+    "explanation": "AdaBoost 每一轮后会增加误分类样本的权重。这迫使下一个 weak learner 更关注当前 ensemble 做错的样本。"
+  },
+  {
+    "id": "ensemble-post-2",
+    "stage": "post",
+    "question": "一个 100 棵树的 random forest 与 200 棵树测试 accuracy 相同，增加到 500 棵也没有提升。为什么？",
+    "options": [
+      "random forest 正在 underfitting，需要换算法",
+      "树足够多之后，variance reduction 会进入平台期，继续加树收益递减且不会增加 overfitting",
+      "500 棵树是允许的最大数量",
+      "所有树都完全相同，所以加树没有效果"
+    ],
+    "correct": 1,
+    "explanation": "Random forests 不会像 boosting 那样因为树更多而 overfit。不过，当已经平均了足够多样的树后，variance reduction 会趋于平缓。更多树只增加计算成本，不提升 accuracy。"
+  },
+  {
+    "id": "ensemble-post-3",
+    "stage": "post",
+    "question": "Gradient boosting 中，每棵新树拟合的是什么量？",
+    "options": [
+      "原始 target values",
+      "当前 ensemble 预测的 residuals（errors）",
+      "随机特征子集",
+      "上一棵树的预测"
+    ],
+    "correct": 1,
+    "explanation": "在 gradient boosting 中，每棵新树都会训练来预测当前 ensemble 的 residuals（loss 的负梯度）。这会按顺序减少剩余误差。"
+  }
+]

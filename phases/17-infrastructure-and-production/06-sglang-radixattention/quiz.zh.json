@@ -1,0 +1,78 @@
+{
+  "lesson": "06-sglang-radixattention",
+  "title": "SGLang 与 RadixAttention：面向 Prefix-Heavy Workloads",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "SGLang 的 KV cache reuse 由哪种核心数据结构支撑？",
+      "options": [
+        "radix tree，每个节点拥有一个 token range 及其 KV blocks",
+        "按完整 prompt 做 key 的 hash table",
+        "按 request id 做 key 的 skip list",
+        "attention scores 的 B-tree"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "为什么 FCFS scheduling 不适合 SGLang 上的 prefix-heavy traffic？",
+      "options": [
+        "FCFS 只适用于 AMD GPUs",
+        "FCFS 是 SGLang 推荐策略",
+        "FCFS 与 PagedAttention 不兼容",
+        "FCFS 可能在下一条长 prefix request 命中前驱逐 hot prefix branch，破坏 radix-tree reuse"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "SGLang 的 cache-aware scheduler 使用什么 eviction granularity 来匹配 radix 形状？",
+      "options": [
+        "仅 per-request",
+        "整个 branch，从最短使用的 leaves 开始",
+        "单个 tokens",
+        "随机 eviction"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "保持 radix-tree shared prefix 可发现的最直接工程手段是什么？",
+      "options": [
+        "降低 GPU memory utilization knob",
+        "固定 prompt-template 顺序，让 immutable content（system、tools、schemas）始终放在最前",
+        "总是使用 static batching",
+        "禁用 continuous batching"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程不认为 RadixAttention 会在哪种 workload pattern 上获胜？",
+      "options": [
+        "带共享 tool schemas 的 Agents",
+        "带重复 preambles 的 voice workloads",
+        "带共享 retrieval preamble 的 RAG",
+        "unique prompts 且没有共享 system prompt 的 single-shot generation"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "ProjectDiscovery 的部署如何把 prefix-cache hit rate 从 7% 提升到 74%？",
+      "options": [
+        "将 dynamic content 移出 cacheable prefix",
+        "将 GPU 数量从 8 增加到 16",
+        "不做 prompt 变更，只从 vLLM 切到 SGLang",
+        "禁用 continuous batching"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

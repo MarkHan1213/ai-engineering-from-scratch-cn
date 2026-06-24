@@ -1,0 +1,78 @@
+{
+  "lesson": "27-finops-llms",
+  "title": "LLM FinOps：Unit Economics 与 Multi-Tenant Attribution",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么传统 FinOps 会在 LLM spend 上失效？",
+      "options": [
+        "LLMs 不花钱",
+        "LLM bills 总是免费",
+        "cloud providers 拒绝 itemize",
+        "成本是 token-transactions，而不是 resource-uptime；tags 不会从 API calls 自动传播，必须在 call site 写入 user/task/tenant"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程要求 day one 就 instrument 哪三个 attribution dimensions？",
+      "options": [
+        "per-user（user_id）、per-task（task_id + route）、per-tenant（tenant_id）",
+        "provider、model、API version",
+        "region、AZ、datacenter",
+        "GPU、CPU、RAM"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "cost attribution 应拆出哪四个 token layers？",
+      "options": [
+        "Prompt, tool, memory, response",
+        "Input, output, network, disk",
+        "Cache, model, gateway, observability",
+        "GPU, CPU, RAM, storage"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "enforcement ladder 中的 kill-switch trigger 是什么？",
+      "options": [
+        "tenant spend z-score 相对 baseline > 4；自动 pause tenant 并 page on-call",
+        "latency P50 > 2s",
+        "任何 5xx response",
+        "一分钟花费超过 $1"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程建议用哪个 unit metric 替代 $/M tokens？",
+      "options": [
+        "Cost per gateway",
+        "Cost per GPU-hour",
+        "Cost per second",
+        "Cost per product outcome（例如 cost per resolved support ticket、cost per generated article、cost per successful agent task）"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程称成熟团队使用的最高准确率 attribution pattern 是哪种？",
+      "options": [
+        "sampling and extrapolation",
+        "model-based allocation",
+        "tag-and-aggregate only",
+        "telemetry joiner：通过 trace IDs 将 traces 与 billing join"
+      ],
+      "correct": 3,
+      "explanation": ""
+    }
+  ]
+}

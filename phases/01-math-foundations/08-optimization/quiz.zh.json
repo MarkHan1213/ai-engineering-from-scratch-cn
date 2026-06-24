@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在训练神经网络时，optimization 是什么意思？",
+      "options": [
+        "让代码运行得更快",
+        "寻找能最小化损失函数的模型权重",
+        "减少模型参数数量",
+        "为训练选择最合适的硬件"
+      ],
+      "correct": 1,
+      "explanation": "训练神经网络本质上就是 optimization。损失函数衡量模型错得有多离谱，优化过程寻找能让损失尽可能小的权重值。"
+    },
+    {
+      "stage": "pre",
+      "question": "梯度下降中的学习率太大会发生什么？",
+      "options": [
+        "训练会更快收敛到全局最小值",
+        "优化器会越过最小值，导致损失发散（来回震荡或升高）",
+        "梯度会变成零",
+        "模型会自动降低学习率"
+      ],
+      "correct": 1,
+      "explanation": "学习率过大会让每一步越过谷底，可能在两侧来回反弹，甚至完全发散。损失会增加，而不是下降。"
+    },
+    {
+      "stage": "post",
+      "question": "Adam 和 vanilla gradient descent 有什么不同？",
+      "options": [
+        "Adam 使用固定学习率，而 GD 使用自适应学习率",
+        "Adam 跟踪梯度和梯度平方的滑动平均，为每个权重提供自己的自适应学习率",
+        "Adam 计算精确二阶导数，而 GD 使用一阶导数",
+        "Adam 每一步处理完整数据集，而 GD 使用 mini-batches"
+      ],
+      "correct": 1,
+      "explanation": "Adam 为每个权重维护一阶矩（梯度方向）和二阶矩（梯度幅度）的估计。除以 sqrt(second moment) 后，梯度大的权重步子更小，梯度小的权重步子更大。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 mini-batch SGD 中的噪声通常被认为是有益的，而不只是麻烦？",
+      "options": [
+        "噪声会减少训练时的内存用量",
+        "噪声能帮助优化器逃离浅层局部最小值和鞍点，而无噪声优化器可能卡在那里",
+        "噪声没有益处；它总是拖慢收敛",
+        "噪声会让损失函数变成凸函数"
+      ],
+      "correct": 1,
+      "explanation": "随机 mini-batch 带来的随机扰动，可能把优化器从浅层局部最小值或鞍点中推出来，从而带来更好的泛化。"
+    },
+    {
+      "stage": "post",
+      "question": "cosine annealing learning rate schedule 做什么？",
+      "options": [
+        "让学习率在整个训练中按余弦曲线持续增大",
+        "从较高学习率开始，并按余弦曲线平滑降低，可选 warmup",
+        "让学习率在两个固定值之间交替",
+        "把学习率设置为当前 epoch 编号的余弦值"
+      ],
+      "correct": 1,
+      "explanation": "Cosine annealing 会按半个余弦曲线，把学习率从 lr_max 平滑降到 lr_min。这样早期步子大、进展快，后期步子小、便于精细收敛。"
+    }
+  ]
+}

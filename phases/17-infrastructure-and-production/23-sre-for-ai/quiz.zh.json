@@ -1,0 +1,78 @@
+{
+  "lesson": "23-sre-for-ai",
+  "title": "AI SRE：Multi-Agent Incident Response、Runbooks、Predictive Detection",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "课程建议 AI SRE 采用什么 multi-agent 形态？",
+      "options": [
+        "在三个 agents 中随机选择一个",
+        "两个 agents 串行运行且没有 supervisor",
+        "一个 monolithic agent 负责全部工作",
+        "supervisor agent 将 incident 拆成针对 log、metric 和 runbook 专用 agents 的 sub-queries，然后综合并呈现给人类"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "课程认为哪组 auto-remediation 是安全的？",
+      "options": [
+        "重新架构 service topology",
+        "修改 databases",
+        "修改 IAM policies",
+        "restart pod、revert specific deploy、在预批准范围内 scale pool、启用预批准 feature flag"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "NeuBird Hawkeye 如何使用 adversarial evaluation 过滤幻觉 root causes？",
+      "options": [
+        "两个模型独立分析同一 incident；一致 = 高置信，不一致 = 带两个 hypotheses 升级给人类",
+        "使用 GAN-style training",
+        "总是选择更高置信模型的答案",
+        "同一模型在同一输入上运行两次"
+      ],
+      "correct": 0,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "operational memory 在 AI SRE 中解决什么？",
+      "options": [
+        "inference pods 的 cold start",
+        "network egress filtering",
+        "团队人员更替造成的 tribal knowledge 流失：runbooks 和 post-mortems 存在 vector DB 中，agents 在每次 incident 中检索",
+        "token cost attribution"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程引用了 MIT 2025 关于 pre-incident prediction 的哪项结果？",
+      "options": [
+        "提前 1 秒 100% 预测",
+        "使用 logs + GPU temps + API error patterns，可提前 10-15 分钟预测 89% outages",
+        "预测仍未解决",
+        "无提前量时 10%"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "课程强调 predictive detection 的什么运维约束？",
+      "options": [
+        "prediction 替代 runbooks",
+        "prediction 永远不应接入 action",
+        "没有 actuation 的 prediction 只是 dashboard；运维问题是预测触发什么 action（pre-drain、page、auto-scale）",
+        "prediction 总是准确"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}

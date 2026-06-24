@@ -1,0 +1,90 @@
+{
+  "lesson": "39-reviewer-agent",
+  "title": "Reviewer Agent：区分 Builder 与 Marker",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么 builder 不能可靠地给自己的工作打分？",
+      "options": [
+        "它会耗尽 tokens",
+        "acceptance 是必要但不充分的；problem-fit、scope discipline、documented assumptions 和 handoff readiness 需要另一个角色和另一组输入",
+        "它会失去认证",
+        "模型拒绝 self-grading"
+      ],
+      "correct": 1,
+      "explanation": "builder 与 reviewer 之间的差距就是可靠性所在；acceptance 只证明了更弱版本的完成。"
+    },
+    {
+      "stage": "pre",
+      "question": "下面哪一项不是五个 rubric dimensions 之一？",
+      "options": [
+        "Problem fit",
+        "Scope discipline",
+        "Verification quality",
+        "Inference latency"
+      ],
+      "correct": 3,
+      "explanation": "五个维度是 problem fit、scope discipline、assumptions、verification quality、handoff readiness。"
+    },
+    {
+      "stage": "check",
+      "question": "role separation 需要什么？",
+      "options": [
+        "不同模型",
+        "不同 system prompt 和不同输入；如果姿态改变且 reviewer 对 diff 没有写权限，同一个模型也可以扮演两个角色",
+        "不同物理硬件",
+        "新账号"
+      ],
+      "correct": 1,
+      "explanation": "纪律体现在姿态和输入上，而不在模型身份上。"
+    },
+    {
+      "stage": "check",
+      "question": "Cloudflare 2026 年的 review 架构是什么样？",
+      "options": [
+        "一个大型 reviewer",
+        "最多七个 specialist reviewers 并行运行，由 Review Coordinator 去重 findings；顶级模型只用于 coordinator，便宜模型用于 specialists",
+        "两个 reviewers 轮转",
+        "单个顺序 LLM"
+      ],
+      "correct": 1,
+      "explanation": "Cloudflare 30 天内运行 131,246 次 review，使用 specialist + coordinator 架构。"
+    },
+    {
+      "stage": "check",
+      "question": "下面哪一项不是课程列出的四种 LLM-judge biases 之一？",
+      "options": [
+        "Position bias（A,B 与 B,A 顺序不一致）",
+        "Verbosity bias（更长输出得分更高）",
+        "Self-preference（同一模型家族）",
+        "Vector locality"
+      ],
+      "correct": 3,
+      "explanation": "四种是 position、verbosity、self-preference、authority；vector locality 不在其中。"
+    },
+    {
+      "stage": "post",
+      "question": "什么是 calibration set？",
+      "options": [
+        "新的训练 corpus",
+        "10-20 个带已知正确 verdict 的历史任务 close-outs；每次 prompt 变更都重跑；如果 reviewer agreement 低于 80%，先修 rubric 再上线",
+        "A/B test fixture",
+        "vector index"
+      ],
+      "correct": 1,
+      "explanation": "calibration sets 让 reviewer 保持可靠；agreement 漂移时修的是 rubric，不是数据。"
+    },
+    {
+      "stage": "post",
+      "question": "reviewer report 如何与 workbench 其余部分集成？",
+      "options": [
+        "它替代 verification",
+        "它打包进 handoff packet（第 40 课）；human review 从 report 开始，而不是从空白页开始",
+        "它 override gate",
+        "它只发给 manager"
+      ],
+      "correct": 1,
+      "explanation": "review report 会进入 handoff，让下一次 session 和人类 reviewer 从书面 verdict 开始。"
+    }
+  ]
+}

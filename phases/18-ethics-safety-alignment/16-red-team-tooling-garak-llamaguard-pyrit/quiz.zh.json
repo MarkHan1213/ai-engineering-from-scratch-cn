@@ -1,0 +1,78 @@
+{
+  "lesson": "16-red-team-tooling-garak-llamaguard-pyrit",
+  "title": "Red-Team Tooling：Garak、Llama Guard、PyRIT",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "在典型的 2026 年部署中，Llama Guard 扮演什么角色？",
+      "options": [
+        "chain-of-thought 的 reasoning scaffolder",
+        "RLHF 的 reward model",
+        "tokenizer 替代品",
+        "覆盖 MLCommons hazard category 的输入和/或输出 safety classifier，放在 LLM 前后"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Llama Guard 3 大约覆盖多少个 MLCommons hazard category？",
+      "options": [
+        "7",
+        "3",
+        "40",
+        "14"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "Garak 的架构如何组织？",
+      "options": [
+        "Tools、resources、prompts",
+        "Embeddings、retrievers、rerankers",
+        "Routers、agents、queues",
+        "Probes（攻击生成器）、Detectors（输出评分器）、Harnesses（campaign manager）"
+      ],
+      "correct": 3,
+      "explanation": ""
+    },
+    {
+      "stage": "check",
+      "question": "PyRIT 主要用于什么，它与 Garak 有什么不同？",
+      "options": [
+        "二者范围和受众完全相同",
+        "PyRIT 是 reward model trainer；Garak 是 tokenizer",
+        "PyRIT 运行深入的多轮 campaign（converter chain、Crescendo 和 TAP 等 orchestrator、scoring），而 Garak 运行数千个单轮 probe",
+        "PyRIT 是 Llama Guard 变体；Garak 是 Prompt-Guard 变体"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "推荐的 2026 默认 red-team stack 配置是什么？",
+      "options": [
+        "只用人工 review 替代 LLM evaluation",
+        "只使用 PAIR，不使用任何工具",
+        "在模型两侧部署 Llama Guard，每晚运行 Garak 做 regression，并在发布前用 PyRIT 做 campaign",
+        "只在上线时运行一次 Garak"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "Llama Guard、Garak 和 PyRIT 共享的评估陷阱是什么？",
+      "options": [
+        "报告的 attack/defense rate 取决于 judge identity 和 probe 是否陈旧；必须说明 judge，并随着模型 patch 刷新 probe",
+        "它们只适用于英语",
+        "它们需要 white-box access",
+        "它们不能在 GPU 上运行"
+      ],
+      "correct": 0,
+      "explanation": ""
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "lesson": "33-multihead-self-attention",
+  "title": "Multi-Head Self-Attention",
+  "questions": [
+    {
+      "stage": "pre",
+      "question": "为什么高效 self-attention block 会使用一个输出 3*D feature 的单一 linear layer？",
+      "options": [
+        "它强制 Q、K、V 之间共享权重",
+        "它在数学上等价于三个 Linear(D, D) layer，并作为一次 matmul 运行",
+        "它避免 causal mask 的需求",
+        "它减少模型 parameter count"
+      ],
+      "correct": 1,
+      "explanation": "把三个 (D, D) projection matrix 堆叠成一个 (3D, D) matrix 会产生相同输出，但 forward pass 是一次 accelerator-friendly matmul。"
+    },
+    {
+      "stage": "check",
+      "question": "d_model、n_heads 和 d_head 之间是什么关系？",
+      "options": [
+        "d_head = d_model * n_heads",
+        "d_head = d_model + n_heads",
+        "d_head = d_model // n_heads，且 d_model 必须能被 n_heads 整除",
+        "d_head 与 d_model 无关"
+      ],
+      "correct": 2,
+      "explanation": "block 会把 d_model 均匀拆到各个 head 上。构造时会强制 d_model % n_heads == 0。"
+    },
+    {
+      "stage": "check",
+      "question": "scaled dot-product attention 的 scaling factor 中使用什么值？",
+      "options": [
+        "sqrt(d_model)",
+        "sqrt(d_head)",
+        "sqrt(n_heads)",
+        "sqrt(seq_len)"
+      ],
+      "correct": 1,
+      "explanation": "score 除以 sqrt(d_head)，也就是 matmul 收缩的 head dimension。这样 d_head 增大时，score 的方差仍受控制。"
+    },
+    {
+      "stage": "check",
+      "question": "causal mask 如何确保位置 t 不能 attend 到位置 t+1？",
+      "options": [
+        "把未来位置的 key 乘以零",
+        "在 softmax 前把对角线以上的 score entry 设为 negative infinity",
+        "从输入中移除未来 token",
+        "为未来使用不同 attention head"
+      ],
+      "correct": 1,
+      "explanation": "把未来 entry 设为 -inf 会强制 softmax 给它们权重 0。过去和当前位置仍保留有效的权重分布。"
+    },
+    {
+      "stage": "post",
+      "question": "为什么 block 在 merge heads 后以 Linear(D, D) output projection 结束？",
+      "options": [
+        "让模型能够跨 head 混合信息",
+        "匹配模型的 vocabulary size",
+        "把 activation 归一化到均值为零",
+        "这是 autograd 跟踪 gradient 的要求"
+      ],
+      "correct": 0,
+      "explanation": "没有 output projection 时，head output 只能在后续层中组合。projection 让 block 在同一步里有一个混合 head 的位置。"
+    },
+    {
+      "stage": "post",
+      "question": "shape 为 (B, H, T, T) 的 attention-weight matrix 告诉你什么？",
+      "options": [
+        "每个 head 有多少 parameter",
+        "每个 batch element、每个 head 中，每个 query position attend 到哪些 key position",
+        "query vector 和 value vector 的 cosine similarity",
+        "next token 的 output logits"
+      ],
+      "correct": 1,
+      "explanation": "每个 head matrix 的第 t 行，是 query position t 在各 key position 上的分布。查看它可以知道每个 head 在看哪里。"
+    }
+  ]
+}

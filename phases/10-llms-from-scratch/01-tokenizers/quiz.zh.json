@@ -1,0 +1,37 @@
+[
+  {
+    "question": "在 LLM pipeline 中，tokenizer 的主要目的是什么？",
+    "options": ["从文本中移除 stop words", "把文本转换成模型可以处理的一串整数", "在语言之间翻译文本", "压缩文本用于存储"],
+    "correct": 1,
+    "explanation": "LLM 处理的是数字，而不是文本。Tokenizer 会把每个字符、单词和符号转换成固定词表中的整数 ID。这个转换并不“中性”，它决定了模型如何“看见”语言。",
+    "stage": "pre"
+  },
+  {
+    "question": "BPE (Byte Pair Encoding) 如何构建词表？",
+    "options": ["只把文本拆成单个字符", "反复合并最频繁的相邻 token pair，直到达到目标词表大小", "用字典查找完整单词", "随机给子串分配 ID"],
+    "correct": 1,
+    "explanation": "BPE 从单个 bytes/characters 开始，反复合并最常见的相邻 pair。'th' + 'e' 会变成 'the'。经过数千次合并，常见词会成为单个 token，稀有词则拆成 subword pieces。",
+    "stage": "pre"
+  },
+  {
+    "question": "为什么 vocabulary size 会在 LLM 设计中形成 tradeoff？",
+    "options": ["更大的词表总是表现更好", "太小会产生长序列（更多计算）；太大会把 embedding 参数浪费在稀有 token 上", "词表大小不影响模型表现", "更小词表总是更高效"],
+    "correct": 1,
+    "explanation": "小词表（如 character-level）意味着每个词会拆成许多 token，增加序列长度和计算量。大词表会把参数浪费在训练数据中很少出现的 token 上。大多数 LLM 使用 32K-100K tokens。",
+    "stage": "post"
+  },
+  {
+    "question": "Byte-level fallback 解决了 tokenization 中的什么问题？",
+    "options": ["它会加速 tokenization", "它确保任何输入（emoji、稀有文字、二进制数据）都能编码，不会出现 'unknown' tokens", "它会减小词表", "它提高模型准确率"],
+    "correct": 1,
+    "explanation": "有了 byte-level fallback，tokenizer 可以对词表外字符回退到原始 byte 值（256 种）。这保证完整覆盖：任何输入都不会是 'unknown'。",
+    "stage": "post"
+  },
+  {
+    "question": "Tokenizer 如何影响 LLM 的非英语语言表现？",
+    "options": ["Tokenizers 对所有语言效果相同", "训练数据中代表性不足的语言会学到更差的 token merges，每个词需要更多 token，从而浪费 context window", "非英语文本总是按字符 tokenized", "Tokenization 不影响语言表现"],
+    "correct": 1,
+    "explanation": "BPE merges 从训练数据中学习。如果日语文本只占语料 5%，日语字符会得到更少 merges，每个词可能比英语多用 2-5 倍 token。这等价于缩小了非英语文本的 context window。",
+    "stage": "post"
+  }
+]

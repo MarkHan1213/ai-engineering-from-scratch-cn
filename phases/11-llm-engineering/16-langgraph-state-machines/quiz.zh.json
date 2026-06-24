@@ -1,0 +1,65 @@
+{
+  "lesson": "phase-11/16-langgraph-state-machines",
+  "questions": [
+    {
+      "stage": "post",
+      "question": "为什么 LangGraph State TypedDict 中的 `messages` 字段需要 `Annotated[list, add_messages]`？",
+      "options": [
+        "它启用模型 token deltas 的 streaming。",
+        "没有 reducer 时，node updates 会覆盖 list 而不是追加，所以每一轮都会丢失之前历史。",
+        "它在 checkpoints 写入磁盘时压缩 message list。",
+        "它在运行时把 plain dicts 转成 LangChain message objects。"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "`interrupt_before=['tools']` 和 `interrupt_after=['tools']` 有什么区别？",
+      "options": [
+        "没有区别；它们是 aliases。",
+        "`interrupt_before` 在模型发出 tool_calls 后、tools 执行前暂停；`interrupt_after` 在 tools 已经运行后暂停。",
+        "`interrupt_before` 先在 sandbox 里运行 tool；`interrupt_after` 在 production 中运行。",
+        "`interrupt_before` 用于 unit tests；`interrupt_after` 用于 production。"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "给定一个 thread 的 checkpoint history，如何 time-travel 到先前 state 并探索不同分支？",
+      "options": [
+        "调用 `graph.reset(thread_id)`，再调用 `graph.invoke(new_input, config)`。",
+        "删除 checkpoint directory，并用相同 thread_id 重新 invoke。",
+        "在 config 中带上目标先前 `checkpoint_id` 来 invoke graph；传 `None` 作为 input 会从该 checkpoint replay，传新值会先 append 到它再继续。",
+        "设置 `graph.rewind = True` 并重新 invoke。"
+      ],
+      "correct": 2,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "在四节点 ReAct graph（agent、tools、conditional edge、static edge back to agent）中，conditional edge 位于哪里？",
+      "options": [
+        "从 `tools` 回到 `agent`，根据 tool output 是否为空进行路由。",
+        "从 `agent` 出发，如果 last message 有 tool_calls 就路由到 `tools`，否则路由到 `END`。",
+        "从 `START` 出发，根据 input length 路由到 `agent` 或 `END`。",
+        "没有 conditional edge；两条都是 static。"
+      ],
+      "correct": 1,
+      "explanation": ""
+    },
+    {
+      "stage": "post",
+      "question": "什么时候应该使用 `Send(node_name, state)`，而不是普通 edge？",
+      "options": [
+        "在失败后 retry 一个 node。",
+        "把 node 延迟到 timer 到期后执行。",
+        "分发目标 node 的 N 个并行执行，并让输出通过 state reducer 合并回来。",
+        "为了隔离，把 node 放到另一个进程中 invoke。"
+      ],
+      "correct": 2,
+      "explanation": ""
+    }
+  ]
+}
