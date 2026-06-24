@@ -10,13 +10,17 @@
   <a href="https://markhan1213.github.io/ai-engineering-from-scratch-cn/"><img src="https://img.shields.io/badge/web-Chinese_site-3553ff?style=flat-square&labelColor=fafaf5" alt="Chinese course site"></a>
 </p>
 
-## 中文在线课程
+## 中文在线课程（非官方翻译版）
 
-这个仓库已经发布成可点击浏览的中文课程网站：
+这个仓库是 [AI Engineering from Scratch](https://github.com/rohitg00/ai-engineering-from-scratch) 的非官方中文翻译和本地化版本，目标是让中文读者可以按原课程结构直接学习。原课程、原代码、原提交历史和 MIT License attribution 保留给原作者与贡献者；中文翻译、中文站点和后续中文内容维护在本仓库进行。
+
+中文版本已经发布成可点击浏览的课程网站：
 
 **[打开 AI Engineering from Scratch 中文课程站](https://markhan1213.github.io/ai-engineering-from-scratch-cn/)**
 
 进入后可以按课程阶段目录浏览，点击课程会加载对应的中文课程内容。
+
+> 说明：这不是官方中文版，也不是原创课程重写；它是基于 MIT 授权保留原始归属的中文本地化版本。中文内容问题请在本仓库提交 issue，原课程问题请参考上游英文仓库。
 
 ## From the creator of [Agent Memory - #1 Persistent memory ⭐](https://github.com/rohitg00/agentmemory) <a href="https://github.com/rohitg00/agentmemory/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/agentmemory?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a> which naturally works with any agents or chat assistants.
 
@@ -1189,10 +1193,9 @@ If this manual helped you, star the repo. It keeps the project alive.
 
 ## License
 
-MIT. Use it however you want — fork it, teach it, sell it, ship it. Attribution appreciated,
-not required.
+原项目采用 MIT License。本中文仓库保留原仓库的 `LICENSE`、版权声明、提交历史和上游链接；中文翻译与站点本地化作为派生修改发布。
 
-Maintained by [Rohit Ghumare](https://github.com/rohitg00) and the community.
+Original curriculum maintained by [Rohit Ghumare](https://github.com/rohitg00) and the community. Chinese localization maintained in this repository by [MarkHan1213](https://github.com/MarkHan1213).
 
 <sub>
   <a href="https://x.com/ghumare64">@ghumare64</a> &nbsp;·&nbsp;

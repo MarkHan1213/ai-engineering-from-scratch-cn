@@ -604,9 +604,10 @@ function writeLlms(phases, glossaryCount, artifactCount) {
   let total = 0;
   phases.forEach(p => { total += p.lessons.filter(l => lessonPath(l.url)).length; });
   let out = `# AI Engineering from Scratch\n\n`;
-  out += `> 免费开源的中文 AI 工程课程：${phases.length} 个阶段、${total} 门课程，从 linear algebra 到 autonomous agents，亲手构建核心 AI 算法。覆盖 Python、TypeScript、Rust、Julia。\n\n`;
+  out += `> AI Engineering from Scratch 的非官方中文翻译和本地化版本：${phases.length} 个阶段、${total} 门课程，从 linear algebra 到 autonomous agents，亲手构建核心 AI 算法。覆盖 Python、TypeScript、Rust、Julia。\n\n`;
   out += `中文站点：${SITE_ORIGIN}\n`;
   out += `中文仓库：https://github.com/${GITHUB_REPO}\n`;
+  out += `上游英文仓库：https://github.com/rohitg00/ai-engineering-from-scratch\n`;
   out += `术语条目：${glossaryCount} · 可复用产出（prompts/skills/agents）：${artifactCount}\n\n`;
   for (const phase of phases) {
     out += `## Phase ${phase.id}: ${phase.name}\n`;
