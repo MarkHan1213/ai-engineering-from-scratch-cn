@@ -7,8 +7,16 @@
   <a href="ROADMAP.md"><img src="https://img.shields.io/badge/lessons-503-3553ff?style=flat-square&labelColor=fafaf5" alt="503 lessons"></a>
   <a href="#contents"><img src="https://img.shields.io/badge/phases-20-3553ff?style=flat-square&labelColor=fafaf5" alt="20 phases"></a>
   <a href="https://github.com/rohitg00/ai-engineering-from-scratch/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/ai-engineering-from-scratch?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>
-  <a href="https://aiengineeringfromscratch.com"><img src="https://img.shields.io/badge/web-aiengineeringfromscratch.com-3553ff?style=flat-square&labelColor=fafaf5" alt="Website"></a>
+  <a href="https://markhan1213.github.io/ai-engineering-from-scratch-cn/"><img src="https://img.shields.io/badge/web-Chinese_site-3553ff?style=flat-square&labelColor=fafaf5" alt="Chinese course site"></a>
 </p>
+
+## 中文在线课程
+
+这个仓库已经发布成可点击浏览的中文课程网站：
+
+**[打开 AI Engineering from Scratch 中文课程站](https://markhan1213.github.io/ai-engineering-from-scratch-cn/)**
+
+进入后可以按原站点的章节目录浏览，点击课程会加载对应的中文课程内容。
 
 ## From the creator of [Agent Memory - #1 Persistent memory ⭐](https://github.com/rohitg00/agentmemory) <a href="https://github.com/rohitg00/agentmemory/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/agentmemory?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a> which naturally works with any agents or chat assistants.
 
