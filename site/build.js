@@ -15,16 +15,53 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 const README_PATH = path.join(REPO_ROOT, 'README.md');
 const ROADMAP_PATH = path.join(REPO_ROOT, 'ROADMAP.md');
 const GLOSSARY_PATH = path.join(REPO_ROOT, 'glossary', 'terms.md');
+const GLOSSARY_ZH_PATH = path.join(REPO_ROOT, 'glossary', 'terms.zh.md');
 const OUTPUT_PATH = path.join(__dirname, 'data.js');
 
-const GITHUB_BASE = 'https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/';
-const SITE_ORIGIN = 'https://aiengineeringfromscratch.com';
+const GITHUB_REPO = 'MarkHan1213/ai-engineering-from-scratch-cn';
+const GITHUB_BASE = `https://github.com/${GITHUB_REPO}/tree/main/`;
+const SITE_ORIGIN = 'https://markhan1213.github.io/ai-engineering-from-scratch-cn';
+
+const PHASE_ZH = {
+  0:  { name: '设置与工具 / Setup & Tooling', desc: '搭好开发环境、GPU、API、Notebook、Docker、编辑器、数据管理和调试工具。' },
+  1:  { name: '数学基础 / Math Foundations', desc: '用代码建立每个 AI 算法背后的线性代数、微积分、概率、优化和信息论直觉。' },
+  2:  { name: '机器学习基础 / ML Fundamentals', desc: '经典机器学习仍是多数生产 AI 的骨架：回归、分类、评估、特征和流水线。' },
+  3:  { name: '深度学习核心 / Deep Learning Core', desc: '从第一性原理构建神经网络、反向传播、损失、优化器和迷你框架。' },
+  4:  { name: '计算机视觉 / Computer Vision', desc: '从像素到理解：图像、视频、3D、视觉 Transformer、VLM 和视觉流水线。' },
+  5:  { name: 'NLP：从基础到进阶 / NLP Foundations to Advanced', desc: '语言是通向智能的接口：表示、检索、生成、问答、评估和 RAG 基础。' },
+  6:  { name: '语音与音频 / Speech & Audio', desc: '理解波形、频谱、ASR、TTS、语音助手、实时音频和语音安全。' },
+  7:  { name: 'Transformer 深入解析 / Transformers Deep Dive', desc: '拆开改变一切的架构：attention、位置编码、BERT、GPT、ViT、KV cache 和 scaling laws。' },
+  8:  { name: '生成式 AI / Generative AI', desc: '构建图像、视频、音频、3D 等生成系统：VAE、GAN、diffusion、ControlNet、LoRA 和评估。' },
+  9:  { name: '强化学习 / Reinforcement Learning', desc: '理解 RLHF 与游戏 AI 的基础：MDP、Q-learning、policy gradient、PPO 和多智能体 RL。' },
+  10: { name: '从零构建 LLM / LLMs from Scratch', desc: '亲手构建 tokenizer、数据管线、mini GPT、训练、推理、量化和完整 LLM pipeline。' },
+  11: { name: 'LLM 工程 / LLM Engineering', desc: '把 LLM 做成生产系统：prompt、structured outputs、RAG、fine-tuning、工具调用、评估和 guardrails。' },
+  12: { name: '多模态 AI / Multimodal AI', desc: '跨视觉、音频、文本和动作进行表示、生成、检索、推理和 computer-use。' },
+  13: { name: '工具与协议 / Tools & Protocols', desc: '连接 AI 与真实世界的接口：function calling、schema、MCP、A2A、权限和互操作。' },
+  14: { name: 'Agent 工程 / Agent Engineering', desc: '从 loop、memory、planning、reflection 到框架、benchmark、生产系统和 Agent Workbench。' },
+  15: { name: '自主系统 / Autonomous Systems', desc: '长周期 Agent、自我改进、持久执行、成本治理、安全边界和 2026 年自主系统栈。' },
+  16: { name: '多 Agent 与群体智能 / Multi-Agent & Swarms', desc: '研究协调、角色分工、通信协议、共识、协商、群体优化和多 Agent 生产系统。' },
+  17: { name: '基础设施与生产 / Infrastructure & Production', desc: '把 AI 推到真实世界：推理平台、autoscaling、observability、安全、合规、FinOps 和 SRE。' },
+  18: { name: '伦理、安全与对齐 / Ethics, Safety & Alignment', desc: '构建真正有用且可控的 AI：偏好优化、red team、prompt injection、隐私、公平和监管。' },
+  19: { name: '综合项目 / Capstone Projects', desc: '端到端交付产品和深度构建轨道，把前面阶段组合成可运行系统。' },
+};
 
 // GITHUB_BASE lesson url -> site path "phases/<phase>/<lesson>"
 function lessonPath(url) {
   if (!url) return null;
   const m = url.match(/(phases\/[^/]+\/[^/]+)\/?$/);
   return m ? m[1] : null;
+}
+
+function localizePhases(phases) {
+  for (const phase of phases) {
+    const zh = PHASE_ZH[phase.id];
+    if (!zh) continue;
+    phase.nameEn = phase.name;
+    phase.descEn = phase.desc;
+    phase.name = zh.name;
+    phase.desc = zh.desc;
+  }
+  return phases;
 }
 
 // ─── Parse ROADMAP.md for lesson statuses ────────────────────────────
@@ -332,15 +369,15 @@ function parseGlossary(content) {
 
     if (!currentTerm) continue;
 
-    // Match "What people say" line
-    const saysMatch = line.match(/\*\*What people say:\*\*\s*"?(.+?)"?\s*$/);
+    // Match "What people say" line, or the localized Chinese equivalent.
+    const saysMatch = line.match(/\*\*(?:What people say|常见说法)：?\*\*\s*"?(.+?)"?\s*$/);
     if (saysMatch) {
       currentTerm.says = saysMatch[1].replace(/^"/, '').replace(/"$/, '').trim();
       continue;
     }
 
-    // Match "What it actually means" line
-    const meansMatch = line.match(/\*\*What it actually means:\*\*\s*(.+)/);
+    // Match "What it actually means" line, or the localized Chinese equivalent.
+    const meansMatch = line.match(/\*\*(?:What it actually means|实际含义)：?\*\*\s*(.+)/);
     if (meansMatch) {
       currentTerm.means = meansMatch[1].trim();
       continue;
@@ -468,13 +505,17 @@ function build() {
 
   const readme = fs.readFileSync(README_PATH, 'utf8');
   const roadmap = fs.readFileSync(ROADMAP_PATH, 'utf8');
-  const glossary = fs.readFileSync(GLOSSARY_PATH, 'utf8');
+  const glossary = fs.readFileSync(
+    fs.existsSync(GLOSSARY_ZH_PATH) ? GLOSSARY_ZH_PATH : GLOSSARY_PATH,
+    'utf8'
+  );
 
   console.log('🔍 Parsing ROADMAP.md...');
   const roadmapStatuses = parseRoadmap(roadmap);
 
   console.log('🔍 Parsing README.md...');
   const phases = parseReadme(readme, roadmapStatuses);
+  localizePhases(phases);
 
   console.log('🔍 Parsing glossary/terms.md...');
   const glossaryTerms = parseGlossary(glossary);
@@ -558,15 +599,15 @@ function writeSitemap(phases, glossaryCount) {
   console.log(`   wrote sitemap.xml (${urls.length} URLs)`);
 }
 
-// ─── llms.txt: a link-rich map of the curriculum for AI agents ───────────
+// ─── llms.txt: a link-rich map of the localized curriculum for AI agents ─
 function writeLlms(phases, glossaryCount, artifactCount) {
   let total = 0;
   phases.forEach(p => { total += p.lessons.filter(l => lessonPath(l.url)).length; });
   let out = `# AI Engineering from Scratch\n\n`;
-  out += `> A free, open-source curriculum that builds every core AI algorithm by hand — ${total} lessons across ${phases.length} phases, from linear algebra to autonomous agents. Python, TypeScript, Rust, Julia.\n\n`;
-  out += `Canonical site: ${SITE_ORIGIN}\n`;
-  out += `Source: https://github.com/rohitg00/ai-engineering-from-scratch\n`;
-  out += `Glossary terms: ${glossaryCount} · Reusable outputs (prompts/skills/agents): ${artifactCount}\n\n`;
+  out += `> 免费开源的中文 AI 工程课程：${phases.length} 个阶段、${total} 门课程，从 linear algebra 到 autonomous agents，亲手构建核心 AI 算法。覆盖 Python、TypeScript、Rust、Julia。\n\n`;
+  out += `中文站点：${SITE_ORIGIN}\n`;
+  out += `中文仓库：https://github.com/${GITHUB_REPO}\n`;
+  out += `术语条目：${glossaryCount} · 可复用产出（prompts/skills/agents）：${artifactCount}\n\n`;
   for (const phase of phases) {
     out += `## Phase ${phase.id}: ${phase.name}\n`;
     if (phase.desc) out += `${phase.desc}\n`;
@@ -579,10 +620,10 @@ function writeLlms(phases, glossaryCount, artifactCount) {
     }
     out += `\n`;
   }
-  out += `## Optional\n`;
-  out += `- [Catalog](${SITE_ORIGIN}/catalog.html) — full searchable lesson index\n`;
-  out += `- [Roadmap](${SITE_ORIGIN}/prereqs.html) — prerequisite ordering across phases\n`;
-  if (glossaryCount > 0) out += `- [Glossary](${SITE_ORIGIN}/glossary.html) — plain-language definitions of ${glossaryCount} terms\n`;
+  out += `## 常用入口\n`;
+  out += `- [课程目录](${SITE_ORIGIN}/catalog.html) — 可搜索的完整课程索引\n`;
+  out += `- [学习路线图](${SITE_ORIGIN}/prereqs.html) — 20 个阶段之间的先修关系\n`;
+  if (glossaryCount > 0) out += `- [术语表](${SITE_ORIGIN}/glossary.html) — ${glossaryCount} 个 AI 工程术语的中文解释\n`;
   fs.writeFileSync(path.join(__dirname, 'llms.txt'), out, 'utf8');
   console.log(`   wrote llms.txt`);
 }

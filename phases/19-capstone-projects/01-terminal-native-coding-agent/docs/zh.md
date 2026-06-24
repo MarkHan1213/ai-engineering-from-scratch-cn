@@ -5,7 +5,7 @@
 **类型：** 综合项目
 **语言：** TypeScript / Bun（harness）, Python（eval scripts）
 **前置知识：** 第 11 阶段（LLM engineering）, 第 13 阶段（tools and protocols）, 第 14 阶段（agents）, 第 15 阶段（autonomous systems）, 第 17 阶段（infrastructure）
-**Phases exercised:** P0 · P5 · P7 · P10 · P11 · P13 · P14 · P15 · P17 · P18
+**Phases exercised / 覆盖阶段：** P0 · P5 · P7 · P10 · P11 · P13 · P14 · P15 · P17 · P18
 **时间：** 35 小时
 
 ## Learning Objectives / 学习目标
@@ -18,7 +18,7 @@
 
 ## Problem / 问题
 
-到 2026 年，编码 Agent 已经成为最主流的 AI 应用类型之一。Claude Code (Anthropic)、带 Composer 2 和 Agent Tabs 的 Cursor 3、Amp (Sourcegraph)、OpenCode（112k stars）、Factory Droids、Google Jules，都在发布同一种架构的变体：终端 harness、带权限的工具面、沙箱，以及围绕 frontier model 构建的 plan-act-observe loop。前沿成绩很窄，例如 Live-SWE-agent 用 Opus 4.5 在 SWE-bench Verified 上达到 79.2%，但工程细节非常宽。多数失败并不是模型不会推理，而是工具循环不稳定、上下文被污染、token 成本失控，或文件系统操作具有破坏性。
+到 2026 年，编码 Agent 已经成为最主流的 AI 应用类型之一。Claude Code (Anthropic)、带 Composer 2 和 Agent Tabs 的 Cursor 3、Amp (Sourcegraph)、OpenCode（112k stars）、Factory Droids、Google Jules，都在发布同一种架构的变体：终端 harness、带权限的工具面、沙箱，以及围绕 frontier model 构建的 plan-act-observe loop。前沿差距很小，例如 Live-SWE-agent 用 Opus 4.5 在 SWE-bench Verified 上达到 79.2%，但工程细节非常广。多数失败并不是模型不会推理，而是工具循环不稳定、上下文被污染、token 成本失控，或文件系统操作具有破坏性。
 
 你无法只从外部评估这种 Agent。你必须亲手构建一个，看它在第 47 轮因为 ripgrep 返回 8MB 匹配结果而崩掉，然后重新设计截断层。这正是本 capstone 的意义。
 
@@ -122,7 +122,7 @@ $ agent run ./my-repo "Fix the race condition in worker.rs"
 
 2. 添加一个 `reviewer` sub-agent，在 PR posting 前读取 diff，并可以请求 revision loop。测量 false-positive review 是否会把 SWE-bench pass rate 拉低到 single-agent baseline 以下（提示：通常会）。
 
-3. 压测 sandbox：写一个尝试 `curl` 外部 URL 的任务，再写一个尝试写出 worktree 的任务。确认两者都被 PreToolUse hook 阻止，并记录这些尝试。
+3. 压测 sandbox：写一个尝试 `curl` 外部 URL 的任务，再写一个尝试向 worktree 外写文件的任务。确认两者都被 PreToolUse hook 阻止，并记录这些尝试。
 
 4. 用更小的模型（Haiku 4.5）实现 `PreCompact` summarization。测量 3x compaction 时 plan fidelity 损失多少。
 

@@ -146,7 +146,7 @@ graph LR
 
 ### KV Cache: Why Inference Is Fast / KV Cache：推理为什么能快
 
-训练时，你一次处理完整序列。推理时，你一次生成一个 token。如果不优化，生成第 N 个 token 需要重新计算前面 N-1 个 token 的 attention。对每个生成 token 是 O(N)，整段长度 N 的生成总计 O(N^2) 的注意力计算；如果还重复计算前缀投影，代价会更糟。
+训练时，你一次处理完整序列。推理时，你一次生成一个 token。如果不优化，生成第 N 个 token 需要重新计算前面 N-1 个 token 的 attention。生成第 N 个 token 单步约为 O(N^2)，长度为 N 的整段生成总计约为 O(N^3)。
 
 KV Cache 解决这个问题。为每个 token 计算 K 和 V 后，把它们存下来。生成 token N+1 时，只需要为新 token 计算 Q，然后查出之前所有 token 缓存的 K 和 V。这样 K/V 计算的 per-token cost 从 O(N) 降到 O(1)。attention score 计算仍是 O(N)，因为要 attend 到所有历史位置，但输入上的冗余矩阵乘法被消除了。
 

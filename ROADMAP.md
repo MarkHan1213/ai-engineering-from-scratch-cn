@@ -1,4 +1,35 @@
-# Roadmap
+# Roadmap / 中文学习路线图
+
+中文可点击路线图请打开：
+
+**https://markhan1213.github.io/ai-engineering-from-scratch-cn/prereqs.html**
+
+这个文件同时也是站点构建脚本读取的课程状态源，所以后面的 `## Phase ...` 标题和表格格式保持英文结构。中文站会在构建时把阶段名、阶段说明、课程标题、课程正文和测验优先渲染为中文。
+
+## 中文阶段总览
+
+| 阶段 | 中文名称 | 重点 |
+|---:|---|---|
+| 0 | 设置与工具 | 开发环境、GPU、API、Notebook、Docker、编辑器、数据管理与调试 |
+| 1 | 数学基础 | 线性代数、微积分、概率、优化、信息论、张量和数值稳定性 |
+| 2 | 机器学习基础 | 回归、分类、评估、特征工程、集成方法、时间序列和异常检测 |
+| 3 | 深度学习核心 | 感知机、反向传播、激活、损失、优化器、正则化和迷你框架 |
+| 4 | 计算机视觉 | CNN、检测、分割、生成、视频、3D、ViT、CLIP 和视觉流水线 |
+| 5 | NLP 从基础到进阶 | 文本表示、embedding、检索、生成、问答、RAG chunking 和 LLM eval |
+| 6 | 语音与音频 | 音频特征、ASR、Whisper、TTS、语音助手、实时音频和水印 |
+| 7 | Transformer 深入解析 | self-attention、multi-head attention、BERT、GPT、ViT、KV cache 和 scaling laws |
+| 8 | 生成式 AI | VAE、GAN、diffusion、Stable Diffusion、ControlNet、LoRA、视频和 3D 生成 |
+| 9 | 强化学习 | MDP、Q-learning、policy gradient、PPO、RLHF 和多智能体 RL |
+| 10 | 从零构建 LLM | tokenizer、预训练、SFT、RLHF、DPO、量化、推理优化和完整 pipeline |
+| 11 | LLM 工程 | prompt、structured outputs、RAG、fine-tuning、工具调用、评估、安全和生产应用 |
+| 12 | 多模态 AI | CLIP、BLIP-2、LLaVA、Qwen-VL、video-language、document RAG 和 computer-use agents |
+| 13 | 工具与协议 | tool interface、function calling、MCP、A2A、schema、安全和互操作 |
+| 14 | Agent 工程 | agent loop、memory、planning、reflection、frameworks、benchmark、production 和 workbench |
+| 15 | 自主系统 | long-horizon agents、自我改进、durable execution、cost governors 和 kill switches |
+| 16 | 多 Agent 与群体智能 | 协议、角色分工、blackboard、consensus、negotiation、swarm 和 coordination benchmark |
+| 17 | 基础设施与生产 | 推理平台、autoscaling、vLLM、observability、routing、SRE、安全、合规和 FinOps |
+| 18 | 伦理、安全与对齐 | reward hacking、DPO、sycophancy、red teaming、prompt injection、隐私、公平和监管 |
+| 19 | 综合项目 | 端到端产品和深度构建轨道，把课程能力组合成可运行系统 |
 
 Status tracker for every phase and lesson. The status glyphs in this file feed
 the website (`site/build.js` parses them into `site/data.js`); do not change

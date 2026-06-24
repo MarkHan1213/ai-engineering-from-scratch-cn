@@ -65,7 +65,7 @@ METR（原 ARC Evals）会把任务成功概率相对于专家人类完成时间
 | Cost profile / 成本形态 | 可预测 | fat-tailed |
 | Eval-vs-deploy gap / 评测-部署差距 | 小 | 已被记录，且在变大 |
 
-每一行都会展开成本阶段的一课。
+表中每一行都会在本阶段后续课程中展开。
 
 ```figure
 task-decomposition

@@ -6,7 +6,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a1a1a?style=flat-square&labelColor=fafaf5" alt="MIT License"></a>
   <a href="ROADMAP.md"><img src="https://img.shields.io/badge/lessons-503-3553ff?style=flat-square&labelColor=fafaf5" alt="503 lessons"></a>
   <a href="#contents"><img src="https://img.shields.io/badge/phases-20-3553ff?style=flat-square&labelColor=fafaf5" alt="20 phases"></a>
-  <a href="https://github.com/rohitg00/ai-engineering-from-scratch/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/ai-engineering-from-scratch?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>
+  <a href="https://github.com/MarkHan1213/ai-engineering-from-scratch-cn/stargazers"><img src="https://img.shields.io/github/stars/MarkHan1213/ai-engineering-from-scratch-cn?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a>
   <a href="https://markhan1213.github.io/ai-engineering-from-scratch-cn/"><img src="https://img.shields.io/badge/web-Chinese_site-3553ff?style=flat-square&labelColor=fafaf5" alt="Chinese course site"></a>
 </p>
 
@@ -16,7 +16,7 @@
 
 **[打开 AI Engineering from Scratch 中文课程站](https://markhan1213.github.io/ai-engineering-from-scratch-cn/)**
 
-进入后可以按原站点的章节目录浏览，点击课程会加载对应的中文课程内容。
+进入后可以按课程阶段目录浏览，点击课程会加载对应的中文课程内容。
 
 ## From the creator of [Agent Memory - #1 Persistent memory ⭐](https://github.com/rohitg00/agentmemory) <a href="https://github.com/rohitg00/agentmemory/stargazers"><img src="https://img.shields.io/github/stars/rohitg00/agentmemory?style=flat-square&labelColor=fafaf5&color=3553ff" alt="GitHub stars"></a> which naturally works with any agents or chat assistants.
 
@@ -122,15 +122,15 @@ flowchart LR
 
 Three ways in. Pick one.
 
-**Option A — read.** Open any completed lesson on
-[aiengineeringfromscratch.com](https://aiengineeringfromscratch.com) or expand a phase under
+**Option A — read.** Open any completed lesson on the
+[Chinese course site](https://markhan1213.github.io/ai-engineering-from-scratch-cn/) or expand a phase under
 [Contents](#contents). No setup, no cloning.
 
 **Option B — clone and run.**
 
 ```bash
-git clone https://github.com/rohitg00/ai-engineering-from-scratch.git
-cd ai-engineering-from-scratch
+git clone https://github.com/MarkHan1213/ai-engineering-from-scratch-cn.git
+cd ai-engineering-from-scratch-cn
 python phases/01-math-foundations/01-linear-algebra-intuition/code/vectors.py
 ```
 
@@ -966,9 +966,9 @@ The repo ships 388 skills and 99 prompts under `phases/**/outputs/`.
 detects your agent's skills directory automatically:
 
 ```bash
-npx skills add rohitg00/ai-engineering-from-scratch                       # every skill
-npx skills add rohitg00/ai-engineering-from-scratch --skill agent-loop    # one skill
-npx skills add rohitg00/ai-engineering-from-scratch --phase 14            # one phase
+npx skills add MarkHan1213/ai-engineering-from-scratch-cn                       # every skill
+npx skills add MarkHan1213/ai-engineering-from-scratch-cn --skill agent-loop    # one skill
+npx skills add MarkHan1213/ai-engineering-from-scratch-cn --phase 14            # one phase
 ```
 
 `skills` writes to whichever directory your agent picks up: `.claude/skills/`,
@@ -1178,10 +1178,10 @@ Sign up via [GitHub Sponsors](https://github.com/sponsors/rohitg00).
 
 ## Star history
 
-<a href="https://star-history.com/#rohitg00/ai-engineering-from-scratch&Date">
+<a href="https://star-history.com/#MarkHan1213/ai-engineering-from-scratch-cn&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=rohitg00/ai-engineering-from-scratch&type=Date&theme=dark">
-    <img alt="Star history" src="https://api.star-history.com/svg?repos=rohitg00/ai-engineering-from-scratch&type=Date" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=MarkHan1213/ai-engineering-from-scratch-cn&type=Date&theme=dark">
+    <img alt="Star history" src="https://api.star-history.com/svg?repos=MarkHan1213/ai-engineering-from-scratch-cn&type=Date" width="100%">
   </picture>
 </a>
 
@@ -1196,6 +1196,7 @@ Maintained by [Rohit Ghumare](https://github.com/rohitg00) and the community.
 
 <sub>
   <a href="https://x.com/ghumare64">@ghumare64</a> &nbsp;·&nbsp;
-  <a href="https://aiengineeringfromscratch.com">aiengineeringfromscratch.com</a> &nbsp;·&nbsp;
-  <a href="https://github.com/rohitg00/ai-engineering-from-scratch/issues/new/choose">Report / Suggest</a>
+  <a href="https://markhan1213.github.io/ai-engineering-from-scratch-cn/">中文课程站</a> &nbsp;·&nbsp;
+  <a href="https://aiengineeringfromscratch.com">原英文站</a> &nbsp;·&nbsp;
+  <a href="https://github.com/MarkHan1213/ai-engineering-from-scratch-cn/issues/new/choose">Report / Suggest</a>
 </sub>
